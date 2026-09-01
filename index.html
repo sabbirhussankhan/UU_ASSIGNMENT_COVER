@@ -1531,7 +1531,7 @@
               </div>
             </details>
 
-            <details class="field-group" data-section="experiment">
+            <details class="field-group" data-section="experiment" open>
               <summary>
                 <div class="design-card-title">
                   <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Course Details
@@ -1562,7 +1562,7 @@
               </div>
             </details>
 
-            <details class="field-group" data-section="experiment">
+            <details class="field-group" data-section="experiment" open>
               <summary>
                 <div class="design-card-title">
                   <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"></path><path d="M10 9v-6"></path><path d="M14 9v-6"></path><path d="M10 9l-4 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-4-9"></path></svg> Experiment Details
@@ -1593,7 +1593,7 @@
               </div>
             </details>
 
-            <details class="field-group" data-section="student">
+            <details class="field-group" data-section="student" open>
               <summary>
                 <div class="design-card-title">
                   <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Submitted By
@@ -1636,7 +1636,7 @@
               </div>
             </details>
 
-            <details class="field-group" data-section="teacher">
+            <details class="field-group" data-section="teacher" open>
               <summary>
                 <div class="design-card-title">
                   <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg> Submitted To
@@ -2084,26 +2084,47 @@
     </div>
   </main>
 
-  <!-- Add Field Modal -->
+  <!-- Modal for Adding Custom Field -->
   <div class="field-modal-backdrop" id="add-field-modal" hidden>
-    <form class="field-modal" id="add-field-form">
+    <div class="field-modal">
       <div class="field-modal-head">
-        <h3>Add custom field</h3>
-        <button type="button" class="field-modal-close" id="modal-close-btn">×</button>
+        <h3>Add New Custom Field</h3>
+        <button type="button" class="field-modal-close" id="modal-close-btn">&times;</button>
       </div>
-      <div class="field-modal-grid">
-        <label>Field label
-          <input id="modal-label" required placeholder="e.g. Batch No.">
-        </label>
-        <label>Default value
-          <input id="modal-value" placeholder="Optional">
-        </label>
+      <form id="modal-field-form">
+        <div style="display:grid; gap:12px; margin-bottom:16px;">
+          <div class="field">
+            <input id="modal-field-label" placeholder="Field Label (e.g. Session)" required>
+            <span class="float-label">Field Label</span>
+          </div>
+          <div class="field">
+            <input id="modal-field-value" placeholder="Default Value (optional)">
+            <span class="float-label">Default Value</span>
+          </div>
+        </div>
+        <div class="field-actions">
+          <button type="button" class="add-field field-modal-cancel" id="modal-cancel-btn">Cancel</button>
+          <button type="submit" class="add-field field-modal-submit">Add Field</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal for Editing Section Field Labels -->
+  <div class="field-modal-backdrop" id="label-modal-backdrop" hidden>
+    <div class="field-modal">
+      <div class="field-modal-head">
+        <h3 id="label-modal-title">Edit Field Labels</h3>
+        <button type="button" class="field-modal-close" id="label-modal-close-btn">&times;</button>
       </div>
-      <div class="field-modal-actions">
-        <button type="button" class="field-modal-cancel" id="modal-cancel-btn">Cancel</button>
-        <button type="submit" class="field-modal-submit">Add field</button>
-      </div>
-    </form>
+      <form id="label-modal-form">
+        <div id="label-modal-fields" style="display:grid; gap:12px; margin-bottom:16px;"></div>
+        <div class="field-actions">
+          <button type="button" class="add-field field-modal-cancel" id="label-modal-cancel-btn">Cancel</button>
+          <button type="submit" class="add-field field-modal-submit">Save Labels</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- Notification Toast -->
@@ -2762,7 +2783,16 @@
         });
       });
 
-      // Section Card Rename Pencil Icon Button Listener
+      // Section Card Rename Pencil Icon Button Listener (Edit Field Labels Modal)
+      let activeGroupForLabelEdit = null;
+      const labelModalBackdrop = document.getElementById('label-modal-backdrop');
+      const labelModalForm = document.getElementById('label-modal-form');
+
+      function closeLabelModal() {
+        if (labelModalBackdrop) labelModalBackdrop.hidden = true;
+        activeGroupForLabelEdit = null;
+      }
+
       document.querySelectorAll('.card-edit-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -2770,32 +2800,68 @@
           const group = btn.closest('.field-group');
           if (!group) return;
 
+          activeGroupForLabelEdit = group;
+          const sectionTitle = group.querySelector('.design-card-title')?.textContent.trim() || 'Section';
+          document.getElementById('label-modal-title').textContent = `Edit Labels: ${sectionTitle}`;
+
+          const fieldsContainer = document.getElementById('label-modal-fields');
+          fieldsContainer.innerHTML = '';
+
           const fields = group.querySelectorAll('.field');
           fields.forEach((fieldDiv, idx) => {
+            const input = fieldDiv.querySelector('input:not(.field-select):not([type="file"]), select');
             const floatLabel = fieldDiv.querySelector('.float-label');
-            const input = fieldDiv.querySelector('input:not(.field-select), select');
-            if (floatLabel && input && input.id) {
-              const currentLabel = floatLabel.textContent.trim();
-              const nextLabel = prompt(`Rename Field ${idx + 1} label ("${currentLabel}"):`, currentLabel);
-              if (nextLabel !== null && nextLabel.trim() && nextLabel.trim() !== currentLabel) {
-                const updatedLabel = nextLabel.trim();
-                floatLabel.textContent = updatedLabel;
-                input.placeholder = updatedLabel;
+            if (!input || !input.id || !floatLabel) return;
 
-                // Sync label on A4 cover paper preview
-                const previewEl = document.getElementById('p-' + input.id);
-                if (previewEl) {
-                  const bTag = previewEl.closest('p')?.querySelector('b') || document.querySelector(`[data-field-id="${input.id}"] b`);
-                  if (bTag) bTag.textContent = updatedLabel + ':';
-                }
-              }
+            const currentLabel = floatLabel.textContent.trim();
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'field filled';
+            rowDiv.innerHTML = `
+              <input class="field-rename-input" data-input-id="${input.id}" value="${currentLabel}" placeholder="Label ${idx + 1}">
+              <span class="float-label">Field ${idx + 1} Label</span>
+            `;
+            fieldsContainer.append(rowDiv);
+          });
+
+          if (labelModalBackdrop) labelModalBackdrop.hidden = false;
+          const firstInp = fieldsContainer.querySelector('.field-rename-input');
+          if (firstInp) firstInp.focus();
+        });
+      });
+
+      if (labelModalForm) {
+        labelModalForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const renameInputs = document.querySelectorAll('.field-rename-input');
+          renameInputs.forEach(renInp => {
+            const targetId = renInp.dataset.inputId;
+            const newLabel = renInp.value.trim();
+            if (!targetId || !newLabel) return;
+
+            const targetInput = document.getElementById(targetId);
+            if (!targetInput) return;
+
+            const floatLabel = targetInput.closest('.field')?.querySelector('.float-label');
+            if (floatLabel) floatLabel.textContent = newLabel;
+            targetInput.placeholder = newLabel;
+
+            // Sync label on A4 cover paper preview
+            const previewEl = document.getElementById('p-' + targetId);
+            if (previewEl) {
+              const bTag = previewEl.closest('p')?.querySelector('b') || document.querySelector(`[data-field-id="${targetId}"] b`);
+              if (bTag) bTag.textContent = newLabel + ':';
             }
           });
 
+          closeLabelModal();
           persistData();
-          showToast('Field labels updated successfully.');
+          showToast('Field labels updated successfully!');
         });
-      });
+      }
+
+      document.getElementById('label-modal-close-btn')?.addEventListener('click', closeLabelModal);
+      document.getElementById('label-modal-cancel-btn')?.addEventListener('click', closeLabelModal);
+      labelModalBackdrop?.addEventListener('click', (e) => { if (e.target === labelModalBackdrop) closeLabelModal(); });
 
       // Materials
       document.querySelectorAll('[data-material]').forEach(btn => {
@@ -3148,17 +3214,14 @@
       // Responsive Accordion Defaults: Expand all on Desktop, Compact on Mobile
       function initResponsiveAccordions() {
         const isMobile = window.innerWidth <= 768;
-        if (!isMobile) {
-          document.querySelectorAll('details.field-group, details.design-card').forEach(details => {
-            details.open = true;
-          });
-        }
+        document.querySelectorAll('details.field-group, details.design-card').forEach(details => {
+          details.open = !isMobile;
+        });
       }
-
-      initResponsiveAccordions();
 
       // Restore saved data on load
       restoreData();
+      initResponsiveAccordions();
     })();
   </script>
 </body>
