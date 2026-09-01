@@ -221,8 +221,8 @@
       color: #7b879b;
       font-size: 13px;
       font-weight: 500;
-      pointer-events: auto;
-      cursor: pointer;
+      pointer-events: none;
+      cursor: default;
       opacity: 0;
       transform: translateY(4px);
       transition: all .18s ease;
@@ -238,11 +238,53 @@
       font-weight: 800;
       opacity: 1;
       transform: translateY(0);
-      pointer-events: auto;
-      cursor: pointer;
+      pointer-events: none;
+      cursor: default;
     }
     .field:focus-within input, .field.filled input { padding-top: 2px; }
     .field.user-hidden { display: none !important; }
+
+    /* Drag & Drop Reordering Styles */
+    .field {
+      position: relative;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .field .drag-handle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 100%;
+      position: absolute;
+      left: 4px;
+      top: 0;
+      color: #94a3b8;
+      cursor: grab;
+      opacity: 0.4;
+      transition: opacity 0.2s, color 0.2s;
+      z-index: 6;
+      user-select: none;
+    }
+    .field:hover .drag-handle {
+      opacity: 1;
+      color: #2563eb;
+    }
+    .field.selectable {
+      padding-left: 28px;
+    }
+    .field.selectable .field-select {
+      left: 26px;
+    }
+    .field.dragging {
+      opacity: 0.4;
+      border: 1.5px dashed #2563eb !important;
+      background: #eff6ff !important;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2) !important;
+    }
+    .field.drag-over {
+      border-top: 2.5px solid #2563eb !important;
+      transform: translateY(2px);
+    }
 
     /* Group Action Buttons */
     .field-actions {
@@ -475,39 +517,39 @@
       width: 26px;
       height: 26px;
       padding: 0;
-      border: 1px solid #e2e8f0;
-      border-radius: 7px;
-      background: transparent;
-      color: #64748b;
+      border: 1px solid #d0dbe9;
+      border-radius: 6px;
+      background: #f8fafc;
+      color: #475569;
       cursor: pointer;
       transition: all 0.2s ease;
     }
     .card-edit-btn:hover {
-      background: #eff6ff;
-      color: #2563eb;
-      border-color: #bfdbfe;
-      transform: scale(1.05);
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+      transform: scale(1.08);
     }
     .card-reset-btn:hover {
-      background: #fee2e2;
-      color: #e11d48;
-      border-color: #fca5a5;
-      transform: rotate(-45deg);
+      background: #ef4444;
+      color: #ffffff;
+      border-color: #ef4444;
+      transform: rotate(-60deg);
     }
     .dark-editor .card-reset-btn, .dark-editor .card-edit-btn {
-      background: transparent;
+      background: #1e293b;
       border-color: #334155;
       color: #94a3b8;
     }
     .dark-editor .card-edit-btn:hover {
-      background: #1e3a8a;
-      color: #93c5fd;
-      border-color: #3b82f6;
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
     }
     .dark-editor .card-reset-btn:hover {
-      background: #881337;
-      color: #fecdd3;
-      border-color: #f43f5e;
+      background: #ef4444;
+      color: #ffffff;
+      border-color: #ef4444;
     }
 
     details.design-card[open] summary {
@@ -1572,7 +1614,7 @@
                 </div>
                 <div class="summary-actions">
                   <button type="button" class="card-edit-btn" title="Rename section & labels">
-                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                   </button>
                   <button type="button" class="card-reset-btn" data-reset-card="report-details" title="Reset Report Details">
                     <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
@@ -1599,7 +1641,7 @@
                 </div>
                 <div class="summary-actions">
                   <button type="button" class="card-edit-btn" title="Rename section & labels">
-                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                   </button>
                   <button type="button" class="card-reset-btn" data-reset-card="course-details" title="Reset Course Details">
                     <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
@@ -1630,7 +1672,7 @@
                 </div>
                 <div class="summary-actions">
                   <button type="button" class="card-edit-btn" title="Rename section & labels">
-                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                   </button>
                   <button type="button" class="card-reset-btn" data-reset-card="experiment-details" title="Reset Experiment Details">
                     <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
@@ -1661,7 +1703,7 @@
                 </div>
                 <div class="summary-actions">
                   <button type="button" class="card-edit-btn" title="Rename section & labels">
-                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                   </button>
                   <button type="button" class="card-reset-btn" data-reset-card="submitted-by" title="Reset Submitted By">
                     <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
@@ -1704,7 +1746,7 @@
                 </div>
                 <div class="summary-actions">
                   <button type="button" class="card-edit-btn" title="Rename section & labels">
-                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                   </button>
                   <button type="button" class="card-reset-btn" data-reset-card="submitted-to" title="Reset Submitted To">
                     <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
@@ -2152,14 +2194,14 @@
         <h3>Add New Custom Field</h3>
         <button type="button" class="field-modal-close" id="modal-close-btn">&times;</button>
       </div>
-      <form id="modal-field-form">
+      <form id="add-field-form">
         <div style="display:grid; gap:12px; margin-bottom:16px;">
           <div class="field">
-            <input id="modal-field-label" placeholder="Field Label (e.g. Session)" required>
-            <span class="float-label">Field Label</span>
+            <input id="modal-label" placeholder="Field Label / Name (e.g. Session)" required>
+            <span class="float-label">Field Label / Name</span>
           </div>
           <div class="field">
-            <input id="modal-field-value" placeholder="Default Value (optional)">
+            <input id="modal-value" placeholder="Default Value (optional)">
             <span class="float-label">Default Value</span>
           </div>
         </div>
@@ -2178,11 +2220,11 @@
         <h3 id="label-modal-title">Edit Field Labels</h3>
         <button type="button" class="field-modal-close" id="label-modal-close-btn">&times;</button>
       </div>
-      <form id="label-modal-form">
+      <form id="label-modal-form" onsubmit="return false;">
         <div id="label-modal-fields" style="display:grid; gap:12px; margin-bottom:16px;"></div>
         <div class="field-actions">
           <button type="button" class="add-field field-modal-cancel" id="label-modal-cancel-btn">Cancel</button>
-          <button type="submit" class="add-field field-modal-submit">Save Labels</button>
+          <button type="button" class="add-field field-modal-submit" id="save-labels-btn">Save Labels</button>
         </div>
       </form>
     </div>
@@ -2292,10 +2334,92 @@
         });
       });
 
+      // Drag and drop reordering for fields
+      let draggedField = null;
+
+      function syncPreviewRowOrder(group) {
+        if (!group) return;
+        const inputs = group.querySelectorAll('input:not(.field-select):not([type="file"]), select');
+        let prevRow = null;
+        inputs.forEach(inp => {
+          if (!inp.id) return;
+          const pRow = document.querySelector(`[data-field-id="${inp.id}"]`);
+          if (pRow) {
+            if (prevRow) prevRow.after(pRow);
+            prevRow = pRow;
+          }
+        });
+      }
+
+      function bindFieldDragAndDrop(fieldDiv) {
+        if (fieldDiv.dataset.boundDrag) return;
+        fieldDiv.dataset.boundDrag = 'true';
+        fieldDiv.draggable = true;
+
+        if (!fieldDiv.querySelector('.drag-handle')) {
+          const handle = document.createElement('span');
+          handle.className = 'drag-handle';
+          handle.title = 'Drag up or down to reorder field';
+          handle.innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="9" cy="5" r="1.5" fill="currentColor"/><circle cx="15" cy="5" r="1.5" fill="currentColor"/><circle cx="9" cy="12" r="1.5" fill="currentColor"/><circle cx="15" cy="12" r="1.5" fill="currentColor"/><circle cx="9" cy="19" r="1.5" fill="currentColor"/><circle cx="15" cy="19" r="1.5" fill="currentColor"/></svg>`;
+          fieldDiv.prepend(handle);
+        }
+
+        fieldDiv.addEventListener('dragstart', (e) => {
+          draggedField = fieldDiv;
+          fieldDiv.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', fieldDiv.querySelector('input, select')?.id || '');
+        });
+
+        fieldDiv.addEventListener('dragend', () => {
+          fieldDiv.classList.remove('dragging');
+          document.querySelectorAll('.field.drag-over').forEach(f => f.classList.remove('drag-over'));
+          draggedField = null;
+        });
+
+        fieldDiv.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          if (!draggedField || draggedField === fieldDiv) return;
+
+          const group = fieldDiv.closest('.field-group');
+          if (group && draggedField.closest('.field-group') === group) {
+            fieldDiv.classList.add('drag-over');
+            e.dataTransfer.dropEffect = 'move';
+          }
+        });
+
+        fieldDiv.addEventListener('dragleave', () => {
+          fieldDiv.classList.remove('drag-over');
+        });
+
+        fieldDiv.addEventListener('drop', (e) => {
+          e.preventDefault();
+          fieldDiv.classList.remove('drag-over');
+          if (!draggedField || draggedField === fieldDiv) return;
+
+          const group = fieldDiv.closest('.field-group');
+          if (!group || draggedField.closest('.field-group') !== group) return;
+
+          const rect = fieldDiv.getBoundingClientRect();
+          const next = (e.clientY - rect.top) > (rect.height / 2);
+          if (next) {
+            fieldDiv.after(draggedField);
+          } else {
+            fieldDiv.before(draggedField);
+          }
+
+          syncPreviewRowOrder(group);
+          persistData();
+          showToast('Field reordered successfully!');
+        });
+      }
+
       // 2. Field inputs synchronization
       function bindField(fieldDiv) {
         const input = fieldDiv.querySelector('input:not(.field-select):not([type="file"]), select');
         if (!input) return;
+
+        bindFieldDragAndDrop(fieldDiv);
 
         // Checkbox for delete selection
         if (!fieldDiv.querySelector('.field-select')) {
@@ -2313,35 +2437,6 @@
             fieldDiv.classList.toggle('selected-for-delete', selectCb.checked);
           });
           fieldDiv.prepend(selectCb);
-        }
-
-        // Click or Double-click on float-label to rename label manually
-        const floatLabel = fieldDiv.querySelector('.float-label');
-        if (floatLabel && !floatLabel.dataset.boundDblClick) {
-          floatLabel.dataset.boundDblClick = 'true';
-          floatLabel.title = 'Click to rename label (e.g. Assignment Title)';
-
-          const handleRename = (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            const next = prompt('Rename field label (e.g. Assignment Title, Topic Name):', floatLabel.textContent);
-            if (next && next.trim()) {
-              const newLabel = next.trim();
-              floatLabel.textContent = newLabel;
-              if (input && input.id) {
-                input.placeholder = newLabel;
-                const previewEl = document.getElementById('p-' + input.id);
-                if (previewEl) {
-                  const bTag = previewEl.closest('p')?.querySelector('b') || document.querySelector(`[data-field-id="${input.id}"] b`);
-                  if (bTag) bTag.textContent = newLabel + ':';
-                }
-              }
-              showToast(`Label changed to "${newLabel}"`);
-            }
-          };
-
-          floatLabel.addEventListener('click', handleRename);
-          floatLabel.addEventListener('dblclick', handleRename);
         }
 
         syncField(input);
@@ -2571,7 +2666,7 @@
         const customId = 'custom-' + Date.now();
         const section = activeGroupForCustomField.dataset.section || 'experiment';
 
-        // Create Input Field in Editor
+        // 1. Create Input Field in Editor inside the active section card
         const fieldDiv = document.createElement('div');
         fieldDiv.className = 'field filled';
         fieldDiv.innerHTML = `
@@ -2583,7 +2678,20 @@
         if (actions) actions.before(fieldDiv);
         else activeGroupForCustomField.append(fieldDiv);
 
-        // Create Row in Preview
+        // 2. Insert Preview Row directly after the last field row of this specific card
+        const existingInputs = activeGroupForCustomField.querySelectorAll('input:not(.field-select):not([type="file"]), select');
+        let lastPreviewRow = null;
+        for (let i = existingInputs.length - 1; i >= 0; i--) {
+          const inpId = existingInputs[i].id;
+          if (inpId && inpId !== customId) {
+            const row = document.querySelector(`[data-field-id="${inpId}"]`);
+            if (row) {
+              lastPreviewRow = row;
+              break;
+            }
+          }
+        }
+
         const previewRow = document.createElement('p');
         previewRow.dataset.fieldId = customId;
         if (section === 'experiment') {
@@ -2592,8 +2700,14 @@
           previewRow.innerHTML = `<b>${label}</b><span>: <span id="p-${customId}">${value || '—'}</span></span>`;
         }
 
-        previewContainers[section].append(previewRow);
+        if (lastPreviewRow) {
+          lastPreviewRow.after(previewRow);
+        } else if (previewContainers[section]) {
+          previewContainers[section].append(previewRow);
+        }
+
         bindField(fieldDiv);
+        persistData();
         closeModal();
       });
 
@@ -2847,13 +2961,58 @@
       // Section Card Rename Pencil Icon Button Listener (Edit Field Labels Modal)
       let activeGroupForLabelEdit = null;
 
-      function closeLabelModal() {
+      function closeLabelModal(e) {
+        if (e && e.preventDefault) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
         const backdrop = document.getElementById('label-modal-backdrop');
-        if (backdrop) backdrop.hidden = true;
+        if (backdrop) {
+          backdrop.hidden = true;
+          backdrop.style.display = 'none';
+        }
         activeGroupForLabelEdit = null;
       }
 
+      function closeAddFieldModal(e) {
+        if (e && e.preventDefault) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        const backdrop = document.getElementById('add-field-modal');
+        if (backdrop) {
+          backdrop.hidden = true;
+          backdrop.style.display = 'none';
+        }
+      }
+
       document.addEventListener('click', (e) => {
+        // Handle Cancel / Close on Label Modal
+        if (e.target.closest('#label-modal-close-btn') || e.target.closest('#label-modal-cancel-btn')) {
+          closeLabelModal(e);
+          return;
+        }
+
+        // Handle Cancel / Close on Add Field Modal
+        if (e.target.closest('#modal-close-btn') || e.target.closest('#modal-cancel-btn')) {
+          closeAddFieldModal(e);
+          return;
+        }
+
+        // Handle Backdrop Clicks
+        const labelBackdrop = document.getElementById('label-modal-backdrop');
+        if (e.target === labelBackdrop) {
+          closeLabelModal(e);
+          return;
+        }
+
+        const addBackdrop = document.getElementById('add-field-modal');
+        if (e.target === addBackdrop) {
+          closeAddFieldModal(e);
+          return;
+        }
+
+        // Open Label Modal on Edit Pencil Click
         const editBtn = e.target.closest('.card-edit-btn');
         if (!editBtn) return;
 
@@ -2864,14 +3023,28 @@
         if (!group) return;
 
         activeGroupForLabelEdit = group;
-        const sectionTitle = group.querySelector('.design-card-title')?.textContent.trim() || 'Section';
+        const sectionTitle = group.querySelector('.design-card-title')?.textContent.replace(/[\n\r]+/g, ' ').replace(/\s+/g, ' ').replace(/^.*?\s*(?=[A-Z])/, '').trim() || group.querySelector('.design-card-title')?.textContent.trim() || 'Section';
+        
         const titleEl = document.getElementById('label-modal-title');
-        if (titleEl) titleEl.textContent = `Edit Labels: ${sectionTitle}`;
+        if (titleEl) titleEl.textContent = `Edit Card & Field Names`;
 
         const fieldsContainer = document.getElementById('label-modal-fields');
         if (fieldsContainer) {
           fieldsContainer.innerHTML = '';
 
+          // 1. Add Card Header Title Rename Input
+          const sectionTitleRow = document.createElement('div');
+          sectionTitleRow.className = 'field filled';
+          sectionTitleRow.style.marginBottom = '14px';
+          sectionTitleRow.style.paddingBottom = '12px';
+          sectionTitleRow.style.borderBottom = '1px dashed #cbd5e1';
+          sectionTitleRow.innerHTML = `
+            <input class="section-title-rename-input" value="${sectionTitle}" placeholder="Section Header Title (e.g. Assignment Details)">
+            <span class="float-label">Section Card Header Title</span>
+          `;
+          fieldsContainer.append(sectionTitleRow);
+
+          // 2. Add Field Names & Placeholders Rename Inputs
           const fields = group.querySelectorAll('.field');
           fields.forEach((fieldDiv, idx) => {
             const input = fieldDiv.querySelector('input:not(.field-select):not([type="file"]), select');
@@ -2882,23 +3055,49 @@
             const rowDiv = document.createElement('div');
             rowDiv.className = 'field filled';
             rowDiv.innerHTML = `
-              <input class="field-rename-input" data-input-id="${input.id}" value="${currentLabel}" placeholder="Label ${idx + 1}">
-              <span class="float-label">Field ${idx + 1} Label</span>
+              <input class="field-rename-input" data-input-id="${input.id}" value="${currentLabel}" placeholder="Placeholder / Field Name">
+              <span class="float-label">Field ${idx + 1} Name & Placeholder</span>
             `;
             fieldsContainer.append(rowDiv);
           });
         }
 
         const backdrop = document.getElementById('label-modal-backdrop');
-        if (backdrop) backdrop.hidden = false;
+        if (backdrop) {
+          backdrop.hidden = false;
+          backdrop.style.display = 'flex';
+        }
 
         const firstInp = fieldsContainer?.querySelector('.field-rename-input');
         if (firstInp) firstInp.focus();
       });
 
-      if (labelModalForm) {
-        labelModalForm.addEventListener('submit', (e) => {
+      // Escape key to close open modals
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeLabelModal();
+          closeAddFieldModal();
+        }
+      });
+
+      // Save Labels button click handler (prevents page reload)
+      document.addEventListener('click', (e) => {
+        if (e.target.closest('#save-labels-btn')) {
           e.preventDefault();
+          e.stopPropagation();
+
+          // 1. Rename Card Header Title if changed
+          const sectionTitleInp = document.querySelector('.section-title-rename-input');
+          if (sectionTitleInp && activeGroupForLabelEdit) {
+            const newSectionTitle = sectionTitleInp.value.trim();
+            const cardTitleEl = activeGroupForLabelEdit.querySelector('.design-card-title');
+            if (cardTitleEl && newSectionTitle) {
+              const svgIcon = cardTitleEl.querySelector('svg')?.outerHTML || '';
+              cardTitleEl.innerHTML = `${svgIcon} ${newSectionTitle}`;
+            }
+          }
+
+          // 2. Rename Field Placeholders & Labels
           const renameInputs = document.querySelectorAll('.field-rename-input');
           renameInputs.forEach(renInp => {
             const targetId = renInp.dataset.inputId;
@@ -2922,9 +3121,9 @@
 
           closeLabelModal();
           persistData();
-          showToast('Field labels updated successfully!');
-        });
-      }
+          showToast('Card & Field names updated successfully!');
+        }
+      });
 
       document.getElementById('label-modal-close-btn')?.addEventListener('click', closeLabelModal);
       document.getElementById('label-modal-cancel-btn')?.addEventListener('click', closeLabelModal);
