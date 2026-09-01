@@ -1,0 +1,3165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UU Assignment Cover Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      font-family: 'Inter', Arial, sans-serif;
+      color: #14213d;
+      background: #f3f6fb;
+      --blue: #2F4EA2;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 20px; transition: background .3s; }
+    .shell { max-width: 1400px; margin: auto; }
+    
+    /* Hero */
+    .hero {
+      padding: 30px 36px;
+      border-radius: 26px;
+      color: #fff;
+      background: linear-gradient(135deg, #2F4EA2, #1D3A82);
+      box-shadow: 0 14px 34px rgba(36, 81, 196, 0.22);
+    }
+    .hero span { font-size: 10px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; color: #c7dcff; }
+    .hero h1 { margin: 8px 0 4px; font-size: clamp(25px, 4vw, 34px); }
+    .hero p { margin: 0; color: #e1ebff; font-weight: 600; font-size: 14px; }
+
+    /* Layout */
+    .layout { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 24px; margin-top: 24px; align-items: start; }
+    .panel { padding: 20px; border: 1px solid #dce6f5; border-radius: 22px; background: #fff; box-shadow: 0 8px 24px rgba(20, 40, 90, 0.08); transition: background .3s, border-color .3s; min-width: 0; }
+    
+    .editor-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .editor-header-bar h2 { margin: 0; font-size: 17px; }
+    .theme-toggle-btn {
+      border: 1px solid #d4dfef;
+      border-radius: 20px;
+      padding: 5px 12px;
+      background: #f4f7fc;
+      color: #52627f;
+      font: 700 11px 'Inter', Arial, sans-serif;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .theme-toggle-btn:hover { background: #e2eaf7; color: #14213d; }
+
+    /* Dark Mode Editor Styling */
+    body.dark-editor { background: #0f172a; color: #f8fafc; }
+    body.dark-editor .panel { background: #1e293b; border-color: #334155; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); }
+    body.dark-editor .editor-header-bar h2 { color: #f8fafc; }
+    body.dark-editor .theme-toggle-btn { background: #334155; border-color: #475569; color: #f8fafc; }
+    body.dark-editor .editor-tabs { background: #0f172a; border-color: #334155; }
+    body.dark-editor .editor-tab { color: #94a3b8; }
+    body.dark-editor .editor-tab.active { background: #3b82f6; color: #fff; }
+    body.dark-editor .field-group { background: rgba(15, 23, 42, 0.6); border-color: #3b82f6; }
+    body.dark-editor .field-group legend { background: #1e293b; color: #60a5fa; }
+    body.dark-editor .field input, body.dark-editor .field select { background: #0f172a; border-color: #334155; color: #f8fafc; }
+    body.dark-editor .field input::placeholder { color: #64748b; }
+    body.dark-editor .field:focus-within .float-label, body.dark-editor .field.filled .float-label { background: #1e293b; color: #60a5fa; }
+    body.dark-editor .design-tools { border-top-color: #334155; }
+    body.dark-editor .text-colors { border-top-color: #334155; }
+    body.dark-editor .choice-row button { background: #0f172a; border-color: #334155; color: #94a3b8; }
+    body.dark-editor .choice-row button.active { background: #3b82f6; border-color: #3b82f6; color: #fff; }
+    body.dark-editor .custom-color-wrap { background: #0f172a; border-color: #334155; color: #94a3b8; }
+    body.dark-editor .design-tools select { background: #0f172a; border-color: #334155; color: #f8fafc; }
+    body.dark-editor .preview { background: #0f172a; }
+
+    /* Tabs */
+    .editor-tabs {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      padding: 4px;
+      margin-bottom: 18px;
+      border: 1px solid #dce6f5;
+      border-radius: 12px;
+      background: #f4f7fc;
+      min-width: 0;
+      width: 100%;
+    }
+    .editor-tab {
+      height: 38px;
+      padding: 0 4px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: #657593;
+      font: 800 12px 'Inter', Arial, sans-serif;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .editor-tab.active {
+      background: #2F4EA2;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(47, 78, 162, 0.2);
+    }
+    .editor-view.is-hidden { display: none !important; }
+
+    /* Department Quick Fill Bar */
+    .dept-quick-fill {
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border: 1px dashed #2F4EA2;
+      border-radius: 10px;
+      background: #f8fafd;
+      display: grid;
+      gap: 6px;
+    }
+    .dept-quick-fill span { font-size: 11px; font-weight: 800; color: #2F4EA2; }
+    .dept-quick-fill select {
+      height: 34px;
+      padding: 0 8px;
+      border: 1px solid #d8e3f2;
+      border-radius: 8px;
+      background: #fff;
+      font: 600 12px 'Inter', Arial, sans-serif;
+      color: #14213d;
+      outline: 0;
+    }
+
+    /* Preset Cards Grid */
+    .preset-section { margin-bottom: 16px; }
+    .preset-section h3 { margin: 0 0 8px; color: #52627f; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+    .preset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .preset-card {
+      padding: 10px;
+      border: 1px solid #d8e3f2;
+      border-radius: 10px;
+      background: #fff;
+      text-align: left;
+      cursor: pointer;
+      transition: all .2s;
+      display: grid;
+      gap: 2px;
+    }
+    .preset-card:hover { border-color: #2F4EA2; transform: translateY(-1px); }
+    .preset-card.active { border-color: #2F4EA2; background: #edf2fb; box-shadow: 0 0 0 1px #2F4EA2; }
+    .preset-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-bottom: 4px; }
+    .preset-card strong { font-size: 12px; color: #14213d; display: block; }
+    .preset-card small { font-size: 10px; color: #657593; display: block; }
+
+    /* Groups & Fields (Collapsible Accordions) */
+    .groups { display: grid; gap: 12px; }
+    details.field-group {
+      position: relative;
+      display: grid;
+      padding: 14px 16px;
+      border: 1px solid var(--blue);
+      border-radius: 12px;
+      background: #ffffff;
+      margin-bottom: 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    details.field-group summary {
+      list-style: none;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 800;
+    }
+    details.field-group summary::-webkit-details-marker { display: none; }
+    details.field-group[open] summary {
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .dark-editor details.field-group {
+      background: #1e293b;
+      border-color: #3b82f6;
+    }
+    .dark-editor details.field-group summary { color: #60a5fa; }
+    .dark-editor details.field-group[open] summary { border-bottom-color: #334155; }
+    .field-group.is-hidden { display: none !important; }
+
+    .field { position: relative; }
+    .field input, .field select {
+      display: block;
+      width: 100%;
+      height: 42px;
+      padding: 0 12px;
+      border: 1px solid #d8e3f2;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.78);
+      color: #14213d;
+      font: 600 13px inherit;
+      outline: 0;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field input::placeholder { color: #7b879b; opacity: 1; transition: opacity .18s; }
+    .field input:focus::placeholder { opacity: 0; }
+    .field input:focus, .field select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(47, 78, 162, 0.16);
+    }
+    .field .float-label {
+      position: absolute;
+      left: 13px;
+      top: 12px;
+      padding: 0;
+      color: #7b879b;
+      font-size: 13px;
+      font-weight: 500;
+      pointer-events: auto;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: all .18s ease;
+      z-index: 5;
+    }
+    .field:focus-within .float-label, .field.filled .float-label {
+      top: -8px;
+      left: 9px;
+      padding: 0 5px;
+      background: #fff;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      cursor: pointer;
+    }
+    .field:focus-within input, .field.filled input { padding-top: 2px; }
+    .field.user-hidden { display: none !important; }
+
+    /* Group Action Buttons */
+    .field-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .add-field, .delete-fields {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      height: 34px;
+      border-radius: 9px;
+      font: 800 11px 'Inter', Arial, sans-serif;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .add-field {
+      border: 1px solid #2F4EA2;
+      background: #2F4EA2;
+      color: #fff;
+    }
+    .add-field:hover { background: #1d3a82; }
+    .add-field.cancel-mode {
+      border: 1px solid #d4dfef;
+      background: #edf2fb;
+      color: #2F4EA2;
+    }
+    .add-field.cancel-mode:hover { background: #dce7fb; }
+
+    .delete-fields {
+      border: 1px solid #e2a5ae;
+      background: #fff7f8;
+      color: #c32642;
+    }
+    .delete-fields:hover { background: #ffecef; }
+
+    /* Delete Selection Checkboxes */
+    .field-select {
+      display: none !important;
+      position: absolute !important;
+      right: 10px !important;
+      top: 50% !important;
+      width: 15px !important;
+      height: 15px !important;
+      margin: 0 !important;
+      transform: translateY(-50%) !important;
+      accent-color: #2F4EA2;
+    }
+    .selection-mode .field-select { display: block !important; }
+    .selection-mode .field input { padding-right: 32px; }
+    .field.selected-for-delete { outline: 2px solid #d94a5b; border-radius: 12px; }
+
+    /* Logo Upload */
+    .logo-upload {
+      position: relative;
+      display: grid;
+      gap: 6px;
+      margin-top: 8px;
+      color: #52627f;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .logo-upload input[type="file"] {
+      width: 100%;
+      padding: 8px 42px 8px 8px;
+      border: 1px dashed #2F4EA2;
+      border-radius: 10px;
+      background: #f8fafd;
+      color: #52627f;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .logo-upload input[type="file"]::file-selector-button {
+      margin-right: 8px;
+      border: 0;
+      border-radius: 8px;
+      padding: 7px 10px;
+      background: #2F4EA2;
+      color: #fff;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .logo-upload .clear-logo {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      display: none;
+      border: 0;
+      border-radius: 8px;
+      padding: 7px 12px;
+      background: #edf2fb;
+      color: #2F4EA2;
+      font: 800 11px 'Inter', Arial, sans-serif;
+      cursor: pointer;
+    }
+    .logo-upload.has-logo .clear-logo { display: block; }
+    .logo-upload .clear-logo:hover { background: #dce7fb; }
+
+    /* Design Tools */
+    .design-tools {
+      display: grid;
+      gap: 16px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #e4eaf4;
+    }
+    .design-tools h3 {
+      margin: 0;
+      color: #52627f;
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .design-row { display: grid; gap: 8px; }
+    .choice-row { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 6px; }
+    .choice-row button {
+      height: 34px;
+      border: 1px solid #d8e3f2;
+      border-radius: 10px;
+      background: #fff;
+      color: #52627f;
+      font: 800 11px 'Inter', Arial, sans-serif;
+      cursor: pointer;
+    }
+    .choice-row button.active { background: #2F4EA2; border-color: #2F4EA2; color: #fff; }
+
+    .color-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .color-swatch, .border-color-swatch, .layout-color-swatch {
+      width: 28px;
+      height: 28px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px #cad5e7;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .color-swatch:hover, .border-color-swatch:hover, .layout-color-swatch:hover {
+      transform: scale(1.1);
+    }
+    .color-swatch.active, .border-color-swatch.active, .layout-color-swatch.active {
+      box-shadow: 0 0 0 2.5px #14213d;
+      transform: scale(1.08);
+    }
+
+    .custom-color-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 34px;
+      padding: 2px 8px;
+      border: 1px solid #d8e3f2;
+      border-radius: 10px;
+      background: #fff;
+      color: #52627f;
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .custom-color {
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      padding: 1px;
+      border: 1px solid #cad5e7;
+      border-radius: 50%;
+      background: #fff;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .custom-color::-webkit-color-swatch-wrapper { padding: 0; }
+    .custom-color::-webkit-color-swatch { border: 0; border-radius: 50%; }
+
+    .ui-icon {
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    /* Modern Collapsible Accordion Cards System */
+    details.design-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .dark-editor details.design-card {
+      background: #1e293b;
+      border-color: #334155;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+    details.design-card:hover { border-color: #cbd5e1; }
+    .dark-editor details.design-card:hover { border-color: #475569; }
+
+    details.design-card summary {
+      list-style: none;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    details.design-card summary::-webkit-details-marker { display: none; }
+
+    .chevron-icon {
+      font-size: 11px;
+      color: #94a3b8;
+      transition: transform .2s ease;
+    }
+    details.design-card[open] summary .chevron-icon,
+    details.field-group[open] summary .chevron-icon {
+      transform: rotate(180deg);
+    }
+
+    .summary-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-reset-btn, .card-edit-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      border: 1px solid #e2e8f0;
+      border-radius: 7px;
+      background: transparent;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .card-edit-btn:hover {
+      background: #eff6ff;
+      color: #2563eb;
+      border-color: #bfdbfe;
+      transform: scale(1.05);
+    }
+    .card-reset-btn:hover {
+      background: #fee2e2;
+      color: #e11d48;
+      border-color: #fca5a5;
+      transform: rotate(-45deg);
+    }
+    .dark-editor .card-reset-btn, .dark-editor .card-edit-btn {
+      background: transparent;
+      border-color: #334155;
+      color: #94a3b8;
+    }
+    .dark-editor .card-edit-btn:hover {
+      background: #1e3a8a;
+      color: #93c5fd;
+      border-color: #3b82f6;
+    }
+    .dark-editor .card-reset-btn:hover {
+      background: #881337;
+      color: #fecdd3;
+      border-color: #f43f5e;
+    }
+
+    details.design-card[open] summary {
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .dark-editor details.design-card[open] summary {
+      border-bottom-color: #334155;
+    }
+
+    .design-card-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: .01em;
+    }
+    .dark-editor .design-card-title { color: #f1f5f9; }
+
+    .badge-pill {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #dbeafe;
+      white-space: nowrap;
+    }
+    .dark-editor .badge-pill {
+      background: #1e3a8a;
+      color: #93c5fd;
+      border-color: #1e40af;
+    }
+
+    .range-control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .range-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+    }
+    .dark-editor .range-header { color: #cbd5e1; }
+    .range-slider-input {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      accent-color: #2F4EA2;
+      cursor: pointer;
+    }
+
+    .sides-dpad-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #f1f5f9;
+      margin-top: 10px;
+    }
+    .dark-editor .sides-dpad-grid {
+      background: #0f172a;
+      border-color: #1e293b;
+    }
+    .side-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .side-item label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+    }
+    .dark-editor .side-item label { color: #94a3b8; }
+
+    .tagless-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tagless-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      transition: background .2s, border-color .2s;
+    }
+    .dark-editor .tagless-item {
+      background: #0f172a;
+      border-color: #1e293b;
+      color: #e2e8f0;
+    }
+    .tagless-item:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .dark-editor .tagless-item:hover {
+      background: #1e293b;
+      border-color: #334155;
+    }
+    .tagless-item.sub-item {
+      margin-left: 18px;
+      font-size: 11.5px;
+    }
+    .tagless-item input[type="checkbox"] {
+      accent-color: #2F4EA2;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .color-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+    }
+    .color-picker-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+    }
+    .dark-editor .color-picker-item {
+      background: #0f172a;
+      border-color: #1e293b;
+      color: #cbd5e1;
+    }
+    .color-picker-item input[type="color"] {
+      width: 28px;
+      height: 24px;
+      padding: 1px;
+      border: 1px solid #cad5e7;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .more-projects-grid {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .more-project-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid #d8e3f2;
+      border-radius: 12px;
+      background: #ffffff;
+      text-decoration: none;
+      color: #14213d;
+      transition: all .2s ease;
+    }
+    .more-project-card:hover {
+      border-color: #2F4EA2;
+      background: #f4f7fc;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(47, 78, 162, 0.1);
+    }
+    .dark-editor .more-project-card {
+      background: #1e293b;
+      border-color: #334155;
+      color: #f8fafc;
+    }
+    .dark-editor .more-project-card:hover {
+      background: #0f172a;
+      border-color: #3b82f6;
+    }
+    .more-project-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #edf2fb;
+      color: #2F4EA2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .dark-editor .more-project-icon {
+      background: #0f172a;
+      color: #60a5fa;
+    }
+    .more-project-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .more-project-info strong {
+      font-size: 13px;
+      display: block;
+      font-weight: 800;
+    }
+    .more-project-info small {
+      font-size: 11px;
+      color: #64748b;
+      display: block;
+      margin-top: 2px;
+    }
+    .dark-editor .more-project-info small { color: #94a3b8; }
+
+    .more-project-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: #edf2fb;
+      color: #2F4EA2;
+      flex-shrink: 0;
+    }
+    .more-project-badge.coming-soon {
+      background: #fff7ed;
+      color: #c2410c;
+    }
+
+    /* Print Controls */
+    .print-view-note { margin: 0 0 14px; color: #647593; font-size: 12px; line-height: 1.5; }
+    .print-view-note b { color: #14213d; }
+    .print {
+      width: 100%;
+      height: 44px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .print:hover { background: #1d3a82; }
+    .reset-cover {
+      width: 100%;
+      height: 38px;
+      margin-top: 8px;
+      border: 1px solid #d9a1aa;
+      border-radius: 10px;
+      background: #fff7f8;
+      color: #c32642;
+      font: 800 12px 'Inter', Arial, sans-serif;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .reset-cover:hover { background: #ffecef; }
+
+    /* Modal Backdrop */
+    .field-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(20, 33, 61, 0.4);
+      backdrop-filter: blur(5px);
+    }
+    .field-modal-backdrop[hidden] { display: none !important; }
+    .field-modal {
+      width: min(100%, 420px);
+      padding: 20px;
+      border: 1px solid #dbe5f3;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 20px 60px rgba(20, 33, 61, 0.2);
+    }
+    .field-modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .field-modal-head h3 { margin: 0; color: #14213d; font-size: 17px; }
+    .field-modal-close {
+      width: 30px;
+      height: 30px;
+      border: 0;
+      border-radius: 50%;
+      background: #edf2fb;
+      color: #2F4EA2;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .field-modal-grid { display: grid; gap: 11px; }
+    .field-modal-grid label { display: grid; gap: 5px; color: #52627f; font-size: 11px; font-weight: 800; }
+    .field-modal-grid input {
+      height: 40px;
+      padding: 0 11px;
+      border: 1px solid #d5deed;
+      border-radius: 10px;
+      outline: 0;
+      font: 600 13px 'Inter', Arial, sans-serif;
+    }
+    .field-modal-grid input:focus { border-color: #2F4EA2; box-shadow: 0 0 0 3px rgba(47, 78, 162, 0.15); }
+    .field-modal-actions { display: flex; gap: 8px; margin-top: 16px; }
+    .field-modal-actions button {
+      flex: 1;
+      height: 40px;
+      border: 0;
+      border-radius: 10px;
+      font: 800 12px 'Inter', Arial, sans-serif;
+      cursor: pointer;
+    }
+    .field-modal-cancel { background: #edf2fb; color: #2F4EA2; }
+    .field-modal-submit { background: #2F4EA2; color: #fff; }
+
+    /* Preview Panel Header Print Action Bar */
+    .preview-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: min(100%, 794px);
+      margin: 0 auto 14px auto;
+    }
+    .preview-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dark-editor .preview-title { color: #cbd5e1; }
+
+    .preview-print-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      border: 0;
+      border-radius: 10px;
+      background: #2F4EA2;
+      color: #ffffff;
+      font: 800 13px 'Inter', Arial, sans-serif;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(47, 78, 162, 0.22);
+      transition: all 0.2s ease;
+    }
+    .preview-print-btn:hover {
+      background: #1d3a82;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(47, 78, 162, 0.35);
+    }
+
+    /* Toast Notification */
+    .toast-notify {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: #14213d;
+      color: #fff;
+      font: 700 12px 'Inter', Arial, sans-serif;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all .3s ease;
+    }
+    .toast-notify.show { transform: translateY(0); opacity: 1; }
+
+    /* Preview Panel Screen Styling */
+    .preview {
+      padding: 16px 20px 20px 20px;
+      background: #edf2fa;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: sticky;
+      top: 20px;
+      max-height: calc(100vh - 40px);
+      box-sizing: border-box;
+    }
+    .paper-scaler {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .paper {
+      width: 794px;
+      min-width: 794px;
+      aspect-ratio: 210 / 297;
+      margin: auto;
+      padding: 6.2% var(--print-margin, 15mm) 5.8%;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      text-align: center;
+      box-shadow: 0 12px 28px rgba(20, 40, 90, 0.12);
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--body-color, #111);
+      --accent: #2F4EA2;
+      --title-color: #2F4EA2;
+      --heading-color: #2F4EA2;
+      --border-color: #d7dee9;
+      --print-margin: 15mm;
+      border-style: solid !important;
+      border-color: var(--border-color, var(--accent)) !important;
+      border-top-width: var(--border-top, var(--border-width, 0px)) !important;
+      border-right-width: var(--border-right, var(--border-width, 0px)) !important;
+      border-bottom-width: var(--border-bottom, var(--border-width, 0px)) !important;
+      border-left-width: var(--border-left, var(--border-width, 0px)) !important;
+      box-sizing: border-box;
+      transition: transform .1s ease-out;
+    }
+    .paper.paper-cream { background: #fffaf0 !important; }
+    .paper.paper-mono { background: #f7f7f7 !important; filter: grayscale(1); }
+    .paper.font-times, .paper.font-times * { font-family: "Times New Roman", Times, serif !important; }
+    .paper.font-georgia, .paper.font-georgia * { font-family: Georgia, serif !important; }
+    .paper.font-arial, .paper.font-arial * { font-family: Arial, sans-serif !important; }
+    .paper.hide-title .uni { display: none !important; }
+
+    /* Layout Style: Top Banner (Demo 1) */
+    .paper.layout-banner {
+      padding-top: 0 !important;
+      overflow: hidden;
+    }
+    .paper.layout-banner .top {
+      background: var(--layout-accent, var(--accent)) !important;
+      color: #fff !important;
+      padding: 36px 20px 28px !important;
+      margin-left: calc(-1 * var(--print-margin, 15mm)) !important;
+      margin-right: calc(-1 * var(--print-margin, 15mm)) !important;
+      margin-top: 0 !important;
+      margin-bottom: 24px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+    }
+    .paper.layout-banner .top .logo {
+      order: 1 !important;
+      filter: brightness(0) invert(1) !important;
+      margin: 0 auto 16px !important;
+      height: 140px !important;
+      width: 140px !important;
+    }
+    .paper.layout-banner .top .uni {
+      order: 2 !important;
+      color: #fff !important;
+      font-size: 26px !important;
+      font-weight: 800 !important;
+      letter-spacing: .08em !important;
+      text-transform: uppercase !important;
+      line-height: 1.2 !important;
+    }
+    .paper.layout-banner .top h2 {
+      order: 3 !important;
+      color: rgba(255, 255, 255, 0.92) !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+      text-transform: uppercase !important;
+      letter-spacing: .12em !important;
+      margin-top: 8px !important;
+    }
+
+    .paper.layout-banner .submission .box,
+    .paper.layout-stripe .submission .box {
+      border: none !important;
+      background: transparent !important;
+      padding: 0 !important;
+      box-shadow: none !important;
+    }
+
+    .paper.layout-banner .submission > div:first-child,
+    .paper.layout-stripe .submission > div:first-child {
+      border-right: 1px solid var(--border-color, #cbd5e1) !important;
+      padding-right: 18px !important;
+    }
+
+    /* Clean Tagless Mode (Applied whenever checkbox is ticked) */
+    .paper.clean-labels .submission .box p[data-field-id="student"],
+    .paper.clean-labels .submission .box p[data-field-id="teacher"],
+    .paper.clean-labels .submission .box p[data-field-id="designation"],
+    .paper.clean-labels .submission .box p[data-field-id="teacherDepartment"],
+    .paper.clean-student-name .submission .box p[data-field-id="student"],
+    .paper.clean-teacher-name .submission .box p[data-field-id="teacher"],
+    .paper.clean-teacher-details .submission .box p[data-field-id="designation"],
+    .paper.clean-teacher-details .submission .box p[data-field-id="teacherDepartment"] {
+      display: block !important;
+      margin-bottom: 6px !important;
+    }
+
+    .paper.clean-labels .submission .box p[data-field-id="student"] > b,
+    .paper.clean-labels .submission .box p[data-field-id="teacher"] > b,
+    .paper.clean-labels .submission .box p[data-field-id="designation"] > b,
+    .paper.clean-labels .submission .box p[data-field-id="teacherDepartment"] > b,
+    .paper.clean-student-name .submission .box p[data-field-id="student"] > b,
+    .paper.clean-teacher-name .submission .box p[data-field-id="teacher"] > b,
+    .paper.clean-teacher-details .submission .box p[data-field-id="designation"] > b,
+    .paper.clean-teacher-details .submission .box p[data-field-id="teacherDepartment"] > b {
+      display: none !important;
+    }
+
+    .paper.clean-labels .submission .box p[data-field-id="student"] > span,
+    .paper.clean-labels .submission .box p[data-field-id="teacher"] > span,
+    .paper.clean-labels .submission .box p[data-field-id="designation"] > span,
+    .paper.clean-labels .submission .box p[data-field-id="teacherDepartment"] > span,
+    .paper.clean-student-name .submission .box p[data-field-id="student"] > span,
+    .paper.clean-teacher-name .submission .box p[data-field-id="teacher"] > span,
+    .paper.clean-teacher-details .submission .box p[data-field-id="designation"] > span,
+    .paper.clean-teacher-details .submission .box p[data-field-id="teacherDepartment"] > span {
+      display: block !important;
+      font-size: 0 !important;
+    }
+
+    .paper.clean-labels .submission .box p[data-field-id="student"] #p-student,
+    .paper.clean-labels .submission .box p[data-field-id="teacher"] #p-teacher,
+    .paper.clean-student-name .submission .box p[data-field-id="student"] #p-student,
+    .paper.clean-teacher-name .submission .box p[data-field-id="teacher"] #p-teacher {
+      font-size: 15px !important;
+      font-weight: 800 !important;
+      color: var(--body-color, #111) !important;
+      display: block !important;
+      margin-bottom: 4px !important;
+      padding-left: 0 !important;
+    }
+
+    .paper.clean-labels .submission .box p[data-field-id="designation"] #p-designation,
+    .paper.clean-labels .submission .box p[data-field-id="teacherDepartment"] #p-teacherDepartment,
+    .paper.clean-teacher-details .submission .box p[data-field-id="designation"] #p-designation,
+    .paper.clean-teacher-details .submission .box p[data-field-id="teacherDepartment"] #p-teacherDepartment {
+      font-size: 13.5px !important;
+      font-weight: 500 !important;
+      color: #334155 !important;
+      display: block !important;
+      margin-bottom: 4px !important;
+      padding-left: 0 !important;
+    }
+
+    /* Layout Style: Left Stripe (Demo 2) */
+    .paper.layout-stripe {
+      position: relative;
+      border-left: 14px solid var(--layout-accent, var(--accent)) !important;
+    }
+    .paper.layout-stripe .top {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      margin-bottom: 20px !important;
+    }
+    .paper.layout-stripe .top .logo {
+      order: 1 !important;
+      margin: 0 auto 10px !important;
+      height: 100px !important;
+      width: 100px !important;
+    }
+    .paper.layout-stripe .top .uni {
+      order: 2 !important;
+    }
+    .paper.layout-stripe .top h2 {
+      order: 3 !important;
+      margin-top: 6px !important;
+    }
+
+    /* Layout Style 2: Minimal Clean */
+    .paper.layout-minimal .uni {
+      border-bottom: 2px solid var(--layout-accent, var(--accent));
+      padding-bottom: 12px;
+      margin-bottom: 8px;
+    }
+    .paper.layout-minimal .submission .box {
+      border: none !important;
+      background: transparent !important;
+      border-top: 2px solid var(--layout-accent, var(--accent)) !important;
+      border-radius: 0 !important;
+      padding: 14px 0 !important;
+    }
+
+    /* Layout Style 3: Technical Accent */
+    .paper.layout-modern .submission h3 {
+      background: var(--layout-accent, var(--accent)) !important;
+      color: #fff !important;
+      padding: 6px 10px !important;
+      border-radius: 4px !important;
+      margin-bottom: 10px !important;
+    }
+    .paper.layout-modern .submission .box {
+      border-radius: 8px !important;
+      background: #f8fafc !important;
+      border: 1px solid var(--border-color, #d7dee9) !important;
+    }
+    .paper.layout-modern .experiment {
+      background: #f8fafc;
+      padding: 14px 18px;
+      border-radius: 8px;
+      border-left: 4px solid var(--layout-accent, var(--accent));
+    }
+
+    /* Layout Style 4: Academic Frame */
+    .paper.layout-framed {
+      outline: 2px solid var(--layout-accent, var(--accent));
+      outline-offset: -10px;
+    }
+    .paper.layout-framed .top h2 {
+      border-top: 1px solid var(--border-color, #d7dee9);
+      border-bottom: 1px solid var(--border-color, #d7dee9);
+      padding: 8px 0;
+      margin-top: 12px;
+    }
+
+    .paper .uni {
+      font-family: Arial, sans-serif;
+      font-size: 34px !important;
+      font-weight: 800 !important;
+      letter-spacing: .01em;
+      line-height: 1.15 !important;
+      color: var(--title-color, var(--accent)) !important;
+    }
+    .paper .logo {
+      display: block;
+      width: 165px !important;
+      height: 165px !important;
+      margin: 7% auto 6% !important;
+      object-fit: contain !important;
+    }
+    .paper .top h2 {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      font-size: 22px !important;
+      font-weight: 800 !important;
+      letter-spacing: .01em;
+      line-height: 1.2 !important;
+      color: var(--heading-color, var(--accent)) !important;
+    }
+    .paper .experiment {
+      margin: 10% 0 7% !important;
+      text-align: left;
+      font-size: calc(16px * var(--paper-scale, 1)) !important;
+      font-weight: 400 !important;
+      line-height: 1.6 !important;
+    }
+    .paper .experiment p, .paper .experiment .custom-preview-row {
+      display: grid !important;
+      grid-template-columns: 180px minmax(0, 1fr) !important;
+      column-gap: 12px !important;
+      align-items: baseline !important;
+      margin: 0 0 7px !important;
+    }
+    .paper .experiment b, .paper .experiment .custom-preview-row b {
+      font-weight: 700 !important;
+      white-space: nowrap !important;
+      color: var(--body-color, #111);
+    }
+    .paper .experiment span, .paper .experiment .custom-preview-row span {
+      overflow-wrap: anywhere;
+      color: var(--body-color, #111);
+    }
+
+    .submission {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 14px !important;
+      align-items: stretch !important;
+    }
+    .submission > div { display: flex !important; flex-direction: column !important; min-width: 0 !important; }
+    .submission h3 {
+      font-family: Arial, sans-serif !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--heading-color, var(--accent)) !important;
+      text-align: center !important;
+      margin: 0 0 16px !important;
+    }
+    .submission .box {
+      height: auto !important;
+      flex: 1 1 auto !important;
+      min-height: 200px !important;
+      padding: 18px 10px !important;
+      border: 1px solid var(--border-color, #d7dee9) !important;
+      border-radius: 6px !important;
+      background: var(--box-color, #fcfdff) !important;
+      text-align: left;
+    }
+    .submission .box p, .submission .box .custom-preview-row {
+      display: grid !important;
+      grid-template-columns: 92px minmax(0, 1fr) !important;
+      column-gap: 5px !important;
+      margin-bottom: 14px !important;
+      font-size: calc(14px * var(--paper-scale, 1)) !important;
+      line-height: 1.5 !important;
+    }
+    #teacher-preview-container p, #teacher-preview-container .custom-preview-row {
+      grid-template-columns: 120px minmax(0, 1fr) !important;
+    }
+    .submission .box p b, .submission .box .custom-preview-row b {
+      font-size: calc(14px * var(--paper-scale, 1)) !important;
+      font-weight: 700 !important;
+      white-space: nowrap !important;
+      color: var(--body-color, #111);
+    }
+    #p-student, #p-teacher {
+      font-weight: 700 !important;
+      font-size: calc(15px * var(--paper-scale, 1)) !important;
+      color: var(--body-color, #111) !important;
+    }
+    .submission .box p span, .submission .box .custom-preview-row span {
+      padding-left: 2px !important;
+      overflow-wrap: break-word !important;
+      word-break: normal !important;
+      color: var(--body-color, #111);
+    }
+    
+    /* Department is shown only in Submitted By details, not in the top summary */
+    .paper .experiment p[data-field-id="department"] { display: none !important; }
+
+    /* Hide duplicate date row inside Submitted To box so date is shown ONLY ONCE at the bottom */
+    .paper .submission .box p[data-field-id="submissionDate"] {
+      display: none !important;
+    }
+
+    /* Dedicated Bottom Submission Date Footer */
+    .submission-date-footer {
+      margin-top: auto !important;
+      padding-top: 24px;
+      text-align: center;
+    }
+    .submission-date-footer h3 {
+      font-family: Arial, sans-serif !important;
+      font-size: 11px !important;
+      font-weight: 800 !important;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--heading-color, var(--accent)) !important;
+      margin: 0 0 6px !important;
+    }
+    .submission-date-footer p {
+      margin: 0 !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+      color: var(--body-color, #111) !important;
+    }
+
+    /* Screen Responsive ONLY */
+    @media screen and (max-width: 1024px) {
+      body { padding: 12px; }
+      .layout { grid-template-columns: 1fr; gap: 16px; }
+      .panel { padding: 16px; border-radius: 18px; }
+      .preview { padding: 14px 10px; position: static; max-height: none; }
+      .editor-tabs {
+        position: sticky;
+        top: 12px;
+        z-index: 10;
+        margin-top: 6px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 24px rgba(20, 40, 90, 0.12);
+      }
+    }
+    @media screen and (max-width: 480px) {
+      body { padding: 12px 12px 60px 12px; }
+      .hero { padding: 16px 14px; border-radius: 16px; }
+      .panel { padding: 12px; border-radius: 14px; }
+      .panel.preview { margin-bottom: 30px; }
+      .preset-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .preset-card { padding: 8px; }
+      .preset-card strong { font-size: 11.5px; }
+      .preset-card small { font-size: 9.5px; }
+      .color-picker-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .preview-header-bar { flex-direction: column; gap: 8px; align-items: flex-start; }
+      .preview-print-btn { width: 100%; justify-content: center; }
+    }
+
+    /* Final screen polish */
+    @media screen and (min-width: 1025px) {
+      .layout { grid-template-columns: 390px minmax(0, 1fr); gap: 28px; }
+      .panel { box-shadow: 0 12px 32px rgba(20, 40, 90, .09); }
+      .preview { padding: 18px 28px 28px; background: linear-gradient(145deg, #edf3fc, #e7eef9); }
+      .preview-header-bar { max-width: 794px; width: 100%; }
+      .paper { border-radius: 3px; box-shadow: 0 18px 40px rgba(20, 40, 90, .16); }
+      .submission .box { border-radius: 10px !important; padding: 20px 16px !important; }
+    }
+    .submission .box p:last-child { margin-bottom: 0 !important; }
+    .field-actions button, .preview-print-btn, .reset-cover { transition: transform .18s ease, box-shadow .18s ease, background .18s ease; }
+    .field-actions button:hover, .reset-cover:hover { transform: translateY(-1px); }
+
+    /* Print Styles (Exact A4 Formatting) */
+    @media print {
+      @page { size: A4 portrait; margin: 0; }
+      html, body {
+        height: 297mm !important;
+        max-height: 297mm !important;
+        overflow: hidden !important;
+        background: #fff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .hero, .editor, .field-modal-backdrop, .preview-header-bar, .toast-notify { display: none !important; }
+      .layout { display: block !important; margin: 0 !important; padding: 0 !important; }
+      .preview { padding: 0 !important; background: #fff !important; overflow: visible !important; }
+      .paper-scaler { height: auto !important; width: 100% !important; display: block !important; }
+      
+      .paper {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        min-width: 0 !important;
+        transform: none !important;
+        aspect-ratio: auto !important;
+        max-width: none !important;
+        box-shadow: none !important;
+        padding: 14mm var(--print-margin, 15mm) 12mm !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+      }
+
+      .paper.layout-banner {
+        padding-top: 0 !important;
+      }
+      .paper.layout-banner .top {
+        margin-left: calc(-1 * var(--print-margin, 15mm)) !important;
+        margin-right: calc(-1 * var(--print-margin, 15mm)) !important;
+        margin-top: 0 !important;
+        padding: 8mm 10mm 6mm !important;
+        background: var(--accent) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .paper.layout-banner .top .logo {
+        height: 110px !important;
+        width: 110px !important;
+        margin-bottom: 4mm !important;
+      }
+      .paper.layout-banner .top .uni {
+        font-size: 24px !important;
+      }
+      .paper.layout-banner .top h2 {
+        font-size: 14px !important;
+      }
+
+      .paper .uni {
+        font-size: 36px !important;
+        line-height: 1.15 !important;
+      }
+      .paper .logo {
+        width: 185px !important;
+        height: 185px !important;
+        margin: 13mm auto 11mm !important;
+        object-fit: contain !important;
+      }
+      .paper .top h2 {
+        font-size: 23px !important;
+        line-height: 1.2 !important;
+      }
+
+      .paper .experiment {
+        margin: 16mm 0 14mm !important;
+        font-size: calc(16px * var(--paper-scale, 1)) !important;
+        line-height: 1.6 !important;
+      }
+      .paper .experiment p, .paper .experiment .custom-preview-row {
+        display: grid !important;
+        grid-template-columns: 180px minmax(0, 1fr) !important;
+        column-gap: 12px !important;
+        align-items: baseline !important;
+        margin-bottom: 9px !important;
+      }
+      .paper .experiment p b, .paper .experiment .custom-preview-row b {
+        display: block !important;
+        white-space: nowrap !important;
+      }
+      .paper .experiment p span, .paper .experiment .custom-preview-row span {
+        min-width: 0 !important;
+        overflow-wrap: anywhere !important;
+      }
+
+      .paper .submission {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10mm !important;
+        align-items: stretch !important;
+      }
+      .paper .submission > div {
+        display: flex !important;
+        flex-direction: column !important;
+        min-width: 0 !important;
+      }
+      .paper .submission h3 {
+        font-size: 14px !important;
+        margin-bottom: 9mm !important;
+        text-align: center !important;
+      }
+      .paper .submission .box {
+        height: auto !important;
+        flex: 1 1 auto !important;
+        min-height: 220px !important;
+        padding: 7mm 5mm !important;
+      }
+      .paper .submission .box p, .paper .submission .box .custom-preview-row {
+        display: grid !important;
+        grid-template-columns: 92px minmax(0, 1fr) !important;
+        align-items: baseline !important;
+        font-size: calc(14px * var(--paper-scale, 1)) !important;
+        line-height: 1.5 !important;
+        margin-bottom: 5mm !important;
+        column-gap: 3mm !important;
+      }
+      .paper #teacher-preview-container p, .paper #teacher-preview-container .custom-preview-row {
+        grid-template-columns: 120px minmax(0, 1fr) !important;
+      }
+      .paper #p-student, .paper #p-teacher {
+        font-weight: 700 !important;
+        font-size: calc(15px * var(--paper-scale, 1)) !important;
+      }
+      .paper .submission .box p > b, .paper .submission .box .custom-preview-row > b {
+        display: block !important;
+        white-space: nowrap !important;
+      }
+      .paper .submission .box p > span, .paper .submission .box .custom-preview-row > span {
+        display: flex !important;
+        gap: 3px !important;
+        align-items: baseline !important;
+        padding-left: 0 !important;
+        min-width: 0 !important;
+      }
+      .paper .submission .box p > span > span, .paper .submission .box .custom-preview-row > span > span {
+        display: inline !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <span>Uttara University</span>
+      <h1>Assignment Cover Generator</h1>
+      <p>Create a clean university assignment or lab report cover.</p>
+    </header>
+
+    <div class="layout">
+      <!-- Editor Panel -->
+      <section class="panel editor">
+        <div class="editor-header-bar">
+          <h2>Edit cover details</h2>
+          <button type="button" class="theme-toggle-btn" id="editor-theme-btn">
+            <svg class="ui-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> Dark Mode
+          </button>
+        </div>
+
+        <!-- Editor Tabs -->
+        <div class="editor-tabs">
+          <button type="button" class="editor-tab active" data-view="details">Details</button>
+          <button type="button" class="editor-tab" data-view="design">Design</button>
+          <button type="button" class="editor-tab" data-view="more">More Apps</button>
+        </div>
+
+        <!-- Tab 1: Details View -->
+        <div class="editor-view details-view">
+          <datalist id="uu-dept-list">
+            <option value="Department of Bangla">
+            <option value="Department of Business Administration">
+            <option value="Department of Civil Engineering">
+            <option value="Department of Computer Science and Engineering">
+            <option value="Department of Education">
+            <option value="Department of Electrical and Electronic Engineering">
+            <option value="Department of English">
+            <option value="Department of Fashion Design and Technology">
+            <option value="Department of Islamic Studies">
+            <option value="Department of Law">
+            <option value="Department of Mathematics">
+            <option value="Department of Physics">
+            <option value="Department of Physical Education">
+            <option value="Department of Textile Engineering">
+          </datalist>
+
+          <div class="groups">
+
+            <details class="field-group" data-section="experiment" open>
+              <summary>
+                <div class="design-card-title">
+                  <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg> Report Details
+                </div>
+                <div class="summary-actions">
+                  <button type="button" class="card-edit-btn" title="Rename section & labels">
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  </button>
+                  <button type="button" class="card-reset-btn" data-reset-card="report-details" title="Reset Report Details">
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                  </button>
+                  <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+              </summary>
+              <div style="display:grid; gap:11px;">
+                <div class="field filled">
+                  <input id="report" name="report_type" autocomplete="on" value="Lab Report" placeholder="Report type">
+                  <span class="float-label">Report type</span>
+                </div>
+                <div class="field-actions">
+                  <button type="button" class="add-field">+ Add field</button>
+                  <button type="button" class="delete-fields">Delete</button>
+                </div>
+              </div>
+            </details>
+
+            <details class="field-group" data-section="experiment">
+              <summary>
+                <div class="design-card-title">
+                  <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Course Details
+                </div>
+                <div class="summary-actions">
+                  <button type="button" class="card-edit-btn" title="Rename section & labels">
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  </button>
+                  <button type="button" class="card-reset-btn" data-reset-card="course-details" title="Reset Course Details">
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                  </button>
+                  <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+              </summary>
+              <div style="display:grid; gap:11px;">
+                <div class="field">
+                  <input id="course" name="course_title" autocomplete="on" placeholder="Course Title">
+                  <span class="float-label">Course Title</span>
+                </div>
+                <div class="field">
+                  <input id="courseNo" name="course_code" autocomplete="on" placeholder="Course Code">
+                  <span class="float-label">Course Code</span>
+                </div>
+                <div class="field-actions">
+                  <button type="button" class="add-field">+ Add field</button>
+                  <button type="button" class="delete-fields">Delete</button>
+                </div>
+              </div>
+            </details>
+
+            <details class="field-group" data-section="experiment">
+              <summary>
+                <div class="design-card-title">
+                  <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"></path><path d="M10 9v-6"></path><path d="M14 9v-6"></path><path d="M10 9l-4 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-4-9"></path></svg> Experiment Details
+                </div>
+                <div class="summary-actions">
+                  <button type="button" class="card-edit-btn" title="Rename section & labels">
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  </button>
+                  <button type="button" class="card-reset-btn" data-reset-card="experiment-details" title="Reset Experiment Details">
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                  </button>
+                  <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+              </summary>
+              <div style="display:grid; gap:11px;">
+                <div class="field">
+                  <input id="experimentNo" name="experiment_no" autocomplete="on" placeholder="Experiment No.">
+                  <span class="float-label">Experiment No.</span>
+                </div>
+                <div class="field">
+                  <input id="experimentName" name="experiment_name" autocomplete="on" placeholder="Experiment Name">
+                  <span class="float-label">Experiment Name</span>
+                </div>
+                <div class="field-actions">
+                  <button type="button" class="add-field">+ Add field</button>
+                  <button type="button" class="delete-fields">Delete</button>
+                </div>
+              </div>
+            </details>
+
+            <details class="field-group" data-section="student">
+              <summary>
+                <div class="design-card-title">
+                  <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Submitted By
+                </div>
+                <div class="summary-actions">
+                  <button type="button" class="card-edit-btn" title="Rename section & labels">
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  </button>
+                  <button type="button" class="card-reset-btn" data-reset-card="submitted-by" title="Reset Submitted By">
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                  </button>
+                  <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+              </summary>
+              <div style="display:grid; gap:11px;">
+                <div class="field">
+                  <input id="student" name="student_name" autocomplete="name" placeholder="Student's Name">
+                  <span class="float-label">Student's Name</span>
+                </div>
+                <div class="field">
+                  <input id="studentId" name="student_id" autocomplete="on" placeholder="Student ID">
+                  <span class="float-label">Student ID</span>
+                </div>
+                <div class="field">
+                  <input id="section" name="student_section" autocomplete="on" placeholder="Section">
+                  <span class="float-label">Section</span>
+                </div>
+                <div class="field">
+                  <input id="semester" name="student_semester" autocomplete="on" placeholder="Semester">
+                  <span class="float-label">Semester</span>
+                </div>
+                <div class="field">
+                  <input id="studentDepartment" name="student_department" autocomplete="on" list="uu-dept-list" placeholder="Department">
+                  <span class="float-label">Department</span>
+                </div>
+                <div class="field-actions">
+                  <button type="button" class="add-field">+ Add field</button>
+                  <button type="button" class="delete-fields">Delete</button>
+                </div>
+              </div>
+            </details>
+
+            <details class="field-group" data-section="teacher">
+              <summary>
+                <div class="design-card-title">
+                  <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg> Submitted To
+                </div>
+                <div class="summary-actions">
+                  <button type="button" class="card-edit-btn" title="Rename section & labels">
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  </button>
+                  <button type="button" class="card-reset-btn" data-reset-card="submitted-to" title="Reset Submitted To">
+                    <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                  </button>
+                  <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+              </summary>
+              <div style="display:grid; gap:11px;">
+                <div class="field">
+                  <input id="teacher" name="teacher_name" autocomplete="on" placeholder="Teacher's Name">
+                  <span class="float-label">Teacher's Name</span>
+                </div>
+                <div class="field">
+                  <input id="designation" name="teacher_designation" autocomplete="on" placeholder="Designation">
+                  <span class="float-label">Designation</span>
+                </div>
+                <div class="field">
+                  <input id="teacherDepartment" name="teacher_department" autocomplete="on" list="uu-dept-list" placeholder="Department">
+                  <span class="float-label">Department</span>
+                </div>
+                <div class="field">
+                  <input id="submissionDate" name="submission_date" autocomplete="on" type="date">
+                  <span class="float-label">Date of Submission</span>
+                </div>
+                <div class="field-actions">
+                  <button type="button" class="add-field">+ Add field</button>
+                  <button type="button" class="delete-fields">Delete</button>
+                </div>
+              </div>
+            </details>
+
+          </div>
+        </div>
+
+        <!-- Tab 2: Design View -->
+        <div class="editor-view design-view is-hidden">
+
+          <!-- Card 1: Cover Layout Templates -->
+          <details class="design-card" open>
+            <summary>
+              <div class="design-card-title">
+                <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> Cover Layout Templates
+              </div>
+              <div class="summary-actions">
+                <button type="button" class="card-reset-btn" data-reset-card="layout-templates" title="Reset Layout Template">
+                  <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                </button>
+                <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </summary>
+            <div class="preset-grid">
+              <button type="button" class="preset-card active" data-layout="classic">
+                <strong>Classic Standard</strong>
+                <small>Traditional 2-Box Layout</small>
+              </button>
+              <button type="button" class="preset-card" data-layout="banner">
+                <strong>Top Banner</strong>
+                <small>Full-Width Colored Header</small>
+              </button>
+              <button type="button" class="preset-card" data-layout="stripe">
+                <strong>Left Stripe</strong>
+                <small>Vertical Accent Bar</small>
+              </button>
+              <button type="button" class="preset-card" data-layout="minimal">
+                <strong>Minimal Clean</strong>
+                <small>Borderless Table Divider</small>
+              </button>
+              <button type="button" class="preset-card" data-layout="modern">
+                <strong>Technical Accent</strong>
+                <small>Filled Header & Side Bar</small>
+              </button>
+              <button type="button" class="preset-card" data-layout="framed">
+                <strong>Academic Frame</strong>
+                <small>Double Border Frame</small>
+              </button>
+            </div>
+
+            <div class="range-control-group" style="margin-top:14px; margin-bottom:0;">
+              <div class="range-header">Template Accent & Header Color</div>
+              <div class="color-row">
+                <button type="button" class="layout-color-swatch active" data-layout-color="#2F4EA2" style="background:#2F4EA2" title="UU Blue (Default)"></button>
+                <button type="button" class="layout-color-swatch" data-layout-color="#0B8068" style="background:#0B8068" title="Teal Green"></button>
+                <button type="button" class="layout-color-swatch" data-layout-color="#8B1E2D" style="background:#8B1E2D" title="Maroon"></button>
+                <button type="button" class="layout-color-swatch" data-layout-color="#111827" style="background:#111827" title="Ink Black"></button>
+                <button type="button" class="layout-color-swatch" data-layout-color="#2563EB" style="background:#2563EB" title="Bright Blue"></button>
+                <button type="button" class="layout-color-swatch" data-layout-color="#7C3AED" style="background:#7C3AED" title="Purple"></button>
+                <label class="custom-color-wrap" title="Choose custom layout accent color">
+                  <input type="color" id="custom-layout-accent" value="#2F4EA2" class="custom-color"> Custom
+                </label>
+              </div>
+            </div>
+          </details>
+
+          <!-- Card 2: Logo & Branding -->
+          <details class="design-card">
+            <summary>
+              <div class="design-card-title">
+                <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg> Logo & Branding
+              </div>
+              <div class="summary-actions">
+                <button type="button" class="card-reset-btn" data-reset-card="logo-branding" title="Reset Logo & Branding">
+                  <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                </button>
+                <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </summary>
+            <div class="field" style="margin-bottom:10px;">
+              <select id="logo-select" style="width:100%; height:38px; padding:0 10px; border:1px solid #d8e3f2; border-radius:10px;">
+                <option value="assets/logo-1.png">Logo 1 — Black</option>
+                <option value="assets/logo-2.png" selected>Logo 2 — UU Blue (Primary)</option>
+                <option value="assets/logo-3.png">Logo 3 — Bright Blue</option>
+                <option value="assets/logo-4.png">Logo 4 — White / Inverted</option>
+              </select>
+            </div>
+            <label class="logo-upload">
+              Upload custom logo
+              <input type="file" id="custom-logo-input" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+              <button type="button" class="clear-logo" id="clear-logo-btn">Remove</button>
+            </label>
+          </details>
+
+          <!-- Card 3: Material & Colors -->
+          <details class="design-card">
+            <summary>
+              <div class="design-card-title">
+                <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.92 0 1.7-.72 1.7-1.61 0-.44-.18-.85-.47-1.16-.29-.3-.47-.72-.47-1.16 0-.92.75-1.67 1.67-1.67H16c3.31 0 6-2.69 6-6 0-4.96-4.49-9-10-9z"></path></svg> Material & Theme Accent
+              </div>
+              <div class="summary-actions">
+                <button type="button" class="card-reset-btn" data-reset-card="material-accent" title="Reset Material & Accent">
+                  <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                </button>
+                <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </summary>
+            
+            <div class="range-control-group">
+              <div class="range-header">Paper Material</div>
+              <div class="choice-row">
+                <button type="button" data-material="white" class="active">White</button>
+                <button type="button" data-material="cream">Cream</button>
+                <button type="button" data-material="mono">Monochrome</button>
+                <label class="custom-color-wrap" title="Choose custom paper color">
+                  <input type="color" id="custom-paper" value="#FFFFFF" class="custom-color"> Custom
+                </label>
+              </div>
+            </div>
+
+            <div class="range-control-group" style="margin-bottom:0;">
+              <div class="range-header">Theme Accent Color</div>
+              <div class="color-row">
+                <button type="button" class="color-swatch active" data-color="#2F4EA2" style="background:#2F4EA2" aria-label="UU blue"></button>
+                <button type="button" class="color-swatch" data-color="#0B8068" style="background:#0B8068" aria-label="Green"></button>
+                <button type="button" class="color-swatch" data-color="#8B1E2D" style="background:#8B1E2D" aria-label="Maroon"></button>
+                <button type="button" class="color-swatch" data-color="#111827" style="background:#111827" aria-label="Ink"></button>
+                <label class="custom-color-wrap" title="Choose custom accent color">
+                  <input type="color" id="custom-accent" value="#2F4EA2" class="custom-color"> Custom
+                </label>
+              </div>
+            </div>
+          </details>
+
+          <!-- Card 4: Tagless & Visibility Options -->
+          <details class="design-card">
+            <summary>
+              <div class="design-card-title">
+                <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> Tagless & Label Visibility
+              </div>
+              <div class="summary-actions">
+                <button type="button" class="card-reset-btn" data-reset-card="tagless-visibility" title="Reset Visibility Settings">
+                  <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                </button>
+                <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </summary>
+            <div class="tagless-list">
+              <label class="tagless-item">
+                <input id="clean-labels-toggle" type="checkbox"> Hide All Box Field Labels (Master Clean)
+              </label>
+              <label class="tagless-item sub-item">
+                <input id="clean-student-name-toggle" type="checkbox"> Hide Student "Name:" label
+              </label>
+              <label class="tagless-item sub-item">
+                <input id="clean-teacher-name-toggle" type="checkbox"> Hide Teacher "Teacher's Name:" label
+              </label>
+              <label class="tagless-item sub-item">
+                <input id="clean-teacher-details-toggle" type="checkbox"> Hide Teacher "Designation:" & "Department:" labels
+              </label>
+              <label class="tagless-item">
+                <input id="hide-title" type="checkbox"> Hide University Title Text
+              </label>
+            </div>
+          </details>
+
+          <!-- Card 5: Typography & Text Scaling -->
+          <details class="design-card">
+            <summary>
+              <div class="design-card-title">
+                <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg> Typography & Text Scale
+              </div>
+              <div class="summary-actions">
+                <button type="button" class="card-reset-btn" data-reset-card="typography-scale" title="Reset Typography Settings">
+                  <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                </button>
+                <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </summary>
+            <div class="range-control-group">
+              <div class="range-header">Font Family</div>
+              <select id="design-font" style="width:100%; height:38px; padding:0 10px; border:1px solid #d8e3f2; border-radius:10px;">
+                <option value="formal">Formal Sans</option>
+                <option value="times">Times New Roman</option>
+                <option value="georgia">Georgia</option>
+                <option value="arial">Arial</option>
+              </select>
+            </div>
+            <div class="range-control-group" style="margin-bottom:0;">
+              <div class="range-header">
+                <span>Text Font Scale</span>
+                <span class="badge-pill" id="font-scale-value">100%</span>
+              </div>
+              <input id="font-scale" type="range" min="85" max="130" value="100" class="range-slider-input">
+            </div>
+          </details>
+
+          <!-- Card 6: Page Borders & Margins -->
+          <details class="design-card">
+            <summary>
+              <div class="design-card-title">
+                <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18M9 21V9"></path></svg> Page Borders & Margins
+              </div>
+              <div class="summary-actions">
+                <button type="button" class="card-reset-btn" data-reset-card="borders-margins" title="Reset Borders & Margins">
+                  <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                </button>
+                <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </summary>
+
+            <div class="range-control-group">
+              <div class="range-header">
+                <span>Page Border Margin</span>
+                <span class="badge-pill" id="margin-value">15 mm</span>
+              </div>
+              <input id="border-margin" type="range" min="0" max="25" value="15" class="range-slider-input">
+            </div>
+
+            <div class="range-control-group">
+              <div class="range-header">
+                <span>Universal Border Thickness (All Sides)</span>
+                <span class="badge-pill" id="border-value">0 px</span>
+              </div>
+              <input id="border-size" type="range" min="0" max="12" value="0" class="range-slider-input">
+            </div>
+
+            <div class="sides-dpad-grid">
+              <div class="side-item">
+                <label><span><svg class="ui-icon" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg> Top</span><span class="badge-pill" id="border-top-val">0 px</span></label>
+                <input id="border-top" type="range" min="0" max="12" value="0" class="range-slider-input">
+              </div>
+              <div class="side-item">
+                <label><span><svg class="ui-icon" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg> Right</span><span class="badge-pill" id="border-right-val">0 px</span></label>
+                <input id="border-right" type="range" min="0" max="12" value="0" class="range-slider-input">
+              </div>
+              <div class="side-item">
+                <label><span><svg class="ui-icon" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg> Bottom</span><span class="badge-pill" id="border-bottom-val">0 px</span></label>
+                <input id="border-bottom" type="range" min="0" max="12" value="0" class="range-slider-input">
+              </div>
+              <div class="side-item">
+                <label><span><svg class="ui-icon" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Left</span><span class="badge-pill" id="border-left-val">0 px</span></label>
+                <input id="border-left" type="range" min="0" max="12" value="0" class="range-slider-input">
+              </div>
+            </div>
+
+            <div class="range-control-group" style="margin-top:14px; margin-bottom:0;">
+              <div class="range-header" style="margin-bottom:8px;">Page Border Color</div>
+              <div class="color-row">
+                <button type="button" class="border-color-swatch active" data-border-color="#2F4EA2" style="background:#2F4EA2" title="UU Blue (Default)"></button>
+                <button type="button" class="border-color-swatch" data-border-color="#0B8068" style="background:#0B8068" title="Teal Green"></button>
+                <button type="button" class="border-color-swatch" data-border-color="#8B1E2D" style="background:#8B1E2D" title="Maroon"></button>
+                <button type="button" class="border-color-swatch" data-border-color="#111827" style="background:#111827" title="Ink Black"></button>
+                <button type="button" class="border-color-swatch" data-border-color="#AEB8C7" style="background:#AEB8C7" title="Slate Gray"></button>
+                <label class="custom-color-wrap" title="Choose custom border color">
+                  <input type="color" id="border-custom-color" value="#2F4EA2" class="custom-color"> Custom
+                </label>
+              </div>
+            </div>
+          </details>
+
+          <!-- Card 7: Cover Text Colors -->
+          <details class="design-card">
+            <summary>
+              <div class="design-card-title">
+                <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path></svg> Cover Text Colors
+              </div>
+              <div class="summary-actions">
+                <button type="button" class="card-reset-btn" data-reset-card="cover-colors" title="Reset Text Colors">
+                  <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                </button>
+                <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </summary>
+            <div class="color-picker-grid">
+              <div class="color-picker-item">
+                <span>University title</span>
+                <input type="color" value="#2F4EA2" data-paper-color="title">
+              </div>
+              <div class="color-picker-item">
+                <span>Main text</span>
+                <input type="color" value="#111111" data-paper-color="body">
+              </div>
+              <div class="color-picker-item">
+                <span>Section headings</span>
+                <input type="color" value="#2F4EA2" data-paper-color="heading">
+              </div>
+              <div class="color-picker-item">
+                <span>Box border</span>
+                <input type="color" value="#AEB8C7" data-paper-color="border">
+              </div>
+              <div class="color-picker-item">
+                <span>Box background</span>
+                <input type="color" value="#FFFFFF" data-paper-color="box">
+              </div>
+              <div class="color-picker-item">
+                <span>Layout accent fill</span>
+                <input type="color" value="#2F4EA2" data-paper-color="layout-accent">
+              </div>
+            </div>
+          </details>
+
+        </div>
+
+        <!-- Tab 3: More Apps & Projects -->
+        <div class="editor-view more-view is-hidden">
+          <div class="preset-section" style="margin-bottom:14px;">
+            <h3>Uttara University Tools & Projects</h3>
+            <p class="print-view-note" style="margin-bottom:12px;">Quick access to other student apps & university projects.</p>
+          </div>
+
+          <div class="more-projects-grid">
+            <a href="../index.html" class="more-project-card" data-cat="bus" target="_blank" rel="noopener">
+              <div class="more-project-icon">
+                <svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"></rect><circle cx="6" cy="19" r="2"></circle><circle cx="18" cy="19" r="2"></circle><path d="M12 6v13"></path><path d="M3 11h18"></path></svg>
+              </div>
+              <div class="more-project-info">
+                <strong>UU Bus Tracker & Schedule</strong>
+                <small>Uttara University bus routes & live timings</small>
+              </div>
+              <span class="more-project-badge">Open</span>
+            </a>
+
+            <a href="#" class="more-project-card" data-cat="cgpa" onclick="alert('UU CGPA Calculator project coming soon!')">
+              <div class="more-project-icon">
+                <svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>
+              </div>
+              <div class="more-project-info">
+                <strong>UU CGPA Calculator</strong>
+                <small>Calculate & track your semester GPA</small>
+              </div>
+              <span class="more-project-badge coming-soon">Soon</span>
+            </a>
+
+            <a href="https://uttarauniversity.edu.bd" class="more-project-card" data-cat="portal" target="_blank" rel="noopener">
+              <div class="more-project-icon">
+                <svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              </div>
+              <div class="more-project-info">
+                <strong>UU Official Portal</strong>
+                <small>Uttara University main portal & notices</small>
+              </div>
+              <span class="more-project-badge">Link</span>
+            </a>
+          </div>
+
+          <div style="margin-top:20px; padding-top:14px; border-top:1px solid #e4eaf4;">
+            <p class="print-view-note" style="margin-bottom:8px;"><b>Reset Cover Settings</b><br>Clear all saved preferences and restore defaults.</p>
+            <button type="button" class="reset-cover" id="reset-all-btn">Reset all settings</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Preview Panel -->
+      <section class="panel preview">
+
+        <div class="preview-header-bar">
+          <div class="preview-title">
+            <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> Live Cover Preview
+          </div>
+          <button type="button" class="preview-print-btn" onclick="window.print()">
+            <svg class="ui-icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg> Print / Save PDF
+          </button>
+        </div>
+
+        <div class="paper-scaler" id="paper-scaler">
+          <article class="paper" id="paper-element">
+            <div class="top">
+              <div class="uni">Uttara University</div>
+              <img id="logo" class="logo" src="assets/logo-2.png" alt="Uttara University logo">
+              <h2 id="p-report">Lab Report</h2>
+            </div>
+
+          <div class="experiment" id="experiment-preview-container">
+            <p data-field-id="experimentNo"><b>Experiment No:</b> <span id="p-experimentNo">—</span></p>
+            <p data-field-id="experimentName"><b>Experiment Name:</b> <span id="p-experimentName">—</span></p>
+            <p data-field-id="course"><b>Course Title:</b> <span id="p-course">—</span></p>
+            <p data-field-id="courseNo"><b>Course Code:</b> <span id="p-courseNo">—</span></p>
+          </div>
+
+          <div class="submission">
+            <div>
+              <h3>SUBMITTED BY</h3>
+              <div class="box" id="student-preview-container">
+                <p data-field-id="student"><b>Name</b><span>: <span id="p-student">—</span></span></p>
+                <p data-field-id="studentId"><b>ID</b><span>: <span id="p-studentId">—</span></span></p>
+                <p data-field-id="section"><b>Section</b><span>: <span id="p-section">—</span></span></p>
+                <p data-field-id="semester"><b>Semester</b><span>: <span id="p-semester">—</span></span></p>
+                <p data-field-id="studentDepartment"><b>Department</b><span>: <span id="p-studentDepartment">—</span></span></p>
+              </div>
+            </div>
+
+            <div>
+              <h3>SUBMITTED TO</h3>
+              <div class="box teacher" id="teacher-preview-container">
+                <p data-field-id="teacher"><b>Teacher's Name</b><span>: <span id="p-teacher">—</span></span></p>
+                <p data-field-id="designation"><b>Designation</b><span>: <span id="p-designation">—</span></span></p>
+                <p data-field-id="teacherDepartment"><b>Department</b><span>: <span id="p-teacherDepartment">—</span></span></p>
+                <p data-field-id="submissionDate"><b>Submission Date</b><span>: <span id="p-submissionDate">—</span></span></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="submission-date-footer">
+            <h3>DATE OF SUBMISSION</h3>
+            <p id="p-submissionDateFooter">—</p>
+          </div>
+        </article>
+      </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Add Field Modal -->
+  <div class="field-modal-backdrop" id="add-field-modal" hidden>
+    <form class="field-modal" id="add-field-form">
+      <div class="field-modal-head">
+        <h3>Add custom field</h3>
+        <button type="button" class="field-modal-close" id="modal-close-btn">×</button>
+      </div>
+      <div class="field-modal-grid">
+        <label>Field label
+          <input id="modal-label" required placeholder="e.g. Batch No.">
+        </label>
+        <label>Default value
+          <input id="modal-value" placeholder="Optional">
+        </label>
+      </div>
+      <div class="field-modal-actions">
+        <button type="button" class="field-modal-cancel" id="modal-cancel-btn">Cancel</button>
+        <button type="submit" class="field-modal-submit">Add field</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast-notify" id="toast-notify">Details copied to clipboard!</div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY_VALUES = 'uu-assignment-cover-values';
+      const STORAGE_KEY_LOGO = 'uu-assignment-cover-logo';
+      const STORAGE_KEY_THEME = 'uu-assignment-cover-editor-theme';
+
+      const paper = document.getElementById('paper-element');
+      const logoImg = document.getElementById('logo');
+      const logoSelect = document.getElementById('logo-select');
+      const customLogoInput = document.getElementById('custom-logo-input');
+      const clearLogoBtn = document.getElementById('clear-logo-btn');
+      const logoUploadWrapper = customLogoInput.closest('.logo-upload');
+
+      // Theme toggle button
+      const editorThemeBtn = document.getElementById('editor-theme-btn');
+      const statusBadge = document.getElementById('a4-status-badge');
+      const toastNotify = document.getElementById('toast-notify');
+
+      // Modal elements
+      const modalBackdrop = document.getElementById('add-field-modal');
+      const modalForm = document.getElementById('add-field-form');
+      const modalLabelInput = document.getElementById('modal-label');
+      const modalValueInput = document.getElementById('modal-value');
+      let activeGroupForCustomField = null;
+
+      const previewContainers = {
+        experiment: document.getElementById('experiment-preview-container'),
+        student: document.getElementById('student-preview-container'),
+        teacher: document.getElementById('teacher-preview-container')
+      };
+
+      // Toast notification helper
+      function showToast(msg) {
+        toastNotify.textContent = msg;
+        toastNotify.classList.add('show');
+        setTimeout(() => toastNotify.classList.remove('show'), 2600);
+      }
+
+      // Editor Theme Switcher (Dark / Light)
+      function updateThemeBtnIcon(isDark) {
+        if (isDark) {
+          editorThemeBtn.innerHTML = `<svg class="ui-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg> Light Mode`;
+        } else {
+          editorThemeBtn.innerHTML = `<svg class="ui-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> Dark Mode`;
+        }
+      }
+
+      editorThemeBtn.addEventListener('click', () => {
+        const isDark = document.body.classList.toggle('dark-editor');
+        updateThemeBtnIcon(isDark);
+        localStorage.setItem(STORAGE_KEY_THEME, isDark ? 'dark' : 'light');
+      });
+
+      // Department Dropdown Selectors
+      document.querySelectorAll('.dept-select').forEach(sel => {
+        sel.addEventListener('change', () => {
+          const targetId = sel.dataset.targetId;
+          const targetInput = document.getElementById(targetId);
+          const customWrap = document.getElementById('custom-wrap-' + targetId);
+          if (!targetInput) return;
+
+          if (sel.value === '__custom__') {
+            if (customWrap) customWrap.classList.remove('is-hidden');
+            targetInput.value = '';
+            targetInput.focus();
+          } else {
+            if (customWrap) customWrap.classList.add('is-hidden');
+            targetInput.value = sel.value;
+          }
+          targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+      });
+
+
+
+
+
+      // 1. Tab switching
+      document.querySelectorAll('.editor-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.editor-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+
+          const targetView = tab.dataset.view;
+          document.querySelector('.details-view').classList.toggle('is-hidden', targetView !== 'details');
+          document.querySelector('.design-view').classList.toggle('is-hidden', targetView !== 'design');
+          const moreView = document.querySelector('.more-view');
+          if (moreView) moreView.classList.toggle('is-hidden', targetView !== 'more');
+
+          const previewPanel = document.querySelector('.panel.preview');
+          if (previewPanel) {
+            if (targetView === 'more') {
+              previewPanel.style.display = 'none';
+            } else {
+              previewPanel.style.display = '';
+              setTimeout(scalePaperPreview, 50);
+            }
+          }
+        });
+      });
+
+      // 2. Field inputs synchronization
+      function bindField(fieldDiv) {
+        const input = fieldDiv.querySelector('input:not(.field-select):not([type="file"]), select');
+        if (!input) return;
+
+        // Checkbox for delete selection
+        if (!fieldDiv.querySelector('.field-select')) {
+          fieldDiv.classList.add('selectable');
+          const selectCb = document.createElement('input');
+          selectCb.type = 'checkbox';
+          selectCb.className = 'field-select';
+          selectCb.title = 'Select field to delete';
+          selectCb.addEventListener('change', (e) => {
+            e.stopPropagation();
+            fieldDiv.classList.toggle('selected-for-delete', selectCb.checked);
+          });
+          selectCb.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fieldDiv.classList.toggle('selected-for-delete', selectCb.checked);
+          });
+          fieldDiv.prepend(selectCb);
+        }
+
+        // Click or Double-click on float-label to rename label manually
+        const floatLabel = fieldDiv.querySelector('.float-label');
+        if (floatLabel && !floatLabel.dataset.boundDblClick) {
+          floatLabel.dataset.boundDblClick = 'true';
+          floatLabel.title = 'Click to rename label (e.g. Assignment Title)';
+
+          const handleRename = (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            const next = prompt('Rename field label (e.g. Assignment Title, Topic Name):', floatLabel.textContent);
+            if (next && next.trim()) {
+              const newLabel = next.trim();
+              floatLabel.textContent = newLabel;
+              if (input && input.id) {
+                input.placeholder = newLabel;
+                const previewEl = document.getElementById('p-' + input.id);
+                if (previewEl) {
+                  const bTag = previewEl.closest('p')?.querySelector('b') || document.querySelector(`[data-field-id="${input.id}"] b`);
+                  if (bTag) bTag.textContent = newLabel + ':';
+                }
+              }
+              showToast(`Label changed to "${newLabel}"`);
+            }
+          };
+
+          floatLabel.addEventListener('click', handleRename);
+          floatLabel.addEventListener('dblclick', handleRename);
+        }
+
+        syncField(input);
+      }
+
+      // Dynamic Report Type Label Switch (Lab Report vs Assignment vs Project)
+      const reportTypeInput = document.getElementById('report');
+      function updateReportTypeLabels() {
+        if (!reportTypeInput) return;
+        const val = reportTypeInput.value.toLowerCase().trim();
+        const expCard = document.querySelector('[data-section="experiment"]');
+        const expCardTitle = expCard ? expCard.querySelector('.design-card-title') : null;
+        const expNoField = document.getElementById('experimentNo');
+        const expNameField = document.getElementById('experimentName');
+        const expNoLabel = expNoField ? expNoField.closest('.field')?.querySelector('.float-label') : null;
+        const expNameLabel = expNameField ? expNameField.closest('.field')?.querySelector('.float-label') : null;
+
+        const isAssignment = val.includes('assign') || val.includes('assig');
+        const isProject = val.includes('project') || val.includes('proj');
+
+        let cardTitleText = 'Experiment Details';
+        let label1Text = 'Experiment No.';
+        let label2Text = 'Experiment Name';
+        let paperLabel1 = 'Experiment No:';
+        let paperLabel2 = 'Experiment Name:';
+
+        if (isAssignment) {
+          cardTitleText = 'Assignment Details';
+          label1Text = 'Assignment No.';
+          label2Text = 'Assignment Title';
+          paperLabel1 = 'Assignment No:';
+          paperLabel2 = 'Assignment Title:';
+        } else if (isProject) {
+          cardTitleText = 'Project Details';
+          label1Text = 'Project No.';
+          label2Text = 'Project Title';
+          paperLabel1 = 'Project No:';
+          paperLabel2 = 'Project Title:';
+        }
+
+        if (expCardTitle) {
+          const svgIcon = expCardTitle.querySelector('svg')?.outerHTML || '';
+          expCardTitle.innerHTML = `${svgIcon} ${cardTitleText}`;
+        }
+        if (expNoLabel) expNoLabel.textContent = label1Text;
+        if (expNameLabel) expNameLabel.textContent = label2Text;
+        if (expNoField) expNoField.placeholder = label1Text;
+        if (expNameField) expNameField.placeholder = label2Text;
+
+        const paperRow1 = document.querySelector('[data-field-id="experimentNo"] b');
+        const paperRow2 = document.querySelector('[data-field-id="experimentName"] b');
+        if (paperRow1) paperRow1.textContent = paperLabel1;
+        if (paperRow2) paperRow2.textContent = paperLabel2;
+      }
+
+      if (reportTypeInput) {
+        reportTypeInput.addEventListener('input', updateReportTypeLabels);
+        reportTypeInput.addEventListener('change', updateReportTypeLabels);
+        reportTypeInput.addEventListener('keyup', updateReportTypeLabels);
+        setTimeout(updateReportTypeLabels, 50);
+      }
+
+      // Allow double-clicking any label on paper preview to rename it
+      document.querySelectorAll('.paper b').forEach(b => {
+        b.style.cursor = 'pointer';
+        b.title = 'Double-click to rename label';
+        b.addEventListener('dblclick', () => {
+          const currentText = b.textContent.replace(':', '').trim();
+          const nextText = prompt('Rename cover page label (e.g. Assignment Title, Topic Name):', currentText);
+          if (nextText && nextText.trim()) {
+            const newLabel = nextText.trim();
+            b.textContent = newLabel + ':';
+            const row = b.closest('p');
+            if (row && row.dataset.fieldId) {
+              const inp = document.getElementById(row.dataset.fieldId);
+              const fl = inp ? inp.closest('.field')?.querySelector('.float-label') : null;
+              if (fl) {
+                fl.textContent = newLabel;
+                inp.placeholder = newLabel;
+              }
+            }
+            showToast(`Label renamed to "${newLabel}:"`);
+          }
+        });
+      });
+
+      function syncField(inp) {
+        if (!inp || !inp.id || inp.classList.contains('field-select') || inp.type === 'file') return;
+        const fieldDiv = inp.closest('.field');
+        if (fieldDiv) fieldDiv.classList.toggle('filled', Boolean(inp.value));
+
+        const previewEl = document.getElementById('p-' + inp.id);
+        if (previewEl) {
+          previewEl.textContent = inp.value || '—';
+          const rowP = previewEl.closest('p');
+          if (rowP) {
+            rowP.classList.toggle('has-val', Boolean(inp.value && inp.value.trim()));
+          }
+        }
+        if (inp.id === 'submissionDate') {
+          const footerEl = document.getElementById('p-submissionDateFooter');
+          if (footerEl) footerEl.textContent = inp.value || '—';
+        }
+      }
+
+      function syncAllFields() {
+        document.querySelectorAll('.editor input:not(.field-select):not([type="file"]), .editor select').forEach(syncField);
+      }
+
+      const editorPanel = document.querySelector('.editor');
+      if (editorPanel) {
+        editorPanel.addEventListener('input', (e) => { syncField(e.target); persistData(); });
+        editorPanel.addEventListener('change', (e) => { syncField(e.target); persistData(); });
+        editorPanel.addEventListener('keyup', (e) => { syncField(e.target); persistData(); });
+      }
+
+      document.querySelectorAll('.field-group .field').forEach(bindField);
+      const experimentPreview = document.getElementById('experiment-preview-container');
+      if (experimentPreview && !document.getElementById('p-department')) {
+        const departmentRow = document.createElement('p');
+        departmentRow.dataset.fieldId = 'department';
+        departmentRow.innerHTML = '<b>Department:</b> <span id="p-department">—</span>';
+        experimentPreview.append(departmentRow);
+      }
+      const courseNoLabel = document.querySelector('[data-field-id="courseNo"] > b');
+      if (courseNoLabel) courseNoLabel.textContent = 'Course No:';
+      syncAllFields();
+
+      // 3. Add Field & Delete Field handlers per group
+      document.querySelectorAll('.field-group').forEach(group => {
+        const addBtn = group.querySelector('.add-field');
+        const deleteBtn = group.querySelector('.delete-fields');
+
+        function exitSelectionMode() {
+          group.classList.remove('selection-mode');
+          if (deleteBtn) deleteBtn.textContent = 'Delete';
+          if (addBtn) {
+            addBtn.textContent = '+ Add field';
+            addBtn.classList.remove('cancel-mode');
+          }
+          group.querySelectorAll('.field-select').forEach(cb => {
+            cb.checked = false;
+          });
+          group.querySelectorAll('.field').forEach(f => {
+            f.classList.remove('selected-for-delete');
+          });
+        }
+
+        if (addBtn) {
+          addBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (group.classList.contains('selection-mode')) {
+              exitSelectionMode();
+              return;
+            }
+            activeGroupForCustomField = group;
+            modalLabelInput.value = '';
+            modalValueInput.value = '';
+            modalBackdrop.hidden = false;
+            modalLabelInput.focus();
+          });
+        }
+
+        if (deleteBtn) {
+          deleteBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!group.classList.contains('selection-mode')) {
+              group.classList.add('selection-mode');
+              deleteBtn.textContent = 'Delete selected';
+              if (addBtn) {
+                addBtn.textContent = 'Cancel';
+                addBtn.classList.add('cancel-mode');
+              }
+              return;
+            }
+
+            // Find all selected fields via class or checked checkbox
+            const selectedFields = [];
+            group.querySelectorAll('.field').forEach(f => {
+              const cb = f.querySelector('.field-select');
+              if (f.classList.contains('selected-for-delete') || (cb && cb.checked)) {
+                if (!selectedFields.includes(f)) selectedFields.push(f);
+              }
+            });
+
+            if (!selectedFields.length) {
+              showToast('Please check at least one field to delete.');
+              return;
+            }
+
+            selectedFields.forEach(f => {
+              const inp = f.querySelector('input:not(.field-select), select');
+              if (inp && inp.id) {
+                const previewEl = document.getElementById('p-' + inp.id);
+                if (previewEl) {
+                  const row = previewEl.closest('p, div') || document.querySelector(`[data-field-id="${inp.id}"]`);
+                  if (row && row.id !== 'experiment-preview-container' && !row.classList.contains('paper')) {
+                    row.remove();
+                  }
+                } else {
+                  const row = document.querySelector(`[data-field-id="${inp.id}"]`);
+                  if (row) row.remove();
+                }
+              }
+              f.remove();
+            });
+
+            exitSelectionMode();
+            persistData();
+            showToast('Selected field(s) deleted.');
+          });
+        }
+      });
+
+      // Modal functions
+      function closeModal() {
+        modalBackdrop.hidden = true;
+        activeGroupForCustomField = null;
+      }
+
+      modalForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const label = modalLabelInput.value.trim();
+        const value = modalValueInput.value.trim();
+        if (!label || !activeGroupForCustomField) return;
+
+        const customId = 'custom-' + Date.now();
+        const section = activeGroupForCustomField.dataset.section || 'experiment';
+
+        // Create Input Field in Editor
+        const fieldDiv = document.createElement('div');
+        fieldDiv.className = 'field filled';
+        fieldDiv.innerHTML = `
+          <input id="${customId}" value="${value}" placeholder="${label}">
+          <span class="float-label">${label}</span>
+        `;
+
+        const actions = activeGroupForCustomField.querySelector('.field-actions');
+        if (actions) actions.before(fieldDiv);
+        else activeGroupForCustomField.append(fieldDiv);
+
+        // Create Row in Preview
+        const previewRow = document.createElement('p');
+        previewRow.dataset.fieldId = customId;
+        if (section === 'experiment') {
+          previewRow.innerHTML = `<b>${label}:</b> <span id="p-${customId}">${value || '—'}</span>`;
+        } else {
+          previewRow.innerHTML = `<b>${label}</b><span>: <span id="p-${customId}">${value || '—'}</span></span>`;
+        }
+
+        previewContainers[section].append(previewRow);
+        bindField(fieldDiv);
+        closeModal();
+      });
+
+      document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+      document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
+      modalBackdrop.addEventListener('click', (e) => { if (e.target === modalBackdrop) closeModal(); });
+
+      // 4. Logo Management
+      logoSelect.addEventListener('change', () => {
+        logoImg.src = logoSelect.value;
+        localStorage.setItem(STORAGE_KEY_LOGO, logoSelect.value);
+        logoUploadWrapper.classList.remove('has-logo');
+        persistData();
+      });
+
+      customLogoInput.addEventListener('change', () => {
+        const file = customLogoInput.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          logoImg.src = reader.result;
+          localStorage.setItem(STORAGE_KEY_LOGO, reader.result);
+          logoUploadWrapper.classList.add('has-logo');
+        };
+        reader.readAsDataURL(file);
+      });
+
+      clearLogoBtn.addEventListener('click', () => {
+        customLogoInput.value = '';
+        logoSelect.value = 'assets/logo-2.png';
+        logoImg.src = 'assets/logo-2.png';
+        localStorage.setItem(STORAGE_KEY_LOGO, 'assets/logo-2.png');
+        logoUploadWrapper.classList.remove('has-logo');
+      });
+
+      // 5. Layout Templates Management
+      const STORAGE_KEY_LAYOUT = 'uu-assignment-cover-layout';
+
+      document.querySelectorAll('.preset-card').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+
+          const layout = card.dataset.layout;
+          paper.classList.remove('layout-classic', 'layout-banner', 'layout-stripe', 'layout-minimal', 'layout-modern', 'layout-framed');
+          if (layout && layout !== 'classic') {
+            paper.classList.add('layout-' + layout);
+          }
+          localStorage.setItem(STORAGE_KEY_LAYOUT, layout);
+          showToast(`Cover Layout "${card.querySelector('strong').textContent}" applied!`);
+        });
+      });
+
+      // Layout Accent Color Swatches & Picker
+      document.querySelectorAll('[data-layout-color]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-layout-color]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const color = btn.dataset.layoutColor;
+          paper.style.setProperty('--layout-accent', color);
+          localStorage.setItem('uu-assignment-cover-layout-color', color);
+          showToast('Layout Accent Color updated!');
+        });
+      });
+
+      const customLayoutAccentInput = document.getElementById('custom-layout-accent');
+      if (customLayoutAccentInput) {
+        customLayoutAccentInput.addEventListener('input', (e) => {
+          document.querySelectorAll('[data-layout-color]').forEach(b => b.classList.remove('active'));
+          const color = e.target.value;
+          paper.style.setProperty('--layout-accent', color);
+          localStorage.setItem('uu-assignment-cover-layout-color', color);
+        });
+      }
+
+      // Section Card Reset Handlers
+      document.querySelectorAll('.card-reset-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const cardKey = btn.dataset.resetCard;
+          if (!cardKey) return;
+
+          switch (cardKey) {
+            case 'report-details':
+              const reportInp = document.getElementById('report');
+              if (reportInp) {
+                reportInp.value = 'Lab Report';
+                reportInp.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+              const departmentInp = document.getElementById('department');
+              if (departmentInp) {
+                departmentInp.value = '';
+                departmentInp.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+              showToast('Report Details reset to default!');
+              break;
+
+            case 'course-details':
+              ['course', 'courseNo'].forEach(id => {
+                const inp = document.getElementById(id);
+                if (inp) {
+                  inp.value = '';
+                  inp.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+              });
+              showToast('Course Details reset!');
+              break;
+
+            case 'experiment-details':
+              ['experimentNo', 'experimentName'].forEach(id => {
+                const inp = document.getElementById(id);
+                if (inp) {
+                  inp.value = '';
+                  inp.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+              });
+              showToast('Experiment Details reset!');
+              break;
+
+            case 'submitted-by':
+              ['student', 'studentId', 'section', 'semester', 'studentDepartment'].forEach(id => {
+                const inp = document.getElementById(id);
+                if (inp) {
+                  inp.value = '';
+                  inp.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+              });
+              showToast('Submitted By details reset!');
+              break;
+
+            case 'submitted-to':
+              ['teacher', 'designation', 'teacherDepartment', 'submissionDate'].forEach(id => {
+                const inp = document.getElementById(id);
+                if (inp) {
+                  inp.value = '';
+                  inp.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+              });
+              showToast('Submitted To details reset!');
+              break;
+
+            case 'layout-templates':
+              document.querySelectorAll('.preset-card').forEach(c => {
+                c.classList.toggle('active', c.dataset.layout === 'classic');
+              });
+              paper.classList.remove('layout-banner', 'layout-stripe', 'layout-minimal', 'layout-modern', 'layout-framed');
+              paper.style.setProperty('--layout-accent', '#2F4EA2');
+              localStorage.setItem('uu-assignment-cover-layout', 'classic');
+              localStorage.removeItem('uu-assignment-cover-layout-color');
+              document.querySelectorAll('[data-layout-color]').forEach(b => {
+                b.classList.toggle('active', b.dataset.layoutColor === '#2F4EA2');
+              });
+              const customLayoutInp = document.getElementById('custom-layout-accent');
+              if (customLayoutInp) customLayoutInp.value = '#2F4EA2';
+              showToast('Layout Template & Color reset to default!');
+              break;
+
+            case 'logo-branding':
+              customLogoInput.value = '';
+              logoSelect.value = 'assets/logo-2.png';
+              logoImg.src = 'assets/logo-2.png';
+              localStorage.setItem(STORAGE_KEY_LOGO, 'assets/logo-2.png');
+              logoUploadWrapper.classList.remove('has-logo');
+              showToast('Logo reset to UU Blue default!');
+              break;
+
+            case 'material-accent':
+              document.querySelectorAll('[data-material]').forEach(b => {
+                b.classList.toggle('active', b.dataset.material === 'white');
+              });
+              paper.classList.remove('paper-cream', 'paper-mono');
+              paper.style.background = '';
+              document.querySelectorAll('[data-color]').forEach(b => {
+                b.classList.toggle('active', b.dataset.color === '#2F4EA2');
+              });
+              paper.style.setProperty('--accent', '#2F4EA2');
+              showToast('Material & Theme Accent reset!');
+              break;
+
+            case 'tagless-visibility':
+              cleanLabelsToggle.checked = false;
+              cleanStudentNameToggle.checked = false;
+              cleanTeacherNameToggle.checked = false;
+              cleanTeacherDetailsToggle.checked = false;
+              document.getElementById('hide-title').checked = false;
+              paper.classList.remove('clean-labels', 'clean-student-name', 'clean-teacher-name', 'clean-teacher-details', 'hide-title');
+              localStorage.setItem('uu-assignment-cover-clean-labels', false);
+              showToast('Visibility settings reset to default!');
+              break;
+
+            case 'typography-scale':
+              document.getElementById('design-font').value = 'formal';
+              paper.classList.remove('font-times', 'font-georgia', 'font-arial');
+              fontScaleInput.value = '100';
+              fontScaleOutput.textContent = '100%';
+              paper.style.setProperty('--paper-scale', 1);
+              showToast('Typography & Text Scale reset!');
+              break;
+
+            case 'borders-margins':
+              marginInput.value = '15';
+              marginOutput.textContent = '15 mm';
+              paper.style.setProperty('--print-margin', '15mm');
+
+              borderInput.value = '0';
+              borderOutput.textContent = '0 px';
+              borderTopInput.value = '0';
+              borderRightInput.value = '0';
+              borderBottomInput.value = '0';
+              borderLeftInput.value = '0';
+              borderTopVal.textContent = '0 px';
+              borderRightVal.textContent = '0 px';
+              borderBottomVal.textContent = '0 px';
+              borderLeftVal.textContent = '0 px';
+              paper.style.setProperty('--border-width', '0px');
+              paper.style.setProperty('--border-top', '0px');
+              paper.style.setProperty('--border-right', '0px');
+              paper.style.setProperty('--border-bottom', '0px');
+              paper.style.setProperty('--border-left', '0px');
+
+              document.querySelectorAll('[data-border-color]').forEach(b => {
+                b.classList.toggle('active', b.dataset.borderColor === '#2F4EA2');
+              });
+              paper.style.setProperty('--border-color', '#2F4EA2');
+              showToast('Borders & Margins reset!');
+              break;
+
+            case 'cover-colors':
+              paper.style.setProperty('--title-color', '#2F4EA2');
+              paper.style.setProperty('--body-color', '#111111');
+              paper.style.setProperty('--heading-color', '#2F4EA2');
+              paper.style.setProperty('--border-color', '#AEB8C7');
+              paper.style.setProperty('--box-color', '#FFFFFF');
+              document.querySelectorAll('[data-paper-color]').forEach(inp => {
+                if (inp.dataset.paperColor === 'title') inp.value = '#2F4EA2';
+                if (inp.dataset.paperColor === 'body') inp.value = '#111111';
+                if (inp.dataset.paperColor === 'heading') inp.value = '#2F4EA2';
+                if (inp.dataset.paperColor === 'border') inp.value = '#AEB8C7';
+                if (inp.dataset.paperColor === 'box') inp.value = '#FFFFFF';
+              });
+              showToast('Cover Text Colors reset!');
+              break;
+          }
+
+          persistData();
+        });
+      });
+
+      // Section Card Rename Pencil Icon Button Listener
+      document.querySelectorAll('.card-edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          const group = btn.closest('.field-group');
+          if (!group) return;
+
+          const fields = group.querySelectorAll('.field');
+          fields.forEach((fieldDiv, idx) => {
+            const floatLabel = fieldDiv.querySelector('.float-label');
+            const input = fieldDiv.querySelector('input:not(.field-select), select');
+            if (floatLabel && input && input.id) {
+              const currentLabel = floatLabel.textContent.trim();
+              const nextLabel = prompt(`Rename Field ${idx + 1} label ("${currentLabel}"):`, currentLabel);
+              if (nextLabel !== null && nextLabel.trim() && nextLabel.trim() !== currentLabel) {
+                const updatedLabel = nextLabel.trim();
+                floatLabel.textContent = updatedLabel;
+                input.placeholder = updatedLabel;
+
+                // Sync label on A4 cover paper preview
+                const previewEl = document.getElementById('p-' + input.id);
+                if (previewEl) {
+                  const bTag = previewEl.closest('p')?.querySelector('b') || document.querySelector(`[data-field-id="${input.id}"] b`);
+                  if (bTag) bTag.textContent = updatedLabel + ':';
+                }
+              }
+            }
+          });
+
+          persistData();
+          showToast('Field labels updated successfully.');
+        });
+      });
+
+      // Materials
+      document.querySelectorAll('[data-material]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-material]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          paper.classList.remove('paper-cream', 'paper-mono');
+          paper.style.background = '';
+          if (btn.dataset.material === 'cream') paper.classList.add('paper-cream');
+          if (btn.dataset.material === 'mono') paper.classList.add('paper-mono');
+        });
+      });
+
+      document.getElementById('custom-paper').addEventListener('input', (e) => {
+        document.querySelectorAll('[data-material]').forEach(b => b.classList.remove('active'));
+        paper.classList.remove('paper-cream', 'paper-mono');
+        paper.style.background = e.target.value;
+      });
+
+      // Accent Colors
+      document.querySelectorAll('[data-color]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-color]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          paper.style.setProperty('--accent', btn.dataset.color);
+        });
+      });
+
+      document.getElementById('custom-accent').addEventListener('input', (e) => {
+        document.querySelectorAll('[data-color]').forEach(b => b.classList.remove('active'));
+        paper.style.setProperty('--accent', e.target.value);
+      });
+
+      // Text Colors
+      document.querySelectorAll('[data-paper-color]').forEach(input => {
+        input.addEventListener('input', (e) => {
+          paper.style.setProperty('--' + e.target.dataset.paperColor + '-color', e.target.value);
+        });
+      });
+
+      // Typography
+      document.getElementById('design-font').addEventListener('change', (e) => {
+        paper.classList.remove('font-times', 'font-georgia', 'font-arial');
+        if (e.target.value !== 'formal') paper.classList.add('font-' + e.target.value);
+      });
+
+      // Clean Labels Toggle (Master & Granular)
+      const cleanLabelsToggle = document.getElementById('clean-labels-toggle');
+      const cleanStudentNameToggle = document.getElementById('clean-student-name-toggle');
+      const cleanTeacherNameToggle = document.getElementById('clean-teacher-name-toggle');
+      const cleanTeacherDetailsToggle = document.getElementById('clean-teacher-details-toggle');
+
+      cleanStudentNameToggle.addEventListener('change', (e) => {
+        paper.classList.toggle('clean-student-name', e.target.checked);
+      });
+      cleanTeacherNameToggle.addEventListener('change', (e) => {
+        paper.classList.toggle('clean-teacher-name', e.target.checked);
+      });
+      cleanTeacherDetailsToggle.addEventListener('change', (e) => {
+        paper.classList.toggle('clean-teacher-details', e.target.checked);
+      });
+
+      cleanLabelsToggle.addEventListener('change', (e) => {
+        const isChecked = e.target.checked;
+        cleanStudentNameToggle.checked = isChecked;
+        cleanTeacherNameToggle.checked = isChecked;
+        cleanTeacherDetailsToggle.checked = isChecked;
+        paper.classList.toggle('clean-labels', isChecked);
+        paper.classList.toggle('clean-student-name', isChecked);
+        paper.classList.toggle('clean-teacher-name', isChecked);
+        paper.classList.toggle('clean-teacher-details', isChecked);
+        localStorage.setItem('uu-assignment-cover-clean-labels', isChecked);
+      });
+
+      // Hide University Title
+      document.getElementById('hide-title').addEventListener('change', (e) => {
+        paper.classList.toggle('hide-title', e.target.checked);
+      });
+
+      // Margins, Border & Font Scale
+      const fontScaleInput = document.getElementById('font-scale');
+      const fontScaleOutput = document.getElementById('font-scale-value');
+      fontScaleInput.addEventListener('input', () => {
+        fontScaleOutput.textContent = fontScaleInput.value + '%';
+        paper.style.setProperty('--paper-scale', fontScaleInput.value / 100);
+      });
+
+      const marginInput = document.getElementById('border-margin');
+      const marginOutput = document.getElementById('margin-value');
+      marginInput.addEventListener('input', () => {
+        marginOutput.textContent = marginInput.value + ' mm';
+        paper.style.setProperty('--print-margin', marginInput.value + 'mm');
+      });
+
+      const borderInput = document.getElementById('border-size');
+      const borderOutput = document.getElementById('border-value');
+
+      const borderTopInput = document.getElementById('border-top');
+      const borderRightInput = document.getElementById('border-right');
+      const borderBottomInput = document.getElementById('border-bottom');
+      const borderLeftInput = document.getElementById('border-left');
+
+      const borderTopVal = document.getElementById('border-top-val');
+      const borderRightVal = document.getElementById('border-right-val');
+      const borderBottomVal = document.getElementById('border-bottom-val');
+      const borderLeftVal = document.getElementById('border-left-val');
+
+      borderInput.addEventListener('input', () => {
+        const val = borderInput.value;
+        const px = val + ' px';
+        borderOutput.textContent = px;
+        borderTopInput.value = val;
+        borderRightInput.value = val;
+        borderBottomInput.value = val;
+        borderLeftInput.value = val;
+        borderTopVal.textContent = px;
+        borderRightVal.textContent = px;
+        borderBottomVal.textContent = px;
+        borderLeftVal.textContent = px;
+        paper.style.setProperty('--border-width', val + 'px');
+        paper.style.setProperty('--border-top', val + 'px');
+        paper.style.setProperty('--border-right', val + 'px');
+        paper.style.setProperty('--border-bottom', val + 'px');
+        paper.style.setProperty('--border-left', val + 'px');
+      });
+
+      [
+        { input: borderTopInput, output: borderTopVal, prop: '--border-top' },
+        { input: borderRightInput, output: borderRightVal, prop: '--border-right' },
+        { input: borderBottomInput, output: borderBottomVal, prop: '--border-bottom' },
+        { input: borderLeftInput, output: borderLeftVal, prop: '--border-left' }
+      ].forEach(side => {
+        side.input.addEventListener('input', () => {
+          side.output.textContent = side.input.value + ' px';
+          paper.style.setProperty(side.prop, side.input.value + 'px');
+        });
+      });
+
+      // Border Color Selector
+      document.querySelectorAll('[data-border-color]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-border-color]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          paper.style.setProperty('--border-color', btn.dataset.borderColor);
+        });
+      });
+
+      document.getElementById('border-custom-color').addEventListener('input', (e) => {
+        document.querySelectorAll('[data-border-color]').forEach(b => b.classList.remove('active'));
+        paper.style.setProperty('--border-color', e.target.value);
+      });
+
+      // 6. Persistence & Reset All
+      function persistData() {
+        const data = {};
+        document.querySelectorAll('.editor input:not([type="file"]), .editor select').forEach(inp => {
+          if (inp.id) {
+            data[inp.id] = inp.value;
+          }
+        });
+        localStorage.setItem(STORAGE_KEY_VALUES, JSON.stringify(data));
+      }
+
+      function restoreData() {
+        const savedLogo = localStorage.getItem(STORAGE_KEY_LOGO);
+        if (savedLogo) {
+          logoImg.src = savedLogo;
+          if (savedLogo.startsWith('data:')) {
+            logoUploadWrapper.classList.add('has-logo');
+          } else {
+            logoSelect.value = savedLogo;
+          }
+        }
+
+        const savedValues = localStorage.getItem(STORAGE_KEY_VALUES);
+        if (savedValues) {
+          try {
+            const values = JSON.parse(savedValues);
+            Object.entries(values).forEach(([id, value]) => {
+              const input = document.getElementById(id);
+              if (input && input.type !== 'file') {
+                input.value = value;
+                syncField(input);
+              }
+            });
+          } catch (error) {
+            localStorage.removeItem(STORAGE_KEY_VALUES);
+          }
+        }
+
+        const savedLayout = localStorage.getItem(STORAGE_KEY_LAYOUT);
+        if (savedLayout) {
+          paper.classList.remove('layout-classic', 'layout-banner', 'layout-stripe', 'layout-minimal', 'layout-modern', 'layout-framed');
+          if (savedLayout !== 'classic') paper.classList.add('layout-' + savedLayout);
+          document.querySelectorAll('.preset-card').forEach(c => {
+            c.classList.toggle('active', c.dataset.layout === savedLayout);
+          });
+        }
+
+        const savedLayoutColor = localStorage.getItem('uu-assignment-cover-layout-color');
+        if (savedLayoutColor) {
+          paper.style.setProperty('--layout-accent', savedLayoutColor);
+          const customLayoutInp = document.getElementById('custom-layout-accent');
+          if (customLayoutInp) customLayoutInp.value = savedLayoutColor;
+          document.querySelectorAll('[data-layout-color]').forEach(b => {
+            b.classList.toggle('active', b.dataset.layoutColor === savedLayoutColor);
+          });
+        } else {
+          paper.style.setProperty('--layout-accent', '#2F4EA2');
+          document.querySelectorAll('[data-layout-color]').forEach(b => {
+            b.classList.toggle('active', b.dataset.layoutColor === '#2F4EA2');
+          });
+        }
+
+        const savedCleanLabels = localStorage.getItem('uu-assignment-cover-clean-labels');
+        if (savedCleanLabels !== null) {
+          const isClean = savedCleanLabels === 'true';
+          cleanLabelsToggle.checked = isClean;
+          paper.classList.toggle('clean-labels', isClean);
+        } else {
+          cleanLabelsToggle.checked = false;
+          paper.classList.remove('clean-labels');
+        }
+      }
+
+      document.getElementById('reset-all-btn').addEventListener('click', () => {
+        if (!confirm('Reset the complete cover to default?')) return;
+        localStorage.removeItem(STORAGE_KEY_VALUES);
+        localStorage.removeItem(STORAGE_KEY_LOGO);
+        localStorage.removeItem(STORAGE_KEY_LAYOUT);
+        localStorage.removeItem('uu-assignment-cover-clean-labels');
+
+        document.querySelectorAll('.editor input:not([type="file"]), .editor select').forEach(inp => {
+          if (inp.id === 'logo-select') inp.value = 'assets/logo-2.png';
+          else if (inp.id === 'report') inp.value = 'Lab Report';
+          else inp.value = '';
+          inp.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+
+        // Clear custom fields
+        document.querySelectorAll('[id^="custom-"]').forEach(el => el.remove());
+        document.querySelectorAll('[data-field-id^="custom-"]').forEach(el => el.remove());
+
+        localStorage.removeItem('uu-assignment-cover-layout-color');
+        paper.style.setProperty('--layout-accent', '#2F4EA2');
+        const customLayoutInp = document.getElementById('custom-layout-accent');
+        if (customLayoutInp) customLayoutInp.value = '#2F4EA2';
+        document.querySelectorAll('[data-layout-color]').forEach(b => {
+          b.classList.toggle('active', b.dataset.layoutColor === '#2F4EA2');
+        });
+        paper.classList.remove('paper-cream', 'paper-mono', 'font-times', 'font-georgia', 'font-arial', 'hide-title', 'layout-banner', 'layout-stripe', 'layout-minimal', 'layout-modern', 'layout-framed', 'clean-labels');
+        cleanLabelsToggle.checked = false;
+        document.querySelectorAll('.preset-card').forEach(c => {
+          c.classList.toggle('active', c.dataset.layout === 'classic');
+        });
+        paper.style.cssText = '';
+        paper.style.setProperty('--accent', '#2F4EA2');
+        paper.style.setProperty('--title-color', '#2F4EA2');
+        paper.style.setProperty('--body-color', '#111111');
+        paper.style.setProperty('--heading-color', '#2F4EA2');
+        paper.style.setProperty('--border-color', '#AEB8C7');
+        paper.style.setProperty('--box-color', '#FFFFFF');
+        const customPaperInput = document.getElementById('custom-paper');
+        if (customPaperInput) customPaperInput.value = '#FFFFFF';
+        paper.style.setProperty('--print-margin', '15mm');
+        paper.style.setProperty('--border-width', '0px');
+
+        marginInput.value = '15';
+        marginOutput.textContent = '15mm';
+        borderInput.value = '0';
+        borderOutput.textContent = '0px';
+        borderTopInput.value = '0';
+        borderRightInput.value = '0';
+        borderBottomInput.value = '0';
+        borderLeftInput.value = '0';
+        borderTopVal.textContent = '0px';
+        borderRightVal.textContent = '0px';
+        borderBottomVal.textContent = '0px';
+        borderLeftVal.textContent = '0px';
+        paper.style.setProperty('--border-top', '0px');
+        paper.style.setProperty('--border-right', '0px');
+        paper.style.setProperty('--border-bottom', '0px');
+        paper.style.setProperty('--border-left', '0px');
+        document.querySelectorAll('[data-border-color]').forEach(b => {
+          b.classList.toggle('active', b.dataset.borderColor === '#2F4EA2');
+        });
+        paper.style.setProperty('--border-color', '#2F4EA2');
+        fontScaleInput.value = '100';
+        fontScaleOutput.textContent = '100%';
+        paper.style.setProperty('--paper-scale', 1);
+
+        logoSelect.value = 'assets/logo-2.png';
+        logoImg.src = 'assets/logo-2.png';
+        customLogoInput.value = '';
+        logoUploadWrapper.classList.remove('has-logo');
+        showToast('All settings reset to default.');
+      });
+
+      // Perfect A4 Paper Preview Scaling on Mobile / Narrow / Desktop Viewports
+      function scalePaperPreview() {
+        const preview = document.querySelector('.panel.preview');
+        const scaler = document.getElementById('paper-scaler');
+        const paper = document.getElementById('paper-element');
+        if (!preview || !paper || !scaler) return;
+
+        paper.style.transform = 'none';
+        scaler.style.height = '';
+
+        const containerWidth = preview.clientWidth - 32;
+        const paperWidth = 794;
+        const paperHeight = 1123; // Exact A4 Height for 794px width (794 * 297 / 210)
+
+        const isDesktop = window.innerWidth > 1024;
+        const maxAvailHeight = window.innerHeight - 135;
+
+        const widthScale = containerWidth > 0 ? containerWidth / paperWidth : 1;
+        const heightScale = maxAvailHeight > 300 ? maxAvailHeight / paperHeight : 1;
+
+        let scale = widthScale;
+        if (isDesktop) {
+          scale = Math.min(widthScale, heightScale);
+        }
+        if (scale > 1) scale = 1;
+
+        if (scale < 1) {
+          paper.style.transform = `scale(${scale})`;
+          paper.style.transformOrigin = 'top center';
+
+          const scaledHeight = paperHeight * scale;
+          scaler.style.height = `${Math.ceil(scaledHeight) + (isDesktop ? 10 : 40)}px`;
+        } else {
+          paper.style.transform = 'none';
+          paper.style.transformOrigin = 'top center';
+          scaler.style.height = '';
+        }
+      }
+
+      window.addEventListener('resize', scalePaperPreview);
+      window.addEventListener('load', scalePaperPreview);
+      const logoImgEl = document.getElementById('logo');
+      if (logoImgEl) logoImgEl.addEventListener('load', scalePaperPreview);
+      setTimeout(scalePaperPreview, 100);
+      setTimeout(scalePaperPreview, 400);
+      setTimeout(scalePaperPreview, 1000);
+
+      document.querySelectorAll('.editor-tab').forEach(tab => {
+        tab.addEventListener('click', () => { setTimeout(scalePaperPreview, 50); });
+      });
+
+      // Responsive Accordion Defaults: Expand all on Desktop, Compact on Mobile
+      function initResponsiveAccordions() {
+        const isMobile = window.innerWidth <= 768;
+        if (!isMobile) {
+          document.querySelectorAll('details.field-group, details.design-card').forEach(details => {
+            details.open = true;
+          });
+        }
+      }
+
+      initResponsiveAccordions();
+
+      // Restore saved data on load
+      restoreData();
+    })();
+  </script>
+</body>
+</html>
