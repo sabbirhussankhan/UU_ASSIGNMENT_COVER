@@ -1412,9 +1412,13 @@
     .field-actions button, .preview-print-btn, .reset-cover { transition: transform .18s ease, box-shadow .18s ease, background .18s ease; }
     .field-actions button:hover, .reset-cover:hover { transform: translateY(-1px); }
 
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
     /* Print Styles (Exact A4 Formatting) */
     @media print {
-      @page { size: A4 portrait; margin: 0; }
       html, body {
         height: 297mm !important;
         max-height: 297mm !important;
@@ -3441,16 +3445,14 @@
         const paperHeight = 1123; // Exact A4 Height for 794px width (794 * 297 / 210)
 
         const isDesktop = window.innerWidth > 1024;
-        const maxAvailHeight = window.innerHeight - 135;
+        const maxAvailHeight = window.innerHeight - 150;
 
         const widthScale = containerWidth > 0 ? containerWidth / paperWidth : 1;
         const heightScale = maxAvailHeight > 300 ? maxAvailHeight / paperHeight : 1;
 
-        let scale = widthScale;
-        if (isDesktop) {
-          scale = Math.min(widthScale, heightScale);
-        }
+        let scale = isDesktop ? Math.min(widthScale, heightScale * 0.88) : widthScale;
         if (scale > 1) scale = 1;
+        if (scale < 0.25) scale = 0.25;
 
         if (scale < 1) {
           paper.style.transform = `scale(${scale})`;
@@ -3469,12 +3471,16 @@
       window.addEventListener('load', scalePaperPreview);
       const logoImgEl = document.getElementById('logo');
       if (logoImgEl) logoImgEl.addEventListener('load', scalePaperPreview);
-      setTimeout(scalePaperPreview, 100);
-      setTimeout(scalePaperPreview, 400);
-      setTimeout(scalePaperPreview, 1000);
+      setTimeout(scalePaperPreview, 50);
+      setTimeout(scalePaperPreview, 200);
+      setTimeout(scalePaperPreview, 600);
 
       document.querySelectorAll('.editor-tab').forEach(tab => {
-        tab.addEventListener('click', () => { setTimeout(scalePaperPreview, 50); });
+        tab.addEventListener('click', () => {
+          setTimeout(scalePaperPreview, 20);
+          setTimeout(scalePaperPreview, 100);
+          setTimeout(scalePaperPreview, 300);
+        });
       });
 
       // Responsive Accordion Defaults: Expand all on Desktop, Compact on Mobile
