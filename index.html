@@ -1761,11 +1761,12 @@
 
     /* Screen Responsive ONLY */
     @media screen and (max-width: 1200px) {
+      html, body { overflow-y: auto; overflow-x: hidden; }
       body { padding: 12px; }
       .layout { grid-template-columns: 1fr; gap: 16px; }
       .panel { padding: 16px; border-radius: 18px; }
-      .preview { padding: 14px 10px; position: static; max-height: none; overflow: hidden; width: 100%; box-sizing: border-box; }
-      .paper-scaler { width: 100%; max-width: 100%; overflow: hidden; display: block; margin: 0 auto; }
+      .preview { padding: 14px 10px; position: static; max-height: none; overflow: visible; width: 100%; box-sizing: border-box; }
+      .paper-scaler { width: 100%; max-width: 100%; overflow: visible; display: block; margin: 0 auto; touch-action: pan-y; cursor: default; }
       .editor-tabs {
         position: sticky;
         top: 12px;
@@ -1779,8 +1780,8 @@
       body { padding: 8px 8px 60px 8px; }
       .hero { padding: 16px 14px; border-radius: 16px; }
       .panel { padding: 10px; border-radius: 14px; }
-      .panel.preview { padding: 12px 8px; margin-bottom: 30px; overflow: hidden; width: 100%; box-sizing: border-box; }
-      .paper-scaler { width: 100%; max-width: 100%; overflow: hidden; display: block; margin: 0 auto; }
+      .panel.preview { padding: 12px 8px; margin-bottom: 30px; overflow: visible; width: 100%; box-sizing: border-box; }
+      .paper-scaler { width: 100%; max-width: 100%; overflow: visible; display: block; margin: 0 auto; touch-action: pan-y; cursor: default; }
       .paper { width: 100% !important; min-width: 0 !important; max-width: 100% !important; transform: none !important; box-shadow: 0 4px 14px rgba(20,40,90,0.1) !important; padding: 18px 14px !important; }
       .paper .submission { grid-template-columns: 1fr !important; gap: 12px !important; }
       .paper .submission .box { min-height: auto !important; padding: 12px 10px !important; }
@@ -2660,6 +2661,17 @@
           </div>
 
           <div class="more-projects-grid">
+            <a href="https://khanly.pro.bd" class="more-project-card" data-cat="portfolio" target="_blank" rel="noopener">
+              <div class="more-project-icon">
+                <svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><path d="M3 12h18"></path><path d="M10 12v2h4v-2"></path></svg>
+              </div>
+              <div class="more-project-info">
+                <strong>My Portfolio</strong>
+                <small>Projects, skills &amp; experience</small>
+              </div>
+              <span class="more-project-badge">Open</span>
+            </a>
+
             <a href="../index.html" class="more-project-card" data-cat="bus" target="_blank" rel="noopener">
               <div class="more-project-icon">
                 <svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"></rect><circle cx="6" cy="19" r="2"></circle><circle cx="18" cy="19" r="2"></circle><path d="M12 6v13"></path><path d="M3 11h18"></path></svg>
@@ -2682,16 +2694,6 @@
               <span class="more-project-badge coming-soon">Soon</span>
             </a>
 
-            <a href="https://uttarauniversity.edu.bd" class="more-project-card" data-cat="portal" target="_blank" rel="noopener">
-              <div class="more-project-icon">
-                <svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-              </div>
-              <div class="more-project-info">
-                <strong>UU Official Portal</strong>
-                <small>Uttara University main portal & notices</small>
-              </div>
-              <span class="more-project-badge">Link</span>
-            </a>
           </div>
 
         </div>
@@ -4320,6 +4322,7 @@
       });
 
       let previewZoomMultiplier = 1;
+      let mobilePinchScale = 1;
       let previewPanX = 0;
       let previewPanY = 0;
 
@@ -4335,6 +4338,7 @@
 
       function resetPreviewZoom() {
         previewZoomMultiplier = 1;
+        mobilePinchScale = 1;
         previewPanX = 0;
         previewPanY = 0;
         scalePaperPreview();
@@ -4351,7 +4355,8 @@
         if (!preview || !paper || !scaler) return;
 
         if (window.innerWidth <= 768 && !document.body.classList.contains('is-fullscreen-active')) {
-          paper.style.transform = 'none';
+          paper.style.transform = mobilePinchScale === 1 ? 'none' : `scale(${mobilePinchScale})`;
+          paper.style.transformOrigin = 'top center';
           paper.style.position = 'relative';
           paper.style.top = '0';
           paper.style.left = '0';
@@ -4359,7 +4364,7 @@
           paper.style.width = '100%';
           paper.style.minWidth = '0';
           scaler.style.width = '100%';
-          scaler.style.height = 'auto';
+          scaler.style.height = mobilePinchScale === 1 ? 'auto' : `${Math.ceil(paper.offsetHeight * mobilePinchScale)}px`;
           return;
         }
 
@@ -4489,6 +4494,28 @@
           event.preventDefault();
           changePreviewZoom(event.deltaY < 0 ? 0.1 : -0.1);
         }, { passive: false });
+        let pinchStartDistance = 0;
+        let pinchStartScale = 1;
+        const touchDistance = (touches) => {
+          const dx = touches[0].clientX - touches[1].clientX;
+          const dy = touches[0].clientY - touches[1].clientY;
+          return Math.hypot(dx, dy);
+        };
+        paperScalerEl.addEventListener('touchstart', (event) => {
+          if (event.touches.length === 2) {
+            pinchStartDistance = touchDistance(event.touches);
+            pinchStartScale = mobilePinchScale;
+          }
+        }, { passive: true });
+        paperScalerEl.addEventListener('touchmove', (event) => {
+          if (event.touches.length !== 2 || !pinchStartDistance) return;
+          event.preventDefault();
+          mobilePinchScale = Math.max(1, Math.min(2.2, pinchStartScale * (touchDistance(event.touches) / pinchStartDistance)));
+          scalePaperPreview();
+        }, { passive: false });
+        paperScalerEl.addEventListener('touchend', (event) => {
+          if (event.touches.length < 2) pinchStartDistance = 0;
+        }, { passive: true });
         paperScalerEl.addEventListener('pointerdown', (event) => {
           if (window.innerWidth <= 1200 || previewZoomMultiplier === 1) return;
           dragging = true;
