@@ -40,6 +40,12 @@
       justify-content: space-between;
       margin-bottom: 16px;
     }
+    .editor-sticky-head {
+      position: static;
+      margin: 0 0 18px;
+      padding: 0;
+      background: transparent;
+    }
     .editor-header-bar h2 { margin: 0; font-size: 17px; }
     .theme-toggle-btn {
       border: 1px solid #d4dfef;
@@ -625,6 +631,98 @@
       background: #0f172a;
       border-color: #1e293b;
     }
+
+    /* Typography sub-panels: keep each control stacked and readable. */
+    .subtab-bar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      padding: 4px;
+      margin-bottom: 12px;
+      border: 1px solid #d8e3f2;
+      border-radius: 10px;
+      background: #f4f7fc;
+    }
+    .subtab-btn {
+      min-width: 0;
+      height: 32px;
+      padding: 0 7px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #52627f;
+      font: 800 11px 'Inter', Arial, sans-serif;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .subtab-btn.active {
+      background: #2F4EA2;
+      color: #fff;
+      box-shadow: 0 3px 8px rgba(47,78,162,.18);
+    }
+    .subtab-panel {
+      width: 100%;
+      min-width: 0;
+      flex-direction: column !important;
+      gap: 12px;
+    }
+    .ctrl-row {
+      display: grid;
+      gap: 7px;
+      width: 100%;
+      min-width: 0;
+    }
+    .ctrl-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+      color: #52627f;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .ctrl-header > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+    .val-badge {
+      flex: 0 0 auto;
+      padding: 3px 7px;
+      border-radius: 99px;
+      background: #edf2fb;
+      color: #2F4EA2;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .ctrl-body {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) 28px;
+      align-items: center;
+      gap: 7px;
+      width: 100%;
+    }
+    .ctrl-body .range-slider-input { min-width: 0; width: 100%; }
+    .step-btn {
+      width: 28px;
+      height: 25px;
+      padding: 0;
+      border: 1px solid #aebbd0;
+      border-radius: 5px;
+      background: #fff;
+      color: #14213d;
+      font: 800 14px/1 'Inter', Arial, sans-serif;
+      cursor: pointer;
+    }
+    .step-btn:hover { border-color: #2F4EA2; color: #2F4EA2; background: #f4f7fc; }
+    .dark-editor .subtab-bar { background: #0f172a; border-color: #334155; }
+    .dark-editor .subtab-btn { color: #94a3b8; }
+    .dark-editor .subtab-btn.active { color: #fff; background: #3b82f6; }
+    .dark-editor .ctrl-header { color: #cbd5e1; }
+    .dark-editor .val-badge, .dark-editor .step-btn { background: #1e293b; border-color: #475569; color: #cbd5e1; }
+
+    @media screen and (max-width: 480px) {
+      .ctrl-header { align-items: flex-start; flex-direction: column; gap: 4px; }
+      .val-badge { align-self: flex-start; }
+    }
     .side-item {
       display: flex;
       flex-direction: column;
@@ -876,13 +974,72 @@
     .field-modal-cancel { background: #edf2fb; color: #2F4EA2; }
     .field-modal-submit { background: #2F4EA2; color: #fff; }
 
+    /* Direct Fullscreen View Mode (100vw x 100vh Overlay) */
+    body.is-fullscreen-active {
+      overflow: hidden !important;
+    }
+
+    body.is-fullscreen-active .preview {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      z-index: 999999 !important;
+      background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%) !important;
+      padding: 16px 24px 24px 24px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      overflow: auto !important;
+      border-radius: 0 !important;
+      border: 0 !important;
+      box-shadow: none !important;
+    }
+
+    body.is-fullscreen-active .preview-header-bar {
+      max-width: 900px !important;
+      width: 100% !important;
+      background: rgba(30, 41, 59, 0.92) !important;
+      backdrop-filter: blur(10px) !important;
+      padding: 10px 18px !important;
+      border-radius: 14px !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+      margin-bottom: 20px !important;
+    }
+
+    body.is-fullscreen-active .preview-title {
+      color: #f8fafc !important;
+    }
+
+    body.is-fullscreen-active .preview-fullscreen-btn {
+      background: #dc2626 !important;
+      border-color: #dc2626 !important;
+      color: #ffffff !important;
+    }
+    body.is-fullscreen-active .preview-fullscreen-btn:hover {
+      background: #b91c1c !important;
+    }
+
+    body.is-fullscreen-active .paper-scaler {
+      width: 100% !important;
+      display: flex !important;
+      justify-content: center !important;
+    }
+
     /* Preview Panel Header Print Action Bar */
     .preview-header-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      width: min(100%, 794px);
+      width: 100%;
+      max-width: 794px;
       margin: 0 auto 14px auto;
+      gap: 10px;
+      flex-wrap: wrap;
     }
     .preview-title {
       font-size: 13px;
@@ -894,16 +1051,107 @@
     }
     .dark-editor .preview-title { color: #cbd5e1; }
 
+    .preview-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .zoom-controls {
+      display: inline-flex;
+      align-items: center;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      padding: 2px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .dark-editor .zoom-controls {
+      background: #1e293b;
+      border-color: #334155;
+    }
+    .zoom-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #475569;
+      font: 800 13px 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .dark-editor .zoom-btn { color: #94a3b8; }
+    .zoom-btn:hover {
+      background: #f1f5f9;
+      color: #2F4EA2;
+    }
+    .dark-editor .zoom-btn:hover {
+      background: #334155;
+      color: #60a5fa;
+    }
+    .zoom-btn.fit-btn {
+      width: auto;
+      padding: 0 6px;
+      font-size: 11px;
+    }
+    .zoom-badge {
+      border: 0;
+      background: transparent;
+      font-size: 11px;
+      font-weight: 800;
+      color: #2F4EA2;
+      padding: 0 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .dark-editor .zoom-badge { color: #60a5fa; }
+
+    .preview-icon-btn, .preview-fullscreen-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #334155;
+      font: 800 12px 'Inter', Arial, sans-serif;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s ease;
+    }
+    .dark-editor .preview-fullscreen-btn {
+      background: #1e293b;
+      border-color: #334155;
+      color: #f8fafc;
+    }
+    .preview-fullscreen-btn:hover {
+      background: #edf2fa;
+      border-color: #2F4EA2;
+      color: #2F4EA2;
+      transform: translateY(-1px);
+    }
+    .dark-editor .preview-fullscreen-btn:hover {
+      background: #0f172a;
+      border-color: #3b82f6;
+      color: #60a5fa;
+    }
+
     .preview-print-btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 9px 20px;
+      padding: 9px 18px;
       border: 0;
       border-radius: 10px;
       background: #2F4EA2;
       color: #ffffff;
-      font: 800 13px 'Inter', Arial, sans-serif;
+      font: 800 12.5px 'Inter', Arial, sans-serif;
       cursor: pointer;
       box-shadow: 0 4px 14px rgba(47, 78, 162, 0.22);
       transition: all 0.2s ease;
@@ -913,6 +1161,130 @@
       transform: translateY(-1px);
       box-shadow: 0 6px 18px rgba(47, 78, 162, 0.35);
     }
+    .preview-tool-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border: 1px solid #cbd8eb;
+      border-radius: 10px;
+      background: #fff;
+      color: #2F4EA2;
+      font: 800 12px 'Inter', Arial, sans-serif;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+    .preview-tool-btn:hover { background: #edf3ff; border-color: #2F4EA2; transform: translateY(-1px); }
+    body.dark-editor .preview-tool-btn { background: #1e293b; border-color: #475569; color: #93c5fd; }
+
+    /* Fullscreen Lightbox Modal CSS */
+    .fullscreen-modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: fadeIn 0.2s ease-out;
+    }
+    .fullscreen-modal-backdrop[hidden] {
+      display: none !important;
+    }
+
+    .fullscreen-modal-dialog {
+      width: 96vw;
+      height: 94vh;
+      background: #edf2fa;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      animation: modalScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .dark-editor .fullscreen-modal-dialog {
+      background: #0f172a;
+      border-color: #334155;
+    }
+
+    .fullscreen-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .dark-editor .fullscreen-modal-header {
+      background: #1e293b;
+      border-bottom-color: #334155;
+    }
+
+    .fullscreen-modal-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dark-editor .fullscreen-modal-title { color: #f8fafc; }
+
+    .fullscreen-modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .fullscreen-close-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 10px;
+      background: #fee2e2;
+      color: #dc2626;
+      font: 800 16px sans-serif;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .fullscreen-close-btn:hover {
+      background: #dc2626;
+      color: #ffffff;
+      transform: scale(1.05);
+    }
+
+    .fullscreen-modal-body {
+      flex: 1;
+      overflow: auto;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: radial-gradient(circle, #f1f5f9 0%, #e2e8f0 100%);
+    }
+    .dark-editor .fullscreen-modal-body {
+      background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
+    }
+
+    .fullscreen-paper-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
 
     /* Toast Notification */
     .toast-notify {
@@ -997,28 +1369,33 @@
     .preview {
       padding: 16px 20px 20px 20px;
       background: #edf2fa;
-      overflow: hidden;
+      overflow: visible;
       display: flex;
       flex-direction: column;
       align-items: center;
-      position: sticky;
-      top: 20px;
-      max-height: calc(100vh - 40px);
+      position: static;
+      max-height: none;
       box-sizing: border-box;
     }
     .paper-scaler {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      box-sizing: border-box;
       position: relative;
+      display: block;
+      margin: 0 auto;
+      box-sizing: border-box;
+      overflow: hidden;
+      touch-action: none;
+      cursor: grab;
+    }
+    .paper-scaler.is-dragging { cursor: grabbing; }
+    .paper-scaler.is-dragging .paper { transition: none !important; }
+    .paper-scaler .paper {
+      margin: 0 !important;
     }
     .paper {
       width: 794px;
       min-width: 794px;
       aspect-ratio: 210 / 297;
-      margin: auto;
+      margin: 0 auto;
       padding: 6.2% var(--print-margin, 15mm) 5.8%;
       display: flex;
       flex-direction: column;
@@ -1032,6 +1409,11 @@
       --heading-color: #2F4EA2;
       --border-color: #d7dee9;
       --print-margin: 15mm;
+      --gap-top: 24px;
+      --gap-experiment: 24px;
+      --gap-submission: 36px;
+      --header-font-scale: 1;
+      --body-font-scale: 1;
       border-style: solid !important;
       border-color: var(--border-color, var(--accent)) !important;
       border-top-width: var(--border-top, var(--border-width, 0px)) !important;
@@ -1060,7 +1442,7 @@
       margin-left: calc(-1 * var(--print-margin, 15mm)) !important;
       margin-right: calc(-1 * var(--print-margin, 15mm)) !important;
       margin-top: 0 !important;
-      margin-bottom: 24px !important;
+      margin-bottom: var(--gap-top, 24px) !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
@@ -1236,9 +1618,12 @@
       margin-top: 12px;
     }
 
+    .paper .top {
+      margin-bottom: var(--gap-top, 24px) !important;
+    }
     .paper .uni {
       font-family: Arial, sans-serif;
-      font-size: 34px !important;
+      font-size: calc(28px * var(--header-font-scale, 1)) !important;
       font-weight: 800 !important;
       letter-spacing: .01em;
       line-height: 1.15 !important;
@@ -1248,22 +1633,23 @@
       display: block;
       width: 165px !important;
       height: 165px !important;
-      margin: 7% auto 6% !important;
+      margin: 16px auto 16px !important;
       object-fit: contain !important;
     }
     .paper .top h2 {
       margin: 0;
       font-family: Arial, sans-serif;
-      font-size: 22px !important;
+      font-size: calc(20px * var(--header-font-scale, 1)) !important;
       font-weight: 800 !important;
       letter-spacing: .01em;
       line-height: 1.2 !important;
       color: var(--heading-color, var(--accent)) !important;
     }
     .paper .experiment {
-      margin: 10% 0 7% !important;
+      margin-top: var(--gap-experiment, 24px) !important;
+      margin-bottom: var(--gap-experiment, 24px) !important;
       text-align: left;
-      font-size: calc(16px * var(--paper-scale, 1)) !important;
+      font-size: calc(16px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
       font-weight: 400 !important;
       line-height: 1.6 !important;
     }
@@ -1272,7 +1658,7 @@
       grid-template-columns: 180px minmax(0, 1fr) !important;
       column-gap: 12px !important;
       align-items: baseline !important;
-      margin: 0 0 7px !important;
+      margin: 0 0 8px !important;
     }
     .paper .experiment b, .paper .experiment .custom-preview-row b {
       font-weight: 700 !important;
@@ -1287,8 +1673,10 @@
     .submission {
       display: grid !important;
       grid-template-columns: 1fr 1fr !important;
-      gap: 14px !important;
+      gap: 12px !important;
       align-items: stretch !important;
+      margin-top: var(--gap-submission, 36px) !important;
+      margin-bottom: var(--gap-submission, 36px) !important;
     }
     .submission > div { display: flex !important; flex-direction: column !important; min-width: 0 !important; }
     .submission h3 {
@@ -1304,8 +1692,8 @@
     .submission .box {
       height: auto !important;
       flex: 1 1 auto !important;
-      min-height: 200px !important;
-      padding: 18px 10px !important;
+      min-height: 220px !important;
+      padding: 18px 12px !important;
       border: 1px solid var(--border-color, #d7dee9) !important;
       border-radius: 6px !important;
       background: var(--box-color, #fcfdff) !important;
@@ -1313,24 +1701,24 @@
     }
     .submission .box p, .submission .box .custom-preview-row {
       display: grid !important;
-      grid-template-columns: 92px minmax(0, 1fr) !important;
-      column-gap: 5px !important;
-      margin-bottom: 14px !important;
-      font-size: calc(14px * var(--paper-scale, 1)) !important;
-      line-height: 1.5 !important;
+      grid-template-columns: 105px minmax(0, 1fr) !important;
+      column-gap: 4px !important;
+      margin-bottom: 13px !important;
+      font-size: calc(13.5px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
+      line-height: 1.45 !important;
     }
     #teacher-preview-container p, #teacher-preview-container .custom-preview-row {
-      grid-template-columns: 120px minmax(0, 1fr) !important;
+      grid-template-columns: 132px minmax(0, 1fr) !important;
     }
     .submission .box p b, .submission .box .custom-preview-row b {
-      font-size: calc(14px * var(--paper-scale, 1)) !important;
+      font-size: calc(14px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
       font-weight: 700 !important;
       white-space: nowrap !important;
       color: var(--body-color, #111);
     }
     #p-student, #p-teacher {
       font-weight: 700 !important;
-      font-size: calc(15px * var(--paper-scale, 1)) !important;
+      font-size: calc(15px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
       color: var(--body-color, #111) !important;
     }
     .submission .box p span, .submission .box .custom-preview-row span {
@@ -1350,8 +1738,9 @@
 
     /* Dedicated Bottom Submission Date Footer */
     .submission-date-footer {
-      margin-top: auto !important;
-      padding-top: 24px;
+      margin-top: var(--gap-submission, 36px) !important;
+      padding-top: 16px;
+      padding-bottom: 12px;
       text-align: center;
     }
     .submission-date-footer h3 {
@@ -1371,11 +1760,12 @@
     }
 
     /* Screen Responsive ONLY */
-    @media screen and (max-width: 1024px) {
+    @media screen and (max-width: 1200px) {
       body { padding: 12px; }
       .layout { grid-template-columns: 1fr; gap: 16px; }
       .panel { padding: 16px; border-radius: 18px; }
-      .preview { padding: 14px 10px; position: static; max-height: none; }
+      .preview { padding: 14px 10px; position: static; max-height: none; overflow: hidden; width: 100%; box-sizing: border-box; }
+      .paper-scaler { width: 100%; max-width: 100%; overflow: hidden; display: block; margin: 0 auto; }
       .editor-tabs {
         position: sticky;
         top: 12px;
@@ -1385,32 +1775,119 @@
         box-shadow: 0 8px 24px rgba(20, 40, 90, 0.12);
       }
     }
-    @media screen and (max-width: 480px) {
-      body { padding: 12px 12px 60px 12px; }
+    @media screen and (max-width: 768px) {
+      body { padding: 8px 8px 60px 8px; }
       .hero { padding: 16px 14px; border-radius: 16px; }
-      .panel { padding: 12px; border-radius: 14px; }
-      .panel.preview { margin-bottom: 30px; }
+      .panel { padding: 10px; border-radius: 14px; }
+      .panel.preview { padding: 12px 8px; margin-bottom: 30px; overflow: hidden; width: 100%; box-sizing: border-box; }
+      .paper-scaler { width: 100%; max-width: 100%; overflow: hidden; display: block; margin: 0 auto; }
+      .paper { width: 100% !important; min-width: 0 !important; max-width: 100% !important; transform: none !important; box-shadow: 0 4px 14px rgba(20,40,90,0.1) !important; padding: 18px 14px !important; }
+      .paper .submission { grid-template-columns: 1fr !important; gap: 12px !important; }
+      .paper .submission .box { min-height: auto !important; padding: 12px 10px !important; }
+      .paper .submission .box p, .paper .submission .box .custom-preview-row { grid-template-columns: 120px minmax(0, 1fr) !important; }
+      .paper #teacher-preview-container p, .paper #teacher-preview-container .custom-preview-row { grid-template-columns: 130px minmax(0, 1fr) !important; }
       .preset-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
       .preset-card { padding: 8px; }
       .preset-card strong { font-size: 11.5px; }
       .preset-card small { font-size: 9.5px; }
       .color-picker-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-      .preview-header-bar { flex-direction: column; gap: 8px; align-items: flex-start; }
-      .preview-print-btn { width: 100%; justify-content: center; }
+      .preview-header-bar { flex-direction: row; gap: 6px; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; }
+      .preview-actions { width: 100%; justify-content: space-between; gap: 6px; }
+      .preview-print-btn { flex: 1; justify-content: center; }
     }
 
     /* Final screen polish */
-    @media screen and (min-width: 1025px) {
+    @media screen and (min-width: 1201px) {
       .layout { grid-template-columns: 390px minmax(0, 1fr); gap: 28px; }
       .panel { box-shadow: 0 12px 32px rgba(20, 40, 90, .09); }
-      .preview { padding: 18px 28px 28px; background: linear-gradient(145deg, #edf3fc, #e7eef9); }
+      .preview { padding: 18px 28px 28px; background: linear-gradient(145deg, #edf3fc, #e7eef9); overflow: visible; max-height: none; }
       .preview-header-bar { max-width: 794px; width: 100%; }
       .paper { border-radius: 3px; box-shadow: 0 18px 40px rgba(20, 40, 90, .16); }
+      .paper-scaler .paper { height: 1123px !important; }
       .submission .box { border-radius: 10px !important; padding: 20px 16px !important; }
+    }
+
+    /* Desktop workspace: editor scrolls independently while the live preview
+       stays pinned in the viewport. Tablet/mobile keeps normal page scrolling. */
+    @media screen and (min-width: 1201px) {
+      html, body { height: 100%; }
+      body { overflow: hidden; }
+      .shell { height: 100vh; display: flex; flex-direction: column; }
+      .layout { flex: 1 1 auto; min-height: 0; align-items: start; }
+      .editor {
+        height: calc(100vh - 190px);
+        max-height: calc(100vh - 190px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+        scrollbar-color: #b8c6dc transparent;
+      }
+      .editor-sticky-head { margin-left: -20px; margin-right: -20px; }
+      .editor-sticky-head {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        margin-top: -20px;
+        padding: 8px 20px 0;
+        background: #fff;
+        overflow: hidden;
+        box-shadow: 0 6px 12px rgba(255, 255, 255, .92);
+      }
+      body.dark-editor .editor-sticky-head {
+        background: #1e293b;
+        box-shadow: 0 6px 12px rgba(30, 41, 59, .92);
+      }
+      .editor::-webkit-scrollbar { width: 7px; }
+      .editor::-webkit-scrollbar-thumb { background: #b8c6dc; border-radius: 99px; }
+      .preview {
+        position: sticky;
+        top: 20px;
+        height: calc(100vh - 190px);
+        max-height: calc(100vh - 190px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        overscroll-behavior: contain;
+      }
     }
     .submission .box p:last-child { margin-bottom: 0 !important; }
     .field-actions button, .preview-print-btn, .reset-cover { transition: transform .18s ease, box-shadow .18s ease, background .18s ease; }
     .field-actions button:hover, .reset-cover:hover { transform: translateY(-1px); }
+    .reset-settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 16px;
+      padding: 12px;
+      border: 1px solid #e1e8f3;
+      border-radius: 12px;
+      background: #f8fafd;
+    }
+    .reset-settings-row strong,
+    .reset-settings-row small { display: block; }
+    .reset-settings-row > div { flex: 1 1 auto; min-width: 0; }
+    .reset-settings-row strong { color: #14213d; font-size: 12px; }
+    .reset-settings-row small { margin-top: 3px; color: #657593; font-size: 10px; }
+    .reset-settings-row .reset-cover { flex: 0 0 112px; width: 112px; margin: 0; }
+    body.dark-editor .reset-settings-row { background: #0f172a; border-color: #334155; }
+    body.dark-editor .reset-settings-row strong { color: #f8fafc; }
+    body.dark-editor .reset-settings-row small { color: #94a3b8; }
+
+    /* Keep the editor controls accessible on smaller screens too. */
+    @media screen and (max-width: 1200px) {
+      .editor-sticky-head {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        padding-top: 10px;
+        background: #fff;
+        box-shadow: 0 6px 12px rgba(255, 255, 255, .94);
+      }
+      body.dark-editor .editor-sticky-head {
+        background: #1e293b;
+        box-shadow: 0 6px 12px rgba(30, 41, 59, .94);
+      }
+    }
 
     @page {
       size: A4 portrait;
@@ -1488,7 +1965,7 @@
       }
 
       .paper .experiment {
-        margin: 16mm 0 14mm !important;
+        margin: 10mm 0 8mm !important;
         font-size: calc(16px * var(--paper-scale, 1)) !important;
         line-height: 1.6 !important;
       }
@@ -1513,6 +1990,8 @@
         grid-template-columns: 1fr 1fr !important;
         gap: 10mm !important;
         align-items: stretch !important;
+        margin-top: auto !important;
+        margin-bottom: auto !important;
       }
       .paper .submission > div {
         display: flex !important;
@@ -1532,7 +2011,7 @@
       }
       .paper .submission .box p, .paper .submission .box .custom-preview-row {
         display: grid !important;
-        grid-template-columns: 92px minmax(0, 1fr) !important;
+        grid-template-columns: 105px minmax(0, 1fr) !important;
         align-items: baseline !important;
         font-size: calc(14px * var(--paper-scale, 1)) !important;
         line-height: 1.5 !important;
@@ -1540,7 +2019,7 @@
         column-gap: 3mm !important;
       }
       .paper #teacher-preview-container p, .paper #teacher-preview-container .custom-preview-row {
-        grid-template-columns: 120px minmax(0, 1fr) !important;
+        grid-template-columns: 132px minmax(0, 1fr) !important;
       }
       .paper #p-student, .paper #p-teacher {
         font-weight: 700 !important;
@@ -1576,18 +2055,20 @@
     <div class="layout">
       <!-- Editor Panel -->
       <section class="panel editor">
-        <div class="editor-header-bar">
-          <h2>Edit cover details</h2>
-          <button type="button" class="theme-toggle-btn" id="editor-theme-btn">
-            <svg class="ui-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> Dark Mode
-          </button>
-        </div>
+        <div class="editor-sticky-head">
+          <div class="editor-header-bar">
+            <h2>Edit cover details</h2>
+            <button type="button" class="theme-toggle-btn" id="editor-theme-btn">
+              <svg class="ui-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> Dark Mode
+            </button>
+          </div>
 
-        <!-- Editor Tabs -->
-        <div class="editor-tabs">
-          <button type="button" class="editor-tab active" data-view="details">Details</button>
-          <button type="button" class="editor-tab" data-view="design">Design</button>
-          <button type="button" class="editor-tab" data-view="more">More Apps</button>
+          <!-- Editor Tabs -->
+          <div class="editor-tabs">
+            <button type="button" class="editor-tab active" data-view="details">Details</button>
+            <button type="button" class="editor-tab" data-view="design">Design</button>
+            <button type="button" class="editor-tab" data-view="more">More Apps</button>
+          </div>
         </div>
 
         <!-- Tab 1: Details View -->
@@ -1782,6 +2263,14 @@
               </div>
             </details>
 
+            <div class="reset-settings-row">
+              <div>
+                <strong>Reset Cover Settings</strong>
+                <small>Clear saved values and restore the default cover.</small>
+              </div>
+              <button type="button" class="reset-cover" id="reset-all-btn">Reset all</button>
+            </div>
+
           </div>
         </div>
 
@@ -1944,97 +2433,178 @@
             </div>
           </details>
 
-          <!-- Card 5: Typography & Text Scaling -->
-          <details class="design-card">
+          <!-- Card 5: Typography, Spacing & Border Controls -->
+          <details class="design-card" open>
             <summary>
               <div class="design-card-title">
-                <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg> Typography & Text Scale
+                <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg> Typography, Spacing & Borders
               </div>
               <div class="summary-actions">
-                <button type="button" class="card-reset-btn" data-reset-card="typography-scale" title="Reset Typography Settings">
-                  <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
-                </button>
-                <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-              </div>
-            </summary>
-            <div class="range-control-group">
-              <div class="range-header">Font Family</div>
-              <select id="design-font" style="width:100%; height:38px; padding:0 10px; border:1px solid #d8e3f2; border-radius:10px;">
-                <option value="formal">Formal Sans</option>
-                <option value="times">Times New Roman</option>
-                <option value="georgia">Georgia</option>
-                <option value="arial">Arial</option>
-              </select>
-            </div>
-            <div class="range-control-group" style="margin-bottom:0;">
-              <div class="range-header">
-                <span>Text Font Scale</span>
-                <span class="badge-pill" id="font-scale-value">100%</span>
-              </div>
-              <input id="font-scale" type="range" min="85" max="130" value="100" class="range-slider-input">
-            </div>
-          </details>
-
-          <!-- Card 6: Page Borders & Margins -->
-          <details class="design-card">
-            <summary>
-              <div class="design-card-title">
-                <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18M9 21V9"></path></svg> Page Borders & Margins
-              </div>
-              <div class="summary-actions">
-                <button type="button" class="card-reset-btn" data-reset-card="borders-margins" title="Reset Borders & Margins">
+                <button type="button" class="card-reset-btn" data-reset-card="typography-scale" title="Reset Control Panel">
                   <svg class="ui-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
                 </button>
                 <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
               </div>
             </summary>
 
-            <div class="range-control-group">
-              <div class="range-header">
-                <span>Page Border Margin</span>
-                <span class="badge-pill" id="margin-value">15 mm</span>
-              </div>
-              <input id="border-margin" type="range" min="0" max="25" value="15" class="range-slider-input">
+            <!-- Sub-Tab Navigation Bar -->
+            <div class="subtab-bar">
+              <button type="button" id="subtab-text" class="subtab-btn active" onclick="switchSubTab('text')">
+                <svg class="ui-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg> Text
+              </button>
+              <button type="button" id="subtab-space" class="subtab-btn" onclick="switchSubTab('space')">
+                <svg class="ui-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="3" x2="12" y2="21"></line><polyline points="8 7 12 3 16 7"></polyline><polyline points="8 17 12 21 16 17"></polyline></svg> Spacing
+              </button>
+              <button type="button" id="subtab-border" class="subtab-btn" onclick="switchSubTab('border')">
+                <svg class="ui-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18M9 21V9"></path></svg> Border
+              </button>
             </div>
 
-            <div class="range-control-group">
-              <div class="range-header">
-                <span>Universal Border Thickness (All Sides)</span>
-                <span class="badge-pill" id="border-value">0 px</span>
+            <!-- Panel 1: Text -->
+            <div id="panel-text" class="subtab-panel">
+              <div class="range-control-group">
+                <div class="range-header">Font Family</div>
+                <select id="design-font" style="width:100%; height:38px; padding:0 10px; border:1px solid #d8e3f2; border-radius:10px;">
+                  <option value="formal">Formal Sans</option>
+                  <option value="times">Times New Roman</option>
+                  <option value="georgia">Georgia</option>
+                  <option value="arial">Arial</option>
+                </select>
               </div>
-              <input id="border-size" type="range" min="0" max="12" value="0" class="range-slider-input">
+
+              <div class="ctrl-row">
+                <div class="ctrl-header">
+                  <span>Overall Text Scale</span>
+                  <span class="val-badge" id="font-scale-value">100%</span>
+                </div>
+                <div class="ctrl-body">
+                  <button type="button" class="step-btn" onclick="stepSlider('font-scale', -5)">-</button>
+                  <input id="font-scale" type="range" min="80" max="135" value="100" class="range-slider-input">
+                  <button type="button" class="step-btn" onclick="stepSlider('font-scale', 5)">+</button>
+                </div>
+              </div>
+
+              <div class="ctrl-row">
+                <div class="ctrl-header">
+                  <span>Header Font Size</span>
+                  <span class="val-badge" id="header-font-scale-val">100%</span>
+                </div>
+                <div class="ctrl-body">
+                  <button type="button" class="step-btn" onclick="stepSlider('header-font-scale', -5)">-</button>
+                  <input id="header-font-scale" type="range" min="70" max="140" value="100" class="range-slider-input">
+                  <button type="button" class="step-btn" onclick="stepSlider('header-font-scale', 5)">+</button>
+                </div>
+              </div>
+
+              <div class="ctrl-row">
+                <div class="ctrl-header">
+                  <span>Body / Box Font Size</span>
+                  <span class="val-badge" id="body-font-scale-val">100%</span>
+                </div>
+                <div class="ctrl-body">
+                  <button type="button" class="step-btn" onclick="stepSlider('body-font-scale', -5)">-</button>
+                  <input id="body-font-scale" type="range" min="70" max="140" value="100" class="range-slider-input">
+                  <button type="button" class="step-btn" onclick="stepSlider('body-font-scale', 5)">+</button>
+                </div>
+              </div>
             </div>
 
-            <div class="sides-dpad-grid">
-              <div class="side-item">
-                <label><span><svg class="ui-icon" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg> Top</span><span class="badge-pill" id="border-top-val">0 px</span></label>
-                <input id="border-top" type="range" min="0" max="12" value="0" class="range-slider-input">
+            <!-- Panel 2: Spacing -->
+            <div id="panel-space" class="subtab-panel" style="display:none;">
+              <div class="ctrl-row">
+                <div class="ctrl-header">
+                  <span>Top Header Gap (Section 1)</span>
+                  <span class="val-badge" id="gap-top-val">24 px</span>
+                </div>
+                <div class="ctrl-body">
+                  <button type="button" class="step-btn" onclick="stepSlider('gap-top', -2)">-</button>
+                  <input id="gap-top" type="range" min="0" max="80" value="24" class="range-slider-input">
+                  <button type="button" class="step-btn" onclick="stepSlider('gap-top', 2)">+</button>
+                </div>
               </div>
-              <div class="side-item">
-                <label><span><svg class="ui-icon" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg> Right</span><span class="badge-pill" id="border-right-val">0 px</span></label>
-                <input id="border-right" type="range" min="0" max="12" value="0" class="range-slider-input">
+
+              <div class="ctrl-row">
+                <div class="ctrl-header">
+                  <span>Experiment Details Gap (Section 2)</span>
+                  <span class="val-badge" id="gap-experiment-val">24 px</span>
+                </div>
+                <div class="ctrl-body">
+                  <button type="button" class="step-btn" onclick="stepSlider('gap-experiment', -2)">-</button>
+                  <input id="gap-experiment" type="range" min="0" max="80" value="24" class="range-slider-input">
+                  <button type="button" class="step-btn" onclick="stepSlider('gap-experiment', 2)">+</button>
+                </div>
               </div>
-              <div class="side-item">
-                <label><span><svg class="ui-icon" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg> Bottom</span><span class="badge-pill" id="border-bottom-val">0 px</span></label>
-                <input id="border-bottom" type="range" min="0" max="12" value="0" class="range-slider-input">
-              </div>
-              <div class="side-item">
-                <label><span><svg class="ui-icon" viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> Left</span><span class="badge-pill" id="border-left-val">0 px</span></label>
-                <input id="border-left" type="range" min="0" max="12" value="0" class="range-slider-input">
+
+              <div class="ctrl-row">
+                <div class="ctrl-header">
+                  <span>Submission Boxes & Date Gap (Section 3)</span>
+                  <span class="val-badge" id="gap-submission-val">36 px</span>
+                </div>
+                <div class="ctrl-body">
+                  <button type="button" class="step-btn" onclick="stepSlider('gap-submission', -2)">-</button>
+                  <input id="gap-submission" type="range" min="0" max="100" value="36" class="range-slider-input">
+                  <button type="button" class="step-btn" onclick="stepSlider('gap-submission', 2)">+</button>
+                </div>
               </div>
             </div>
 
-            <div class="range-control-group" style="margin-top:14px; margin-bottom:0;">
-              <div class="range-header" style="margin-bottom:8px;">Page Border Color</div>
-              <div class="color-row">
-                <button type="button" class="border-color-swatch active" data-border-color="#2F4EA2" style="background:#2F4EA2" title="UU Blue (Default)"></button>
-                <button type="button" class="border-color-swatch" data-border-color="#0B8068" style="background:#0B8068" title="Teal Green"></button>
-                <button type="button" class="border-color-swatch" data-border-color="#8B1E2D" style="background:#8B1E2D" title="Maroon"></button>
-                <button type="button" class="border-color-swatch" data-border-color="#111827" style="background:#111827" title="Ink Black"></button>
-                <button type="button" class="border-color-swatch" data-border-color="#AEB8C7" style="background:#AEB8C7" title="Slate Gray"></button>
-                <label class="custom-color-wrap" title="Choose custom border color">
-                  <input type="color" id="border-custom-color" value="#2F4EA2" class="custom-color"> Custom
-                </label>
+            <!-- Panel 3: Border -->
+            <div id="panel-border" class="subtab-panel" style="display:none;">
+              <div class="ctrl-row">
+                <div class="ctrl-header">
+                  <span>Page Border Margin</span>
+                  <span class="val-badge" id="margin-value">15 mm</span>
+                </div>
+                <div class="ctrl-body">
+                  <button type="button" class="step-btn" onclick="stepSlider('border-margin', -1)">-</button>
+                  <input id="border-margin" type="range" min="0" max="25" value="15" class="range-slider-input">
+                  <button type="button" class="step-btn" onclick="stepSlider('border-margin', 1)">+</button>
+                </div>
+              </div>
+
+              <div class="ctrl-row">
+                <div class="ctrl-header">
+                  <span>Universal Border Thickness</span>
+                  <span class="val-badge" id="border-value">0 px</span>
+                </div>
+                <div class="ctrl-body">
+                  <button type="button" class="step-btn" onclick="stepSlider('border-size', -1)">-</button>
+                  <input id="border-size" type="range" min="0" max="12" value="0" class="range-slider-input">
+                  <button type="button" class="step-btn" onclick="stepSlider('border-size', 1)">+</button>
+                </div>
+              </div>
+
+              <div class="sides-dpad-grid">
+                <div class="side-item">
+                  <label><span>Top</span><span class="badge-pill" id="border-top-val">0 px</span></label>
+                  <input id="border-top" type="range" min="0" max="12" value="0" class="range-slider-input">
+                </div>
+                <div class="side-item">
+                  <label><span>Right</span><span class="badge-pill" id="border-right-val">0 px</span></label>
+                  <input id="border-right" type="range" min="0" max="12" value="0" class="range-slider-input">
+                </div>
+                <div class="side-item">
+                  <label><span>Bottom</span><span class="badge-pill" id="border-bottom-val">0 px</span></label>
+                  <input id="border-bottom" type="range" min="0" max="12" value="0" class="range-slider-input">
+                </div>
+                <div class="side-item">
+                  <label><span>Left</span><span class="badge-pill" id="border-left-val">0 px</span></label>
+                  <input id="border-left" type="range" min="0" max="12" value="0" class="range-slider-input">
+                </div>
+              </div>
+
+              <div class="range-control-group" style="margin-top:10px; margin-bottom:0;">
+                <div class="range-header" style="margin-bottom:8px;">Page Border Color</div>
+                <div class="color-row">
+                  <button type="button" class="border-color-swatch active" data-border-color="#2F4EA2" style="background:#2F4EA2" title="UU Blue (Default)"></button>
+                  <button type="button" class="border-color-swatch" data-border-color="#0B8068" style="background:#0B8068" title="Teal Green"></button>
+                  <button type="button" class="border-color-swatch" data-border-color="#8B1E2D" style="background:#8B1E2D" title="Maroon"></button>
+                  <button type="button" class="border-color-swatch" data-border-color="#111827" style="background:#111827" title="Ink Black"></button>
+                  <button type="button" class="border-color-swatch" data-border-color="#AEB8C7" style="background:#AEB8C7" title="Slate Gray"></button>
+                  <label class="custom-color-wrap" title="Choose custom border color">
+                    <input type="color" id="border-custom-color" value="#2F4EA2" class="custom-color"> Custom
+                  </label>
+                </div>
               </div>
             </div>
           </details>
@@ -2124,10 +2694,6 @@
             </a>
           </div>
 
-          <div style="margin-top:20px; padding-top:14px; border-top:1px solid #e4eaf4;">
-            <p class="print-view-note" style="margin-bottom:8px;"><b>Reset Cover Settings</b><br>Clear all saved preferences and restore defaults.</p>
-            <button type="button" class="reset-cover" id="reset-all-btn">Reset all settings</button>
-          </div>
         </div>
       </section>
 
@@ -2138,9 +2704,17 @@
           <div class="preview-title">
             <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> Live Cover Preview
           </div>
-          <button type="button" class="preview-print-btn" onclick="window.print()">
-            <svg class="ui-icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg> Print / Save PDF
-          </button>
+          <div class="preview-actions">
+            <button type="button" class="preview-tool-btn" id="save-preset-btn" title="Save current cover as a preset">
+              <span aria-hidden="true">▣</span> Presets
+            </button>
+            <button type="button" class="preview-tool-btn" id="download-png-btn" title="Download cover as PNG">
+              <span aria-hidden="true">↓</span> Download PNG
+            </button>
+            <button type="button" class="preview-print-btn" onclick="window.print()">
+              <svg class="ui-icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg> Print / Save PDF
+            </button>
+          </div>
         </div>
 
         <div class="paper-scaler" id="paper-scaler">
@@ -2234,10 +2808,83 @@
     </div>
   </div>
 
+  <!-- Modal for Saving and Loading Cover Presets -->
+  <div class="field-modal-backdrop" id="preset-modal" hidden>
+    <div class="field-modal">
+      <div class="field-modal-head">
+        <h3>Save Cover Preset</h3>
+        <button type="button" class="field-modal-close" id="preset-close-btn">&times;</button>
+      </div>
+      <form id="preset-form" onsubmit="return false;">
+        <div class="field">
+          <input id="preset-name-input" placeholder="e.g. Physics Lab Report" required>
+          <span class="float-label">Preset name</span>
+        </div>
+        <div id="preset-list" style="display:grid; gap:8px; margin-top:14px;"></div>
+        <div class="field-actions">
+          <button type="button" class="add-field field-modal-cancel" id="preset-cancel-btn">Cancel</button>
+          <button type="submit" class="add-field field-modal-submit" id="preset-save-btn">Save preset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Fullscreen Modal Overlay -->
+  <div id="fullscreen-modal-backdrop" class="fullscreen-modal-backdrop" hidden style="display:none;">
+    <div class="fullscreen-modal-dialog">
+      <div class="fullscreen-modal-header">
+        <div class="fullscreen-modal-title">
+          <svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+          <span>Full Screen Cover Preview</span>
+        </div>
+        <div class="fullscreen-modal-actions">
+          <div class="zoom-controls">
+            <button type="button" class="zoom-btn" id="fs-zoom-out" title="Zoom Out">-</button>
+            <span class="zoom-badge" id="fs-zoom-val">85%</span>
+            <button type="button" class="zoom-btn" id="fs-zoom-in" title="Zoom In">+</button>
+            <button type="button" class="zoom-btn fit-btn" id="fs-zoom-fit" title="Fit to Screen">Fit</button>
+          </div>
+          <button type="button" class="preview-print-btn" onclick="window.print()">
+            <svg class="ui-icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            <span>Print / Save PDF</span>
+          </button>
+          <button type="button" class="fullscreen-close-btn" id="close-fullscreen-btn" title="Close (Esc)">✕</button>
+        </div>
+      </div>
+      <div class="fullscreen-modal-body">
+        <div id="fullscreen-paper-wrapper" class="fullscreen-paper-wrapper"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Notification Toast -->
   <div class="toast-notify" id="toast-notify">Details copied to clipboard!</div>
 
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
+    // Global Sub-Tab & Slider Step Functions
+    function switchSubTab(name) {
+      ['text', 'space', 'border'].forEach(function(t) {
+        var panel = document.getElementById('panel-' + t);
+        var btn = document.getElementById('subtab-' + t);
+        if (panel) panel.style.display = (t === name) ? 'flex' : 'none';
+        if (btn) btn.classList.toggle('active', t === name);
+      });
+    }
+    window.switchSubTab = switchSubTab;
+
+    function stepSlider(id, delta) {
+      var input = document.getElementById(id);
+      if (!input) return;
+      var min = parseFloat(input.min) || 0;
+      var max = parseFloat(input.max) || 100;
+      var val = (parseFloat(input.value) || 0) + delta;
+      val = Math.min(max, Math.max(min, val));
+      input.value = val;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    window.stepSlider = stepSlider;
+
     (function () {
       const STORAGE_KEY_VALUES = 'uu-assignment-cover-values';
       const STORAGE_KEY_LOGO = 'uu-assignment-cover-logo';
@@ -2964,6 +3611,7 @@
 
       // Section Card Rename Pencil Icon Button Listener (Edit Field Labels Modal)
       let activeGroupForLabelEdit = null;
+      const labelModalBackdrop = document.getElementById('label-modal-backdrop');
 
       function closeLabelModal(e) {
         if (e && e.preventDefault) {
@@ -3211,12 +3859,120 @@
         paper.classList.toggle('hide-title', e.target.checked);
       });
 
+      // Subtab & Slider Step Functions
+      window.switchSubTab = function(name) {
+        ['text', 'space', 'border'].forEach(t => {
+          const panel = document.getElementById('panel-' + t);
+          const btn = document.getElementById('subtab-' + t);
+          if (panel) panel.style.display = (t === name) ? 'flex' : 'none';
+          if (btn) btn.classList.toggle('active', t === name);
+        });
+      };
+
+      window.stepSlider = function(id, delta) {
+        const input = document.getElementById(id);
+        if (!input) return;
+        const min = parseFloat(input.min) || 0;
+        const max = parseFloat(input.max) || 100;
+        let val = (parseFloat(input.value) || 0) + delta;
+        val = Math.min(max, Math.max(min, val));
+        input.value = val;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      };
+
       // Margins, Border & Font Scale
       const fontScaleInput = document.getElementById('font-scale');
       const fontScaleOutput = document.getElementById('font-scale-value');
       fontScaleInput.addEventListener('input', () => {
         fontScaleOutput.textContent = fontScaleInput.value + '%';
         paper.style.setProperty('--paper-scale', fontScaleInput.value / 100);
+      });
+
+      const headerFontScaleInput = document.getElementById('header-font-scale');
+      const headerFontScaleVal = document.getElementById('header-font-scale-val');
+      if (headerFontScaleInput && headerFontScaleVal) {
+        headerFontScaleInput.addEventListener('input', () => {
+          headerFontScaleVal.textContent = headerFontScaleInput.value + '%';
+          paper.style.setProperty('--header-font-scale', headerFontScaleInput.value / 100);
+        });
+      }
+
+      const bodyFontScaleInput = document.getElementById('body-font-scale');
+      const bodyFontScaleVal = document.getElementById('body-font-scale-val');
+      if (bodyFontScaleInput && bodyFontScaleVal) {
+        bodyFontScaleInput.addEventListener('input', () => {
+          bodyFontScaleVal.textContent = bodyFontScaleInput.value + '%';
+          paper.style.setProperty('--body-font-scale', bodyFontScaleInput.value / 100);
+        });
+      }
+
+      // 3 Section Gap Controls
+      const gapTopInput = document.getElementById('gap-top');
+      const gapTopVal = document.getElementById('gap-top-val');
+      if (gapTopInput && gapTopVal) {
+        gapTopInput.addEventListener('input', () => {
+          gapTopVal.textContent = gapTopInput.value + ' px';
+          paper.style.setProperty('--gap-top', gapTopInput.value + 'px');
+        });
+      }
+
+      const gapExpInput = document.getElementById('gap-experiment');
+      const gapExpVal = document.getElementById('gap-experiment-val');
+      if (gapExpInput && gapExpVal) {
+        gapExpInput.addEventListener('input', () => {
+          gapExpVal.textContent = gapExpInput.value + ' px';
+          paper.style.setProperty('--gap-experiment', gapExpInput.value + 'px');
+        });
+      }
+
+      const gapSubInput = document.getElementById('gap-submission');
+      const gapSubVal = document.getElementById('gap-submission-val');
+      if (gapSubInput && gapSubVal) {
+        gapSubInput.addEventListener('input', () => {
+          gapSubVal.textContent = gapSubInput.value + ' px';
+          paper.style.setProperty('--gap-submission', gapSubInput.value + 'px');
+        });
+      }
+
+      // Reset Card 5 (Typography & Section Spacing)
+      document.querySelectorAll('[data-reset-card="typography-scale"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          document.getElementById('design-font').value = 'formal';
+          paper.classList.remove('font-times', 'font-georgia', 'font-arial');
+
+          fontScaleInput.value = '100';
+          fontScaleOutput.textContent = '100%';
+          paper.style.setProperty('--paper-scale', 1);
+
+          if (headerFontScaleInput && headerFontScaleVal) {
+            headerFontScaleInput.value = '100';
+            headerFontScaleVal.textContent = '100%';
+            paper.style.setProperty('--header-font-scale', 1);
+          }
+          if (bodyFontScaleInput && bodyFontScaleVal) {
+            bodyFontScaleInput.value = '100';
+            bodyFontScaleVal.textContent = '100%';
+            paper.style.setProperty('--body-font-scale', 1);
+          }
+          if (gapTopInput && gapTopVal) {
+            gapTopInput.value = '24';
+            gapTopVal.textContent = '24 px';
+            paper.style.setProperty('--gap-top', '24px');
+          }
+          if (gapExpInput && gapExpVal) {
+            gapExpInput.value = '24';
+            gapExpVal.textContent = '24 px';
+            paper.style.setProperty('--gap-experiment', '24px');
+          }
+          if (gapSubInput && gapSubVal) {
+            gapSubInput.value = '36';
+            gapSubVal.textContent = '36 px';
+            paper.style.setProperty('--gap-submission', '36px');
+          }
+          showToast('Typography & Section Spacing reset to default.');
+        });
       });
 
       const marginInput = document.getElementById('border-margin');
@@ -3289,11 +4045,114 @@
         const data = {};
         document.querySelectorAll('.editor input:not([type="file"]), .editor select').forEach(inp => {
           if (inp.id) {
-            data[inp.id] = inp.value;
+            // Never persist placeholder text as user-entered data.
+            data[inp.id] = inp.value === inp.placeholder ? '' : inp.value;
           }
         });
         localStorage.setItem(STORAGE_KEY_VALUES, JSON.stringify(data));
       }
+
+      const PRESETS_KEY = 'uu-assignment-cover-presets';
+      function getPresetSnapshot() {
+        persistData();
+        const settings = {};
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.startsWith('uu-assignment-cover-') || key === STORAGE_KEY_THEME)) {
+            settings[key] = localStorage.getItem(key);
+          }
+        }
+        return settings;
+      }
+
+      function renderPresetList() {
+        const list = document.getElementById('preset-list');
+        if (!list) return;
+        const presets = JSON.parse(localStorage.getItem(PRESETS_KEY) || '{}');
+        list.innerHTML = '';
+        Object.keys(presets).forEach(name => {
+          const row = document.createElement('div');
+          row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #dce6f5;border-radius:9px;background:#f8fafd;';
+          row.innerHTML = `<strong style="flex:1;font-size:12px;color:#14213d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></strong><button type="button" class="add-field field-modal-submit" style="padding:6px 10px;font-size:11px;">Load</button><button type="button" class="add-field field-modal-cancel" style="padding:6px 9px;font-size:11px;">Delete</button>`;
+          row.querySelector('strong').textContent = name;
+          row.querySelectorAll('button')[0].addEventListener('click', () => {
+            Object.entries(presets[name]).forEach(([key, value]) => localStorage.setItem(key, value));
+            window.location.reload();
+          });
+          row.querySelectorAll('button')[1].addEventListener('click', () => {
+            delete presets[name];
+            localStorage.setItem(PRESETS_KEY, JSON.stringify(presets));
+            renderPresetList();
+          });
+          list.appendChild(row);
+        });
+        if (!Object.keys(presets).length) {
+          list.innerHTML = '<small style="color:#657593;">No saved presets yet. Enter a name above to save this cover.</small>';
+        }
+      }
+
+      function openPresetModal() {
+        renderPresetList();
+        const modal = document.getElementById('preset-modal');
+        if (modal) { modal.hidden = false; modal.style.display = 'flex'; }
+        const input = document.getElementById('preset-name-input');
+        if (input) { input.value = ''; input.focus(); }
+      }
+
+      function closePresetModal() {
+        const modal = document.getElementById('preset-modal');
+        if (modal) { modal.hidden = true; modal.style.display = 'none'; }
+      }
+
+      async function downloadCoverPng() {
+        if (typeof window.html2canvas !== 'function') {
+          showToast('PNG export library is still loading. Try again in a moment.');
+          return;
+        }
+        const source = document.getElementById('paper-element');
+        if (!source) return;
+        const clone = source.cloneNode(true);
+        clone.removeAttribute('id');
+        Object.assign(clone.style, {
+          position: 'fixed', left: '-10000px', top: '0', margin: '0',
+          width: '794px', height: '1123px', transform: 'none',
+          minWidth: '794px', zIndex: '-1'
+        });
+        document.body.appendChild(clone);
+        try {
+          const canvas = await window.html2canvas(clone, {
+            scale: 2, useCORS: true, backgroundColor: '#ffffff',
+            width: 794, height: 1123, logging: false
+          });
+          const link = document.createElement('a');
+          link.download = 'uu-assignment-cover.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+          showToast('PNG downloaded.');
+        } catch (error) {
+          showToast('PNG export failed. Please try again.');
+        } finally {
+          clone.remove();
+        }
+      }
+
+      const presetBtn = document.getElementById('save-preset-btn');
+      const pngBtn = document.getElementById('download-png-btn');
+      if (presetBtn) presetBtn.addEventListener('click', openPresetModal);
+      if (pngBtn) pngBtn.addEventListener('click', downloadCoverPng);
+      document.getElementById('preset-close-btn')?.addEventListener('click', closePresetModal);
+      document.getElementById('preset-cancel-btn')?.addEventListener('click', closePresetModal);
+      document.getElementById('preset-form')?.addEventListener('submit', () => {
+        const input = document.getElementById('preset-name-input');
+        const name = input?.value.trim();
+        if (!name) return;
+        const presets = JSON.parse(localStorage.getItem(PRESETS_KEY) || '{}');
+        presets[name] = getPresetSnapshot();
+        localStorage.setItem(PRESETS_KEY, JSON.stringify(presets));
+        renderPresetList();
+        if (input) input.value = '';
+        showToast(`Preset “${name}” saved.`);
+      });
 
       function restoreData() {
         const savedLogo = localStorage.getItem(STORAGE_KEY_LOGO);
@@ -3313,10 +4172,14 @@
             Object.entries(values).forEach(([id, value]) => {
               const input = document.getElementById(id);
               if (input && input.type !== 'file') {
-                input.value = value;
+                // Old saved data may contain the visible placeholder text.
+                // Restore that as empty so the placeholder remains a hint.
+                input.value = value === input.placeholder ? '' : value;
                 syncField(input);
               }
             });
+            // Clean any legacy placeholder values from storage as well.
+            persistData();
           } catch (error) {
             localStorage.removeItem(STORAGE_KEY_VALUES);
           }
@@ -3423,12 +4286,62 @@
         fontScaleOutput.textContent = '100%';
         paper.style.setProperty('--paper-scale', 1);
 
+        if (headerFontScaleInput && headerFontScaleVal) {
+          headerFontScaleInput.value = '100';
+          headerFontScaleVal.textContent = '100%';
+          paper.style.setProperty('--header-font-scale', 1);
+        }
+        if (bodyFontScaleInput && bodyFontScaleVal) {
+          bodyFontScaleInput.value = '100';
+          bodyFontScaleVal.textContent = '100%';
+          paper.style.setProperty('--body-font-scale', 1);
+        }
+        if (gapTopInput && gapTopVal) {
+          gapTopInput.value = '24';
+          gapTopVal.textContent = '24 px';
+          paper.style.setProperty('--gap-top', '24px');
+        }
+        if (gapExpInput && gapExpVal) {
+          gapExpInput.value = '24';
+          gapExpVal.textContent = '24 px';
+          paper.style.setProperty('--gap-experiment', '24px');
+        }
+        if (gapSubInput && gapSubVal) {
+          gapSubInput.value = '36';
+          gapSubVal.textContent = '36 px';
+          paper.style.setProperty('--gap-submission', '36px');
+        }
+
         logoSelect.value = 'assets/logo-2.png';
         logoImg.src = 'assets/logo-2.png';
         customLogoInput.value = '';
         logoUploadWrapper.classList.remove('has-logo');
         showToast('All settings reset to default.');
       });
+
+      let previewZoomMultiplier = 1;
+      let previewPanX = 0;
+      let previewPanY = 0;
+
+      function updatePreviewZoomLabel(scale) {
+        const label = document.getElementById('preview-zoom-value');
+        if (label) label.textContent = `${Math.round(scale * 100)}%`;
+      }
+
+      function changePreviewZoom(step) {
+        previewZoomMultiplier = Math.max(0.7, Math.min(2, previewZoomMultiplier + step));
+        scalePaperPreview();
+      }
+
+      function resetPreviewZoom() {
+        previewZoomMultiplier = 1;
+        previewPanX = 0;
+        previewPanY = 0;
+        scalePaperPreview();
+      }
+
+      window.changePreviewZoom = changePreviewZoom;
+      window.resetPreviewZoom = resetPreviewZoom;
 
       // Perfect A4 Paper Preview Scaling on Mobile / Narrow / Desktop Viewports
       function scalePaperPreview() {
@@ -3437,49 +4350,203 @@
         const paper = document.getElementById('paper-element');
         if (!preview || !paper || !scaler) return;
 
-        paper.style.transform = 'none';
-        scaler.style.height = '';
+        if (window.innerWidth <= 768 && !document.body.classList.contains('is-fullscreen-active')) {
+          paper.style.transform = 'none';
+          paper.style.position = 'relative';
+          paper.style.top = '0';
+          paper.style.left = '0';
+          paper.style.margin = '0 auto';
+          paper.style.width = '100%';
+          paper.style.minWidth = '0';
+          scaler.style.width = '100%';
+          scaler.style.height = 'auto';
+          return;
+        }
 
-        const containerWidth = preview.clientWidth - 32;
+        // Reset ONLY layout scaling inline properties, preserving custom CSS variables
+        paper.style.transform = 'none';
+        paper.style.position = 'relative';
+        paper.style.top = '0';
+        paper.style.left = '0';
+        paper.style.margin = '0 auto';
+        paper.style.width = '794px';
+        paper.style.minWidth = '794px';
+        scaler.style.cssText = '';
+
+        // Accurately compute available inner width inside preview panel
+        const previewRect = preview.getBoundingClientRect();
+        const previewStyle = window.getComputedStyle(preview);
+        const padLeft = parseFloat(previewStyle.paddingLeft) || 0;
+        const padRight = parseFloat(previewStyle.paddingRight) || 0;
+        const availWidth = Math.max(180, previewRect.width - padLeft - padRight - 8);
+
         const paperWidth = 794;
         const paperHeight = 1123; // Exact A4 Height for 794px width (794 * 297 / 210)
 
-        const isDesktop = window.innerWidth > 1024;
-        const maxAvailHeight = window.innerHeight - 150;
+        // Calculate width scaling factor
+        let scale = availWidth / paperWidth;
 
-        const widthScale = containerWidth > 0 ? containerWidth / paperWidth : 1;
-        const heightScale = maxAvailHeight > 300 ? maxAvailHeight / paperHeight : 1;
+        // Keep the complete A4 sheet visible in the fixed desktop preview.
+        // The preview remains readable because width and height are balanced
+        // against the actual space available below the preview toolbar.
+        if (window.innerWidth > 1200 && !document.body.classList.contains('is-fullscreen-active')) {
+          const header = preview.querySelector('.preview-header-bar');
+          const headerHeight = header ? header.getBoundingClientRect().height : 0;
+          const padTop = parseFloat(previewStyle.paddingTop) || 0;
+          const padBottom = parseFloat(previewStyle.paddingBottom) || 0;
+          const availableHeight = preview.clientHeight - headerHeight - padTop - padBottom - 8;
+          if (availableHeight > 0) {
+            scale = Math.min(scale, availableHeight / paperHeight);
+          }
+        }
 
-        let scale = isDesktop ? Math.min(widthScale, heightScale * 0.88) : widthScale;
-        if (scale > 1) scale = 1;
-        if (scale < 0.25) scale = 0.25;
+        // Apply height restriction only when in full screen lightbox mode
+        if (document.body.classList.contains('is-fullscreen-active')) {
+          const maxAvailHeight = Math.max(300, window.innerHeight - 120);
+          const heightScale = maxAvailHeight / paperHeight;
+          scale = Math.min(scale, heightScale);
+        }
+
+        // Keep zoom bounded while still allowing a readable enlarged preview.
+        const fitScale = scale;
+        scale = Math.min(fitScale * previewZoomMultiplier, 1.5);
+        updatePreviewZoomLabel(scale);
+
+        const isDesktopWorkspace = window.innerWidth > 1200 && !document.body.classList.contains('is-fullscreen-active');
+        const desktopHeader = isDesktopWorkspace ? preview.querySelector('.preview-header-bar') : null;
+        const desktopHeaderHeight = desktopHeader ? desktopHeader.getBoundingClientRect().height : 0;
+        const desktopPadTop = isDesktopWorkspace ? (parseFloat(previewStyle.paddingTop) || 0) : 0;
+        const desktopPadBottom = isDesktopWorkspace ? (parseFloat(previewStyle.paddingBottom) || 0) : 0;
+        const desktopAvailableHeight = isDesktopWorkspace
+          ? Math.max(240, preview.clientHeight - desktopHeaderHeight - desktopPadTop - desktopPadBottom - 8)
+          : null;
+        // Use the full panel width as the pan viewport. Height-based scaling
+        // made the A4 look narrow and clipped its labels horizontally.
+        const viewportWidth = isDesktopWorkspace ? Math.ceil(availWidth) : null;
+        const viewportHeight = isDesktopWorkspace ? Math.ceil(desktopAvailableHeight) : null;
+        if (isDesktopWorkspace) {
+          const maxPanX = Math.max(0, (paperWidth * scale - viewportWidth) / 2);
+          const maxPanY = Math.max(0, paperHeight * scale - viewportHeight);
+          previewPanX = Math.max(-maxPanX, Math.min(maxPanX, previewPanX));
+          // The paper uses a top-origin transform, so vertical panning must
+          // stay between its top edge (0) and its bottom overflow.
+          previewPanY = Math.max(-maxPanY, Math.min(0, previewPanY));
+          scaler.style.width = `${viewportWidth}px`;
+          scaler.style.height = `${viewportHeight}px`;
+          scaler.style.overflow = 'hidden';
+          scaler.style.display = 'block';
+        }
 
         if (scale < 1) {
-          paper.style.transform = `scale(${scale})`;
-          paper.style.transformOrigin = 'top center';
+          const scaledWidth = Math.ceil(paperWidth * scale);
+          const scaledHeight = Math.ceil(paperHeight * scale);
 
-          const scaledHeight = paperHeight * scale;
-          scaler.style.height = `${Math.ceil(scaledHeight) + (isDesktop ? 10 : 40)}px`;
-        } else {
-          paper.style.transform = 'none';
+          scaler.style.position = 'relative';
+          scaler.style.display = 'flex';
+          scaler.style.justifyContent = 'center';
+          if (!isDesktopWorkspace) scaler.style.width = `${scaledWidth}px`;
+          if (!isDesktopWorkspace) scaler.style.height = `${scaledHeight}px`;
+          scaler.style.maxWidth = '100%';
+          scaler.style.margin = '0 auto';
+          scaler.style.overflow = 'hidden';
+
+          paper.style.position = 'relative';
+          paper.style.width = '794px';
+          paper.style.minWidth = '794px';
+          paper.style.flexShrink = '0';
+          paper.style.margin = '0';
           paper.style.transformOrigin = 'top center';
-          scaler.style.height = '';
+          paper.style.transform = isDesktopWorkspace
+            ? `translate(${previewPanX}px, ${previewPanY}px) scale(${scale})`
+            : `scale(${scale})`;
+        } else {
+          scaler.style.display = 'flex';
+          scaler.style.justifyContent = 'center';
+          if (!isDesktopWorkspace) {
+            scaler.style.width = '100%';
+            scaler.style.height = 'auto';
+          }
+          scaler.style.margin = '0 auto';
+
+          paper.style.position = 'relative';
+          paper.style.width = '794px';
+          paper.style.margin = '0 auto';
+          paper.style.transform = isDesktopWorkspace
+            ? `translate(${previewPanX}px, ${previewPanY}px) scale(${scale})`
+            : 'none';
         }
+      }
+
+      const paperScalerEl = document.getElementById('paper-scaler');
+      if (paperScalerEl) {
+        let dragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let panStartX = 0;
+        let panStartY = 0;
+        let panFrame = 0;
+        paperScalerEl.addEventListener('wheel', (event) => {
+          event.preventDefault();
+          changePreviewZoom(event.deltaY < 0 ? 0.1 : -0.1);
+        }, { passive: false });
+        paperScalerEl.addEventListener('pointerdown', (event) => {
+          if (window.innerWidth <= 1200 || previewZoomMultiplier === 1) return;
+          dragging = true;
+          dragStartX = event.clientX;
+          dragStartY = event.clientY;
+          panStartX = previewPanX;
+          panStartY = previewPanY;
+          paperScalerEl.classList.add('is-dragging');
+          paperScalerEl.setPointerCapture(event.pointerId);
+        });
+        paperScalerEl.addEventListener('pointermove', (event) => {
+          if (!dragging) return;
+          const nextPanX = panStartX + event.clientX - dragStartX;
+          const nextPanY = panStartY + event.clientY - dragStartY;
+          previewPanX = nextPanX;
+          previewPanY = nextPanY;
+          if (!panFrame) {
+            panFrame = requestAnimationFrame(() => {
+              panFrame = 0;
+              scalePaperPreview();
+            });
+          }
+        });
+        const stopDragging = (event) => {
+          if (!dragging) return;
+          dragging = false;
+          paperScalerEl.classList.remove('is-dragging');
+          if (event.pointerId !== undefined && paperScalerEl.hasPointerCapture(event.pointerId)) {
+            paperScalerEl.releasePointerCapture(event.pointerId);
+          }
+        };
+        paperScalerEl.addEventListener('pointerup', stopDragging);
+        paperScalerEl.addEventListener('pointercancel', stopDragging);
       }
 
       window.addEventListener('resize', scalePaperPreview);
       window.addEventListener('load', scalePaperPreview);
       const logoImgEl = document.getElementById('logo');
       if (logoImgEl) logoImgEl.addEventListener('load', scalePaperPreview);
+      // Re-measure the preview whenever either tab changes its layout height/width.
+      // Without this, Details can leave the A4 paper at its raw 794px width while
+      // Design happens to trigger a later resize and appears correctly scaled.
+      const previewPanelEl = document.querySelector('.panel.preview');
+      if (previewPanelEl && 'ResizeObserver' in window) {
+        const previewObserver = new ResizeObserver(() => requestAnimationFrame(scalePaperPreview));
+        previewObserver.observe(previewPanelEl);
+      }
       setTimeout(scalePaperPreview, 50);
       setTimeout(scalePaperPreview, 200);
       setTimeout(scalePaperPreview, 600);
 
       document.querySelectorAll('.editor-tab').forEach(tab => {
         tab.addEventListener('click', () => {
-          setTimeout(scalePaperPreview, 20);
-          setTimeout(scalePaperPreview, 100);
-          setTimeout(scalePaperPreview, 300);
+          requestAnimationFrame(() => {
+            scalePaperPreview();
+            setTimeout(scalePaperPreview, 80);
+            setTimeout(scalePaperPreview, 250);
+          });
         });
       });
 
@@ -3491,9 +4558,62 @@
         });
       }
 
+      // Direct Fullscreen Toggle Functionality for HTML
+      function toggleFullscreenMode() {
+        const isFS = document.body.classList.toggle('is-fullscreen-active');
+        const fsBtnText = document.querySelector('#open-fullscreen-btn .btn-text');
+        
+        if (isFS) {
+          if (fsBtnText) fsBtnText.textContent = 'Exit Full Screen';
+          try {
+            if (document.documentElement.requestFullscreen) {
+              document.documentElement.requestFullscreen().catch(() => {});
+            } else if (document.documentElement.webkitRequestFullscreen) {
+              document.documentElement.webkitRequestFullscreen().catch(() => {});
+            }
+          } catch (e) {}
+        } else {
+          if (fsBtnText) fsBtnText.textContent = 'Full Screen';
+          try {
+            if (document.fullscreenElement && document.exitFullscreen) {
+              document.exitFullscreen().catch(() => {});
+            } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
+              document.webkitExitFullscreen().catch(() => {});
+            }
+          } catch (e) {}
+        }
+
+        setTimeout(scalePaperPreview, 30);
+        setTimeout(scalePaperPreview, 150);
+      }
+
+      window.openFullscreenModal = toggleFullscreenMode;
+      window.toggleFullscreenMode = toggleFullscreenMode;
+
+      const openFullscreenBtn = document.getElementById('open-fullscreen-btn');
+      if (openFullscreenBtn) {
+        openFullscreenBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleFullscreenMode();
+        });
+      }
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && document.body.classList.contains('is-fullscreen-active')) {
+          toggleFullscreenMode();
+        }
+      });
+
       // Restore saved data on load
       restoreData();
       initResponsiveAccordions();
+      // Final fit after saved values and accordion state have changed the
+      // editor layout. This keeps the initial Details view identical to Design.
+      requestAnimationFrame(() => {
+        scalePaperPreview();
+        setTimeout(scalePaperPreview, 120);
+        setTimeout(scalePaperPreview, 350);
+      });
     })();
   </script>
 </body>
