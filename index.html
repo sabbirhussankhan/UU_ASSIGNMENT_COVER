@@ -2163,34 +2163,55 @@
     }
     .desktop-nav {
       display: flex;
+      gap: 4px;
       align-items: center;
-      gap: 8px;
+      background: #F0F4FC;
+      border: 1px solid #DCE6F5;
+      padding: 4px;
+      border-radius: 30px;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
     }
-    .nav-btn {
-      display: inline-flex;
+    body.dark-editor .desktop-nav {
+      background: #0f172a;
+      border-color: #334155;
+    }
+    .desktop-nav .nav-btn {
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: #5C6B8A;
+      padding: 8px 16px;
+      border-radius: 20px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      display: flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 14px;
-      border-radius: 10px;
-      font-size: 12.5px;
-      font-weight: 700;
-      color: #5C6B8A;
-      text-decoration: none;
-      background: #F8FAFC;
-      border: 1px solid #E2E8F0;
-      cursor: pointer;
-      transition: all 0.2s ease;
+      white-space: nowrap;
+      border: 1px solid transparent;
+      background: transparent;
     }
-    .nav-btn:hover {
-      background: #EAF0FC;
+    body.dark-editor .desktop-nav .nav-btn { color: #94a3b8; }
+    .desktop-nav .nav-btn:hover {
       color: #2451C4;
-      border-color: #C7D7F2;
+      background: rgba(255, 255, 255, 0.6);
     }
-    .nav-btn.active {
-      background: #2451C4;
-      color: #ffffff;
-      border-color: #2451C4;
-      box-shadow: 0 4px 12px rgba(36, 81, 196, 0.2);
+    body.dark-editor .desktop-nav .nav-btn:hover {
+      color: #60a5fa;
+      background: rgba(30, 41, 59, 0.6);
+    }
+    .desktop-nav .nav-btn.active {
+      background: #FFFFFF !important;
+      color: #2451C4 !important;
+      font-weight: 700;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(36, 81, 196, 0.12);
+      border: 1px solid rgba(36, 81, 196, 0.15) !important;
+    }
+    body.dark-editor .desktop-nav .nav-btn.active {
+      background: #1e293b !important;
+      color: #60a5fa !important;
+      border-color: #3b82f6 !important;
     }
     .nav-btn svg {
       width: 16px;
