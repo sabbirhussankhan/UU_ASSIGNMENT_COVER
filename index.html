@@ -3413,24 +3413,44 @@
           <!-- Student Identity Summary Card (Only Name, ID, & Logout Button) -->
           <div class="flow-student-summary-card" id="flow-student-card" title="Click to edit personal & student details" style="cursor: pointer; position: relative;">
             <div class="flow-summary-left">
-              <h3 class="flow-summary-name" id="flow-student-name">Student Details</h3>
+              <h3 class="flow-summary-name" id="flow-student-name">Auto Fill-up Profile</h3>
               <div style="font-size: 12px; color: #64748B; display: flex; align-items: center; gap: 8px; margin-top: 6px;">
                 <span id="flow-student-id" style="display: inline-flex; align-items: center; gap: 4px;">
-                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                  <span>ID: —</span>
+                  <span>Login to auto-fill cover details</span>
                 </span>
                 <span style="color: #CBD5E1;">•</span>
-                <button type="button" id="flow-student-logout-btn" title="Logout & Clear Student Profile" style="background: none; border: none; color: #EF4444; font-size: 11.5px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 0; display: inline-flex; align-items: center; gap: 4px;">
-                  Logout
+                <button type="button" id="flow-student-logout-btn" title="Login with Student Portal" style="background: none; border: none; color: #2451C4; font-size: 11.5px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 0; display: inline-flex; align-items: center; gap: 4px;">
+                  Login
                 </button>
               </div>
             </div>
             <div class="flow-summary-right" style="position: relative;">
               <div class="flow-avatar-circle" style="width: 44px; height: 44px; border-radius: 50%; background: #EFF6FF; border: 1.5px solid #BFDBFE; display: flex; align-items: center; justify-content: center; color: #2451C4;">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
               </div>
             </div>
           </div>
+          <script>
+            (function() {
+              try {
+                var raw = localStorage.getItem('uu_profile') || sessionStorage.getItem('uu_profile');
+                var token = localStorage.getItem('uu_token') || sessionStorage.getItem('uu_token');
+                if (raw && token) {
+                  var p = JSON.parse(raw);
+                  if (p && p.name) {
+                    var nameEl = document.getElementById('flow-student-name');
+                    var idEl = document.getElementById('flow-student-id');
+                    var logBtn = document.getElementById('flow-student-logout-btn');
+                    var circle = document.querySelector('#flow-student-card .flow-avatar-circle');
+                    if (nameEl) nameEl.textContent = p.name;
+                    if (idEl) idEl.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span>ID: ' + (p.id || '—') + '</span>';
+                    if (logBtn) { logBtn.textContent = 'Logout'; logBtn.style.color = '#EF4444'; logBtn.title = 'Logout & Clear Student Profile'; }
+                    if (circle) circle.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
+                  }
+                }
+              } catch(e) {}
+            })();
+          </script>
           <datalist id="uu-dept-list">
             <option value="Department of Bangla">
             <option value="Department of Business Administration">
@@ -3637,7 +3657,7 @@
               </summary>
               <div style="display:grid; gap:11px;">
                 <div class="field">
-                  <input id="student" name="student_name" autocomplete="name" placeholder="Student's Name" value="Sabbir Hussan Khan">
+                  <input id="student" name="student_name" autocomplete="name" placeholder="Student's Name">
                   <span class="float-label">Student's Name</span>
                 </div>
                 <div class="field">
@@ -3653,7 +3673,7 @@
                   <span class="float-label">Semester</span>
                 </div>
                 <div class="field">
-                  <input id="studentDepartment" name="student_department" autocomplete="on" list="uu-dept-list" placeholder="Department" value="Department of Computer Science and Engineering">
+                  <input id="studentDepartment" name="student_department" autocomplete="on" list="uu-dept-list" placeholder="Department">
                   <span class="float-label">Department</span>
                 </div>
                 <div class="field-actions">
@@ -4220,6 +4240,60 @@
             <p id="p-submissionDateFooter">—</p>
           </div>
         </article>
+        <script>
+          /* Instant Pre-Render Hydration (Zero-Flicker on Page Load/Reload) */
+          (function() {
+            try {
+              var savedValues = localStorage.getItem('uu-assignment-cover-values');
+              if (savedValues) {
+                var values = JSON.parse(savedValues);
+                for (var id in values) {
+                  var input = document.getElementById(id);
+                  var val = values[id];
+                  if (input && input.type !== 'file') {
+                    input.value = (val === input.placeholder) ? '' : val;
+                    var fDiv = input.closest ? input.closest('.field') : null;
+                    if (fDiv) {
+                      if (input.value) fDiv.classList.add('filled');
+                      else fDiv.classList.remove('filled');
+                    }
+                  }
+                  var pEl = document.getElementById('p-' + id);
+                  if (pEl) {
+                    pEl.textContent = val || '—';
+                    var pTag = pEl.closest ? pEl.closest('p') : null;
+                    if (pTag) {
+                      if (val && val.trim()) pTag.classList.add('has-val');
+                      else pTag.classList.remove('has-val');
+                    }
+                  }
+                  if (id === 'submissionDate') {
+                    var fFooter = document.getElementById('p-submissionDateFooter');
+                    if (fFooter) fFooter.textContent = val || '—';
+                  }
+                }
+              }
+
+              var savedLayout = localStorage.getItem('uu-assignment-cover-layout');
+              var paper = document.getElementById('paper-element');
+              if (savedLayout && paper && savedLayout !== 'classic') {
+                paper.classList.remove('layout-classic', 'layout-banner', 'layout-stripe', 'layout-minimal', 'layout-modern', 'layout-framed');
+                paper.classList.add('layout-' + savedLayout);
+              }
+
+              var savedAccent = localStorage.getItem('uu-assignment-cover-layout-color');
+              if (savedAccent && paper) {
+                paper.style.setProperty('--layout-accent', savedAccent);
+              }
+
+              var savedLogo = localStorage.getItem('uu-assignment-cover-logo');
+              var logoImg = document.getElementById('logo');
+              if (savedLogo && logoImg) {
+                logoImg.src = savedLogo;
+              }
+            } catch(e) {}
+          })();
+        </script>
       </div>
       </section>
     </div>
