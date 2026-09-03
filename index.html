@@ -1869,46 +1869,42 @@
       .submission .box { border-radius: 10px !important; padding: 20px 16px !important; }
     }
 
-    /* Desktop workspace: editor scrolls independently while the live preview
-       stays pinned in the viewport. Tablet/mobile keeps normal page scrolling. */
-    @media screen and (min-width: 1201px) {
-      html, body { height: 100%; }
-      body { overflow: hidden; }
-      .shell { height: 100vh; display: flex; flex-direction: column; }
-      .layout { flex: 1 1 auto; min-height: 0; align-items: start; }
+    /* Desktop workspace: smooth natural page scrolling with sticky preview */
+    @media screen and (min-width: 1025px) {
+      html, body {
+        height: auto !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+      }
+      .shell {
+        height: auto !important;
+        min-height: 100vh;
+        display: block !important;
+      }
+      .layout {
+        display: grid !important;
+        grid-template-columns: 420px minmax(0, 1fr) !important;
+        gap: 28px !important;
+        align-items: start !important;
+      }
       .editor {
-        height: calc(100vh - 190px);
-        max-height: calc(100vh - 190px);
-        overflow-y: auto;
-        overscroll-behavior: contain;
-        scrollbar-width: thin;
-        scrollbar-color: #b8c6dc transparent;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
       }
-      .editor-sticky-head { margin-left: -20px; margin-right: -20px; }
       .editor-sticky-head {
-        position: sticky;
-        top: 0;
-        z-index: 20;
-        margin-top: -20px;
-        padding: 8px 20px 0;
-        background: #fff;
-        overflow: hidden;
-        box-shadow: 0 6px 12px rgba(255, 255, 255, .92);
+        position: static !important;
+        margin: 0 0 16px !important;
+        padding: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
       }
-      body.dark-editor .editor-sticky-head {
-        background: #1e293b;
-        box-shadow: 0 6px 12px rgba(30, 41, 59, .92);
-      }
-      .editor::-webkit-scrollbar { width: 7px; }
-      .editor::-webkit-scrollbar-thumb { background: #b8c6dc; border-radius: 99px; }
       .preview {
-        position: sticky;
-        top: 20px;
-        height: calc(100vh - 190px);
-        max-height: calc(100vh - 190px);
-        overflow-y: auto;
-        overflow-x: hidden;
-        overscroll-behavior: contain;
+        position: sticky !important;
+        top: 20px !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
       }
     }
     .submission .box p:last-child { margin-bottom: 0 !important; }
@@ -4806,23 +4802,14 @@
         const availWidth = Math.max(180, previewRect.width - padLeft - padRight - 8);
 
         const paperWidth = 794;
-        const paperHeight = 1123; // Exact A4 Height for 794px width (794 * 297 / 210)
-
-        // Calculate width scaling factor
+        const paperHeight = 1123;         // Calculate width scaling factor
         let scale = availWidth / paperWidth;
 
-        // Keep the complete A4 sheet visible in the fixed desktop preview.
-        // The preview remains readable because width and height are balanced
-        // against the actual space available below the preview toolbar.
-        if (window.innerWidth > 1200 && !document.body.classList.contains('is-fullscreen-active')) {
-          const header = preview.querySelector('.preview-header-bar');
-          const headerHeight = header ? header.getBoundingClientRect().height : 0;
-          const padTop = parseFloat(previewStyle.paddingTop) || 0;
-          const padBottom = parseFloat(previewStyle.paddingBottom) || 0;
-          const availableHeight = preview.clientHeight - headerHeight - padTop - padBottom - 8;
-          if (availableHeight > 0) {
-            scale = Math.min(scale, availableHeight / paperHeight);
-          }
+        // On desktop, balance scale against viewport height so the complete A4 page fits comfortably in view
+        if (window.innerWidth > 1024 && !document.body.classList.contains('is-fullscreen-active')) {
+          const maxAvailHeight = Math.max(500, window.innerHeight - 160);
+          const heightScale = maxAvailHeight / paperHeight;
+          scale = Math.min(scale, heightScale);
         }
 
         // Apply height restriction only when in full screen lightbox mode
@@ -4837,69 +4824,25 @@
         scale = Math.min(fitScale * previewZoomMultiplier, 1.5);
         updatePreviewZoomLabel(scale);
 
-        const isDesktopWorkspace = window.innerWidth > 1200 && !document.body.classList.contains('is-fullscreen-active');
-        const desktopHeader = isDesktopWorkspace ? preview.querySelector('.preview-header-bar') : null;
-        const desktopHeaderHeight = desktopHeader ? desktopHeader.getBoundingClientRect().height : 0;
-        const desktopPadTop = isDesktopWorkspace ? (parseFloat(previewStyle.paddingTop) || 0) : 0;
-        const desktopPadBottom = isDesktopWorkspace ? (parseFloat(previewStyle.paddingBottom) || 0) : 0;
-        const desktopAvailableHeight = isDesktopWorkspace
-          ? Math.max(240, preview.clientHeight - desktopHeaderHeight - desktopPadTop - desktopPadBottom - 8)
-          : null;
-        // Use the full panel width as the pan viewport. Height-based scaling
-        // made the A4 look narrow and clipped its labels horizontally.
-        const viewportWidth = isDesktopWorkspace ? Math.ceil(availWidth) : null;
-        const viewportHeight = isDesktopWorkspace ? Math.ceil(desktopAvailableHeight) : null;
-        if (isDesktopWorkspace) {
-          const maxPanX = Math.max(0, (paperWidth * scale - viewportWidth) / 2);
-          const maxPanY = Math.max(0, paperHeight * scale - viewportHeight);
-          previewPanX = Math.max(-maxPanX, Math.min(maxPanX, previewPanX));
-          // The paper uses a top-origin transform, so vertical panning must
-          // stay between its top edge (0) and its bottom overflow.
-          previewPanY = Math.max(-maxPanY, Math.min(0, previewPanY));
-          scaler.style.width = `${viewportWidth}px`;
-          scaler.style.height = `${viewportHeight}px`;
-          scaler.style.overflow = 'hidden';
-          scaler.style.display = 'block';
-        }
+        const scaledWidth = Math.ceil(paperWidth * scale);
+        const scaledHeight = Math.ceil(paperHeight * scale);
 
-        if (scale < 1) {
-          const scaledWidth = Math.ceil(paperWidth * scale);
-          const scaledHeight = Math.ceil(paperHeight * scale);
+        scaler.style.position = 'relative';
+        scaler.style.display = 'flex';
+        scaler.style.justifyContent = 'center';
+        scaler.style.width = `${scaledWidth}px`;
+        scaler.style.height = `${scaledHeight}px`;
+        scaler.style.maxWidth = '100%';
+        scaler.style.margin = '0 auto';
+        scaler.style.overflow = 'visible';
 
-          scaler.style.position = 'relative';
-          scaler.style.display = 'flex';
-          scaler.style.justifyContent = 'center';
-          if (!isDesktopWorkspace) scaler.style.width = `${scaledWidth}px`;
-          if (!isDesktopWorkspace) scaler.style.height = `${scaledHeight}px`;
-          scaler.style.maxWidth = '100%';
-          scaler.style.margin = '0 auto';
-          scaler.style.overflow = 'hidden';
-
-          paper.style.position = 'relative';
-          paper.style.width = '794px';
-          paper.style.minWidth = '794px';
-          paper.style.flexShrink = '0';
-          paper.style.margin = '0';
-          paper.style.transformOrigin = 'top center';
-          paper.style.transform = isDesktopWorkspace
-            ? `translate(${previewPanX}px, ${previewPanY}px) scale(${scale})`
-            : `scale(${scale})`;
-        } else {
-          scaler.style.display = 'flex';
-          scaler.style.justifyContent = 'center';
-          if (!isDesktopWorkspace) {
-            scaler.style.width = '100%';
-            scaler.style.height = 'auto';
-          }
-          scaler.style.margin = '0 auto';
-
-          paper.style.position = 'relative';
-          paper.style.width = '794px';
-          paper.style.margin = '0 auto';
-          paper.style.transform = isDesktopWorkspace
-            ? `translate(${previewPanX}px, ${previewPanY}px) scale(${scale})`
-            : 'none';
-        }
+        paper.style.position = 'relative';
+        paper.style.width = '794px';
+        paper.style.minWidth = '794px';
+        paper.style.flexShrink = '0';
+        paper.style.margin = '0 auto';
+        paper.style.transformOrigin = 'top center';
+        paper.style.transform = `scale(${scale})`;
       }
 
       const paperScalerEl = document.getElementById('paper-scaler');
