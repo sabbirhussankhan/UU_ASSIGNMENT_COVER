@@ -2611,8 +2611,8 @@
       }
       /* Mobile Compact Round Back-to-Top */
       .mobile-back-to-top-btn {
-        bottom: 74px;
-        right: 16px;
+        bottom: calc(70px + env(safe-area-inset-bottom, 0px) + 18px);
+        right: 18px;
         width: 44px;
         height: 44px;
         min-width: 44px;
@@ -2620,6 +2620,7 @@
         border-radius: 50%;
         justify-content: center;
         box-shadow: 0 4px 16px rgba(36, 81, 196, 0.4);
+        z-index: 9999999 !important;
       }
       .mobile-back-to-top-btn span {
         display: none !important;
@@ -2787,13 +2788,14 @@
       gap: 8px;
       padding: 8px 18px;
       border-radius: 8px;
-      border: none;
+      border: 1px solid transparent;
       background: transparent;
       color: #64748B;
       font-size: 13.5px;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-sizing: border-box;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     }
     .flow-tab-btn:hover {
       color: #0F172A;
@@ -2801,8 +2803,8 @@
     .flow-tab-btn.active {
       background: #FFFFFF !important;
       color: #2451C4 !important;
-      font-weight: 800 !important;
-      border: 1px solid #BFDBFE !important;
+      font-weight: 700 !important;
+      border-color: #BFDBFE !important;
       box-shadow: 0 2px 8px rgba(36, 81, 196, 0.15) !important;
     }
     .flow-subbar-actions {
@@ -3252,10 +3254,12 @@
         border-radius: 9px !important;
       }
       .flow-tab-btn {
-        flex: 1 !important;
+        flex: 1 1 0% !important;
         justify-content: center !important;
-        padding: 7px 6px !important;
+        padding: 7px 4px !important;
         font-size: 12.5px !important;
+        box-sizing: border-box !important;
+        min-width: 0 !important;
       }
       /* Hide action buttons in top sticky subbar on mobile - placed directly above PDF! */
       .flow-subbar .flow-subbar-actions {
