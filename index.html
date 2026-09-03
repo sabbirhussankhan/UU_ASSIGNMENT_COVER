@@ -3093,10 +3093,11 @@
       top: 76px !important;
       display: flex !important;
       flex-direction: column !important;
-      align-items: stretch !important;
+      align-items: center !important;
       justify-content: flex-start !important;
       flex: 1 !important;
       min-width: 0 !important;
+      max-height: calc(100vh - 82px) !important;
     }
     .preview-header-bar {
       display: none !important;
@@ -6539,9 +6540,13 @@
         const paperHeight = 1123;
         let scale = availWidth / paperWidth;
 
-        // FlowCV style: make the PDF preview generous, prominent, and readable on desktop
+        // FlowCV / Canva style: fit paper into available width AND sticky viewport height so entire paper stays in view while scrolling settings
         if (window.innerWidth > 900 && !document.body.classList.contains('is-preview-fullscreen') && !document.body.classList.contains('is-fullscreen-active')) {
-          scale = Math.min(availWidth / paperWidth, 0.96);
+          const stickyTop = 80;
+          const maxAvailHeight = Math.max(380, window.innerHeight - stickyTop - 28);
+          const scaleW = availWidth / paperWidth;
+          const scaleH = maxAvailHeight / paperHeight;
+          scale = Math.min(scaleW, scaleH, 0.96);
         } else if (window.innerWidth <= 900 && !document.body.classList.contains('is-preview-fullscreen') && !document.body.classList.contains('is-fullscreen-active')) {
           // On mobile & tablet: scale smoothly to fit available width perfectly without horizontal scroll
           scale = Math.min(availWidth / paperWidth, 0.95);
