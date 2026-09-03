@@ -1415,6 +1415,7 @@
       overflow: hidden;
       touch-action: pan-y;
       cursor: grab;
+      border-radius: 0 !important;
     }
     .paper-scaler.is-dragging { cursor: grabbing; }
     .paper-scaler.is-dragging .paper { transition: none !important; }
@@ -1432,6 +1433,7 @@
       justify-content: space-between;
       background: #fff;
       text-align: center;
+      border-radius: 0 !important;
       box-shadow: 0 12px 28px rgba(20, 40, 90, 0.12);
       font-family: Georgia, "Times New Roman", serif;
       color: var(--body-color, #111);
@@ -1468,8 +1470,10 @@
     .paper.layout-banner {
       padding-top: 0 !important;
       overflow: hidden;
+      border-radius: 0 !important;
     }
     .paper.layout-banner .top {
+      border-radius: 0 !important;
       background: var(--layout-accent, var(--accent)) !important;
       color: #fff !important;
       padding: 36px 20px 28px !important;
@@ -1585,6 +1589,7 @@
     .paper.layout-stripe {
       position: relative;
       border-left: 14px solid var(--layout-accent, var(--accent)) !important;
+      border-radius: 0 !important;
     }
     .paper.layout-stripe .top {
       display: flex !important;
@@ -1885,7 +1890,7 @@
       .panel { box-shadow: 0 12px 32px rgba(20, 40, 90, .09); }
       .preview { padding: 18px 28px 28px; background: linear-gradient(145deg, #edf3fc, #e7eef9); overflow: visible; max-height: none; }
       .preview-header-bar { max-width: 794px; width: 100%; }
-      .paper { border-radius: 3px; box-shadow: 0 18px 40px rgba(20, 40, 90, .16); }
+      .paper { border-radius: 0 !important; box-shadow: 0 18px 40px rgba(20, 40, 90, .16); }
       .paper-scaler .paper { height: 1123px !important; }
       .submission .box { border-radius: 10px !important; padding: 20px 16px !important; }
     }
