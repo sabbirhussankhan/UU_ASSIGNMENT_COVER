@@ -1451,7 +1451,6 @@
       border-bottom-width: var(--border-bottom, var(--border-width, 0px)) !important;
       border-left-width: var(--border-left, var(--border-width, 0px)) !important;
       box-sizing: border-box;
-      transition: transform .1s ease-out;
     }
     .paper.paper-cream { background: #fffaf0 !important; }
     .paper.paper-mono { background: #f7f7f7 !important; filter: grayscale(1); }
@@ -2821,6 +2820,13 @@
       flex-direction: column !important;
       gap: 6px !important;
     }
+    .editor-view:not(.is-hidden) {
+      animation: tabFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes tabFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     .editor-view.is-hidden {
       display: none !important;
     }
@@ -3564,8 +3570,8 @@
                 </div>
               </summary>
               <div style="display:grid; gap:11px;">
-                <div class="field filled">
-                  <input id="report" name="report_type" autocomplete="on" value="Lab Report" placeholder="Report type">
+                <div class="field">
+                  <input id="report" name="report_type" autocomplete="on" placeholder="Report type">
                   <span class="float-label">Report type</span>
                 </div>
                 <div class="field-actions">
@@ -4565,8 +4571,6 @@
             if (designView) designView.classList.remove('is-hidden');
             if (moreView) moreView.classList.add('is-hidden');
           }
-
-          setTimeout(scalePaperPreview, 40);
         });
       });
 
@@ -5114,11 +5118,12 @@
         const studentCard = document.getElementById('flow-student-card');
         const avatarCircle = studentCard?.querySelector('.flow-avatar-circle');
 
-        const isLoggedIn = Boolean(window.StudentAuth && StudentAuth.isLoggedIn()) || Boolean(studentIdInput?.value.trim());
+        const isLoggedIn = Boolean(window.StudentAuth && StudentAuth.isLoggedIn());
 
         if (isLoggedIn) {
-          const sName = (studentNameInput?.value || '').trim() || (window.StudentAuth && StudentAuth.getProfile()?.name) || 'Student Details';
-          const sId = (studentIdInput?.value || '').trim() || (window.StudentAuth && StudentAuth.getProfile()?.id) || '—';
+          const profile = window.StudentAuth && StudentAuth.getProfile();
+          const sName = (profile && profile.name) || (studentNameInput?.value || '').trim() || 'Student Details';
+          const sId = (profile && profile.id) || (studentIdInput?.value || '').trim() || '—';
 
           if (nameEl) nameEl.textContent = sName;
           if (idEl) {
@@ -6397,6 +6402,10 @@
       window.changePreviewZoom = changePreviewZoom;
       window.resetPreviewZoom = resetPreviewZoom;
 
+      let lastAppliedScale = 0;
+      let lastAppliedScalerW = 0;
+      let lastAppliedScalerH = 0;
+
       // Perfect A4 Paper Preview Scaling on Mobile / Narrow / Desktop Viewports
       function scalePaperPreview() {
         const preview = document.querySelector('.panel.preview');
@@ -6405,7 +6414,6 @@
         if (!preview || !paper || !scaler) return;
 
         if (window.innerWidth <= 768 && !document.body.classList.contains('is-fullscreen-active')) {
-          paper.style.transform = mobilePinchScale === 1 ? 'none' : `scale(${mobilePinchScale})`;
           paper.style.transformOrigin = 'top center';
           paper.style.position = 'relative';
           paper.style.top = '0';
@@ -6415,18 +6423,9 @@
           paper.style.minWidth = '0';
           scaler.style.width = '100%';
           scaler.style.height = mobilePinchScale === 1 ? 'auto' : `${Math.ceil(paper.offsetHeight * mobilePinchScale)}px`;
+          paper.style.transform = mobilePinchScale === 1 ? 'none' : `scale(${mobilePinchScale})`;
           return;
         }
-
-        // Reset ONLY layout scaling inline properties, preserving custom CSS variables
-        paper.style.transform = 'none';
-        paper.style.position = 'relative';
-        paper.style.top = '0';
-        paper.style.left = '0';
-        paper.style.margin = '0 auto';
-        paper.style.width = '794px';
-        paper.style.minWidth = '794px';
-        scaler.style.cssText = '';
 
         // Accurately compute available inner width inside preview panel
         const previewRect = preview.getBoundingClientRect();
@@ -6462,21 +6461,27 @@
         const scaledWidth = Math.ceil(paperWidth * scale);
         const scaledHeight = Math.ceil(paperHeight * scale);
 
-        scaler.style.position = 'relative';
-        scaler.style.display = 'block';
-        scaler.style.width = `${scaledWidth}px`;
-        scaler.style.height = `${scaledHeight}px`;
-        scaler.style.maxWidth = '100%';
-        scaler.style.margin = (window.innerWidth <= 900 || document.body.classList.contains('is-preview-fullscreen')) ? '0 auto' : '0';
-        scaler.style.overflow = 'hidden';
+        if (Math.abs(scale - lastAppliedScale) > 0.0005 || scaledWidth !== lastAppliedScalerW || scaledHeight !== lastAppliedScalerH) {
+          lastAppliedScale = scale;
+          lastAppliedScalerW = scaledWidth;
+          lastAppliedScalerH = scaledHeight;
 
-        paper.style.position = 'absolute';
-        paper.style.top = '0';
-        paper.style.left = '0';
-        paper.style.width = '794px';
-        paper.style.minWidth = '794px';
-        paper.style.transformOrigin = 'top left';
-        paper.style.transform = `scale(${scale})`;
+          scaler.style.position = 'relative';
+          scaler.style.display = 'block';
+          scaler.style.width = `${scaledWidth}px`;
+          scaler.style.height = `${scaledHeight}px`;
+          scaler.style.maxWidth = '100%';
+          scaler.style.margin = (window.innerWidth <= 900 || document.body.classList.contains('is-preview-fullscreen')) ? '0 auto' : '0';
+          scaler.style.overflow = 'hidden';
+
+          paper.style.position = 'absolute';
+          paper.style.top = '0';
+          paper.style.left = '0';
+          paper.style.width = '794px';
+          paper.style.minWidth = '794px';
+          paper.style.transformOrigin = 'top left';
+          paper.style.transform = `scale(${scale})`;
+        }
       }
 
       const paperScalerEl = document.getElementById('paper-scaler');
