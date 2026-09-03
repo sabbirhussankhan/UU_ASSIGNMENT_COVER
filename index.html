@@ -1966,28 +1966,38 @@
         margin: 0 !important;
         padding: 0 !important;
       }
-      .layout {
+      .shell, .layout {
         display: block !important;
+        position: static !important;
         margin: 0 !important;
         padding: 0 !important;
         width: 100% !important;
+        max-width: 100% !important;
         height: 100% !important;
       }
       .panel.preview {
         display: block !important;
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
         padding: 0 !important;
         margin: 0 !important;
-        background: #ffffff !important;
+        background: transparent !important;
         border: none !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         overflow: visible !important;
         width: 100% !important;
         height: 100% !important;
+        max-height: none !important;
       }
       .paper-scaler {
         position: static !important;
         display: block !important;
+        top: auto !important;
+        left: auto !important;
         width: 210mm !important;
         max-width: 210mm !important;
         height: 297mm !important;
@@ -1999,7 +2009,7 @@
         transform: none !important;
       }
       .paper {
-        position: relative !important;
+        position: static !important;
         top: 0 !important;
         left: 0 !important;
         right: 0 !important;
@@ -6936,6 +6946,7 @@
     window.addEventListener('beforeprint', () => {
       const paper = document.getElementById('paper-element');
       const scaler = document.getElementById('paper-scaler');
+      const preview = document.querySelector('.panel.preview');
       if (paper) {
         paper.style.removeProperty('transform');
         paper.style.removeProperty('position');
@@ -6947,6 +6958,11 @@
         scaler.style.removeProperty('width');
         scaler.style.removeProperty('height');
         scaler.style.removeProperty('overflow');
+      }
+      if (preview) {
+        preview.style.removeProperty('position');
+        preview.style.removeProperty('top');
+        preview.style.removeProperty('max-height');
       }
     });
 
