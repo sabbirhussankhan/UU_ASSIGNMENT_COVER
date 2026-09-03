@@ -1445,6 +1445,7 @@
       --gap-submission: 36px;
       --header-font-scale: 1;
       --body-font-scale: 1;
+      --box-font-scale: 1;
       border-style: solid !important;
       border-color: var(--border-color, var(--accent)) !important;
       border-top-width: var(--border-top, var(--border-width, 0px)) !important;
@@ -1734,21 +1735,21 @@
       grid-template-columns: 105px minmax(0, 1fr) !important;
       column-gap: 4px !important;
       margin-bottom: 7px !important;
-      font-size: calc(13px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
+      font-size: calc(13px * var(--box-font-scale, 1) * var(--paper-scale, 1)) !important;
       line-height: 1.4 !important;
     }
     #teacher-preview-container p, #teacher-preview-container .custom-preview-row {
       grid-template-columns: 132px minmax(0, 1fr) !important;
     }
     .submission .box p b, .submission .box .custom-preview-row b {
-      font-size: calc(13.5px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
+      font-size: calc(13.5px * var(--box-font-scale, 1) * var(--paper-scale, 1)) !important;
       font-weight: 700 !important;
       white-space: nowrap !important;
       color: var(--body-color, #111);
     }
     #p-student, #p-teacher {
       font-weight: 700 !important;
-      font-size: calc(14.5px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
+      font-size: calc(14.5px * var(--box-font-scale, 1) * var(--paper-scale, 1)) !important;
       color: var(--body-color, #111) !important;
     }
     .submission .box p span, .submission .box .custom-preview-row span {
@@ -2085,7 +2086,7 @@
 
       .paper .experiment {
         margin: 5mm 0 3mm !important;
-        font-size: calc(13px * var(--paper-scale, 1)) !important;
+        font-size: calc(13px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
         line-height: 1.45 !important;
       }
       .paper .experiment p, .paper .experiment .custom-preview-row {
@@ -2132,7 +2133,7 @@
         display: grid !important;
         grid-template-columns: 100px minmax(0, 1fr) !important;
         align-items: baseline !important;
-        font-size: calc(12.5px * var(--paper-scale, 1)) !important;
+        font-size: calc(12.5px * var(--box-font-scale, 1) * var(--paper-scale, 1)) !important;
         line-height: 1.4 !important;
         margin-bottom: 2.5mm !important;
         column-gap: 3mm !important;
@@ -2142,7 +2143,7 @@
       }
       .paper #p-student, .paper #p-teacher {
         font-weight: 700 !important;
-        font-size: calc(13.5px * var(--paper-scale, 1)) !important;
+        font-size: calc(13.5px * var(--box-font-scale, 1) * var(--paper-scale, 1)) !important;
       }
       .paper .submission .box p > b, .paper .submission .box .custom-preview-row > b {
         display: block !important;
@@ -2774,9 +2775,9 @@
 
     /* FlowCV Sub-Bar - Zero redundant padding, 100% width matching Hero & Layout */
     .flow-subbar-container {
-      position: sticky !important;
-      top: 10px !important;
-      z-index: 1000 !important;
+      position: relative !important;
+      top: auto !important;
+      z-index: 100 !important;
       width: 100% !important;
       max-width: 100% !important;
       margin: 0 0 16px 0 !important;
@@ -3107,14 +3108,14 @@
       box-shadow: none !important;
       padding: 0 !important;
       position: sticky !important;
-      top: 76px !important;
+      top: 16px !important;
+      align-self: flex-start !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
       justify-content: flex-start !important;
       flex: 1 !important;
       min-width: 0 !important;
-      max-height: calc(100vh - 82px) !important;
     }
     .preview-header-bar {
       display: none !important;
@@ -4097,13 +4098,25 @@
 
               <div class="ctrl-row">
                 <div class="ctrl-header">
-                  <span>Body / Box Font Size</span>
+                  <span>Body Font Size</span>
                   <span class="val-badge" id="body-font-scale-val">100%</span>
                 </div>
                 <div class="ctrl-body">
                   <button type="button" class="step-btn" onclick="stepSlider('body-font-scale', -5)">-</button>
                   <input id="body-font-scale" type="range" min="70" max="140" value="100" class="range-slider-input">
                   <button type="button" class="step-btn" onclick="stepSlider('body-font-scale', 5)">+</button>
+                </div>
+              </div>
+
+              <div class="ctrl-row">
+                <div class="ctrl-header">
+                  <span>Box Font Size</span>
+                  <span class="val-badge" id="box-font-scale-val">100%</span>
+                </div>
+                <div class="ctrl-body">
+                  <button type="button" class="step-btn" onclick="stepSlider('box-font-scale', -5)">-</button>
+                  <input id="box-font-scale" type="range" min="70" max="140" value="100" class="range-slider-input">
+                  <button type="button" class="step-btn" onclick="stepSlider('box-font-scale', 5)">+</button>
                 </div>
               </div>
             </div>
@@ -6079,6 +6092,15 @@
         });
       }
 
+      const boxFontScaleInput = document.getElementById('box-font-scale');
+      const boxFontScaleVal = document.getElementById('box-font-scale-val');
+      if (boxFontScaleInput && boxFontScaleVal) {
+        boxFontScaleInput.addEventListener('input', () => {
+          boxFontScaleVal.textContent = boxFontScaleInput.value + '%';
+          paper.style.setProperty('--box-font-scale', boxFontScaleInput.value / 100);
+        });
+      }
+
       // 3 Section Gap Controls
       const gapTopInput = document.getElementById('gap-top');
       const gapTopVal = document.getElementById('gap-top-val');
@@ -6128,6 +6150,11 @@
             bodyFontScaleInput.value = '100';
             bodyFontScaleVal.textContent = '100%';
             paper.style.setProperty('--body-font-scale', 1);
+          }
+          if (boxFontScaleInput && boxFontScaleVal) {
+            boxFontScaleInput.value = '100';
+            boxFontScaleVal.textContent = '100%';
+            paper.style.setProperty('--box-font-scale', 1);
           }
           if (gapTopInput && gapTopVal) {
             gapTopInput.value = '24';
@@ -6471,6 +6498,11 @@
           bodyFontScaleVal.textContent = '100%';
           paper.style.setProperty('--body-font-scale', 1);
         }
+        if (boxFontScaleInput && boxFontScaleVal) {
+          boxFontScaleInput.value = '100';
+          boxFontScaleVal.textContent = '100%';
+          paper.style.setProperty('--box-font-scale', 1);
+        }
         if (gapTopInput && gapTopVal) {
           gapTopInput.value = '24';
           gapTopVal.textContent = '24 px';
@@ -6557,13 +6589,9 @@
         const paperHeight = 1123;
         let scale = availWidth / paperWidth;
 
-        // FlowCV / Canva style: fit paper into available width AND sticky viewport height so entire paper stays in view while scrolling settings
+        // Natural responsive preview scaling filling the available preview column
         if (window.innerWidth > 900 && !document.body.classList.contains('is-preview-fullscreen') && !document.body.classList.contains('is-fullscreen-active')) {
-          const stickyTop = 80;
-          const maxAvailHeight = Math.max(380, window.innerHeight - stickyTop - 28);
-          const scaleW = availWidth / paperWidth;
-          const scaleH = maxAvailHeight / paperHeight;
-          scale = Math.min(scaleW, scaleH, 0.96);
+          scale = Math.min(availWidth / paperWidth, 0.96);
         } else if (window.innerWidth <= 900 && !document.body.classList.contains('is-preview-fullscreen') && !document.body.classList.contains('is-fullscreen-active')) {
           // On mobile & tablet: scale smoothly to fit available width perfectly without horizontal scroll
           scale = Math.min(availWidth / paperWidth, 0.95);
