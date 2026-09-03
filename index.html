@@ -1426,9 +1426,10 @@
       min-width: 794px;
       aspect-ratio: 210 / 297;
       margin: 0 auto;
-      padding: 6.2% var(--print-margin, 15mm) 5.8%;
+      padding: 4.8% var(--print-margin, 15mm) 4.2%;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       background: #fff;
       text-align: center;
       box-shadow: 0 12px 28px rgba(20, 40, 90, 0.12);
@@ -1660,9 +1661,9 @@
     }
     .paper .logo {
       display: block;
-      width: 165px !important;
-      height: 165px !important;
-      margin: 16px auto 16px !important;
+      width: 140px !important;
+      height: 140px !important;
+      margin: 10px auto 10px !important;
       object-fit: contain !important;
     }
     .paper .top h2 {
@@ -1675,19 +1676,19 @@
       color: var(--heading-color, var(--accent)) !important;
     }
     .paper .experiment {
-      margin-top: var(--gap-experiment, 24px) !important;
-      margin-bottom: var(--gap-experiment, 24px) !important;
+      margin-top: var(--gap-experiment, 16px) !important;
+      margin-bottom: var(--gap-experiment, 16px) !important;
       text-align: left;
-      font-size: calc(16px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
+      font-size: calc(15px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
       font-weight: 400 !important;
-      line-height: 1.6 !important;
+      line-height: 1.55 !important;
     }
     .paper .experiment p, .paper .experiment .custom-preview-row {
       display: grid !important;
       grid-template-columns: 180px minmax(0, 1fr) !important;
       column-gap: 12px !important;
       align-items: baseline !important;
-      margin: 0 0 8px !important;
+      margin: 0 0 6px !important;
     }
     .paper .experiment b, .paper .experiment .custom-preview-row b {
       font-weight: 700 !important;
@@ -1704,25 +1705,25 @@
       grid-template-columns: 1fr 1fr !important;
       gap: 12px !important;
       align-items: stretch !important;
-      margin-top: var(--gap-submission, 36px) !important;
-      margin-bottom: var(--gap-submission, 36px) !important;
+      margin-top: var(--gap-submission, 18px) !important;
+      margin-bottom: 8px !important;
     }
     .submission > div { display: flex !important; flex-direction: column !important; min-width: 0 !important; }
     .submission h3 {
       font-family: Arial, sans-serif !important;
-      font-size: 14px !important;
+      font-size: 13.5px !important;
       font-weight: 800 !important;
       letter-spacing: .12em;
       text-transform: uppercase;
       color: var(--heading-color, var(--accent)) !important;
       text-align: center !important;
-      margin: 0 0 16px !important;
+      margin: 0 0 10px !important;
     }
     .submission .box {
       height: auto !important;
       flex: 1 1 auto !important;
-      min-height: 220px !important;
-      padding: 18px 12px !important;
+      min-height: auto !important;
+      padding: 12px 14px !important;
       border: 1px solid var(--border-color, #d7dee9) !important;
       border-radius: 6px !important;
       background: var(--box-color, #fcfdff) !important;
@@ -1732,22 +1733,22 @@
       display: grid !important;
       grid-template-columns: 105px minmax(0, 1fr) !important;
       column-gap: 4px !important;
-      margin-bottom: 13px !important;
-      font-size: calc(13.5px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
-      line-height: 1.45 !important;
+      margin-bottom: 7px !important;
+      font-size: calc(13px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
+      line-height: 1.4 !important;
     }
     #teacher-preview-container p, #teacher-preview-container .custom-preview-row {
       grid-template-columns: 132px minmax(0, 1fr) !important;
     }
     .submission .box p b, .submission .box .custom-preview-row b {
-      font-size: calc(14px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
+      font-size: calc(13.5px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
       font-weight: 700 !important;
       white-space: nowrap !important;
       color: var(--body-color, #111);
     }
     #p-student, #p-teacher {
       font-weight: 700 !important;
-      font-size: calc(15px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
+      font-size: calc(14.5px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
       color: var(--body-color, #111) !important;
     }
     .submission .box p span, .submission .box .custom-preview-row span {
@@ -1767,9 +1768,9 @@
 
     /* Dedicated Bottom Submission Date Footer */
     .submission-date-footer {
-      margin-top: var(--gap-submission, 36px) !important;
-      padding-top: 16px;
-      padding-bottom: 12px;
+      margin-top: 8px !important;
+      padding-top: 6px;
+      padding-bottom: 6px;
       text-align: center;
     }
     .submission-date-footer h3 {
@@ -1779,7 +1780,7 @@
       letter-spacing: .14em;
       text-transform: uppercase;
       color: var(--heading-color, var(--accent)) !important;
-      margin: 0 0 6px !important;
+      margin: 0 0 4px !important;
     }
     .submission-date-footer p {
       margin: 0 !important;
@@ -2009,9 +2010,12 @@
         max-width: none !important;
         box-shadow: none !important;
         border-radius: 0 !important;
-        padding: 14mm var(--print-margin, 15mm) 12mm !important;
+        padding: 12mm var(--print-margin, 14mm) 10mm !important;
         margin: 0 !important;
         overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
         page-break-after: avoid !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
@@ -2023,52 +2027,53 @@
         padding-top: 0 !important;
       }
       .paper.layout-banner .top {
-        margin-left: calc(-1 * var(--print-margin, 15mm)) !important;
-        margin-right: calc(-1 * var(--print-margin, 15mm)) !important;
+        margin-left: calc(-1 * var(--print-margin, 14mm)) !important;
+        margin-right: calc(-1 * var(--print-margin, 14mm)) !important;
         margin-top: 0 !important;
-        padding: 8mm 10mm 6mm !important;
+        padding: 7mm 10mm 5mm !important;
         background: var(--accent) !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
       .paper.layout-banner .top .logo {
-        height: 110px !important;
-        width: 110px !important;
-        margin-bottom: 4mm !important;
+        height: 95px !important;
+        width: 95px !important;
+        margin-bottom: 3mm !important;
       }
       .paper.layout-banner .top .uni {
-        font-size: 24px !important;
+        font-size: 22px !important;
       }
       .paper.layout-banner .top h2 {
-        font-size: 14px !important;
+        font-size: 13px !important;
       }
 
       .paper .uni {
-        font-size: 36px !important;
+        font-size: 30px !important;
         line-height: 1.15 !important;
       }
       .paper .logo {
-        width: 185px !important;
-        height: 185px !important;
-        margin: 13mm auto 11mm !important;
+        width: 145px !important;
+        height: 145px !important;
+        margin: 7mm auto 6mm !important;
         object-fit: contain !important;
       }
       .paper .top h2 {
-        font-size: 23px !important;
+        font-size: 20px !important;
         line-height: 1.2 !important;
+        margin-top: 2mm !important;
       }
 
       .paper .experiment {
-        margin: 10mm 0 8mm !important;
-        font-size: calc(16px * var(--paper-scale, 1)) !important;
-        line-height: 1.6 !important;
+        margin: 6mm 0 4mm !important;
+        font-size: calc(14px * var(--paper-scale, 1)) !important;
+        line-height: 1.5 !important;
       }
       .paper .experiment p, .paper .experiment .custom-preview-row {
         display: grid !important;
-        grid-template-columns: 180px minmax(0, 1fr) !important;
-        column-gap: 12px !important;
+        grid-template-columns: 160px minmax(0, 1fr) !important;
+        column-gap: 10px !important;
         align-items: baseline !important;
-        margin-bottom: 9px !important;
+        margin-bottom: 6px !important;
       }
       .paper .experiment p b, .paper .experiment .custom-preview-row b {
         display: block !important;
@@ -2082,10 +2087,10 @@
       .paper .submission {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
-        gap: 10mm !important;
+        gap: 8mm !important;
         align-items: stretch !important;
-        margin-top: auto !important;
-        margin-bottom: auto !important;
+        margin-top: 4mm !important;
+        margin-bottom: 2mm !important;
       }
       .paper .submission > div {
         display: flex !important;
@@ -2093,31 +2098,31 @@
         min-width: 0 !important;
       }
       .paper .submission h3 {
-        font-size: 14px !important;
-        margin-bottom: 9mm !important;
+        font-size: 13px !important;
+        margin-bottom: 4mm !important;
         text-align: center !important;
       }
       .paper .submission .box {
         height: auto !important;
+        min-height: auto !important;
         flex: 1 1 auto !important;
-        min-height: 220px !important;
-        padding: 7mm 5mm !important;
+        padding: 5mm 5mm !important;
       }
       .paper .submission .box p, .paper .submission .box .custom-preview-row {
         display: grid !important;
-        grid-template-columns: 105px minmax(0, 1fr) !important;
+        grid-template-columns: 100px minmax(0, 1fr) !important;
         align-items: baseline !important;
-        font-size: calc(14px * var(--paper-scale, 1)) !important;
-        line-height: 1.5 !important;
-        margin-bottom: 5mm !important;
+        font-size: calc(13px * var(--paper-scale, 1)) !important;
+        line-height: 1.45 !important;
+        margin-bottom: 3.5mm !important;
         column-gap: 3mm !important;
       }
       .paper #teacher-preview-container p, .paper #teacher-preview-container .custom-preview-row {
-        grid-template-columns: 132px minmax(0, 1fr) !important;
+        grid-template-columns: 120px minmax(0, 1fr) !important;
       }
       .paper #p-student, .paper #p-teacher {
         font-weight: 700 !important;
-        font-size: calc(15px * var(--paper-scale, 1)) !important;
+        font-size: calc(14px * var(--paper-scale, 1)) !important;
       }
       .paper .submission .box p > b, .paper .submission .box .custom-preview-row > b {
         display: block !important;
@@ -2134,6 +2139,27 @@
         display: inline !important;
         margin: 0 !important;
         padding: 0 !important;
+      }
+
+      /* Submission Date Footer Print Styles */
+      .paper .submission-date-footer {
+        margin-top: 3mm !important;
+        padding-top: 3mm !important;
+        padding-bottom: 2mm !important;
+        text-align: center !important;
+      }
+      .paper .submission-date-footer h3 {
+        font-size: 11px !important;
+        font-weight: 800 !important;
+        letter-spacing: .12em !important;
+        margin: 0 0 2mm !important;
+        color: var(--heading-color, var(--accent)) !important;
+      }
+      .paper .submission-date-footer p {
+        font-size: 13.5px !important;
+        font-weight: 700 !important;
+        margin: 0 !important;
+        color: var(--body-color, #111) !important;
       }
     }
     /* Suite Header Bar & Global Navigation Styles */
