@@ -1920,35 +1920,103 @@
       margin: 0;
     }
 
-    /* Print Styles (Exact A4 Formatting) */
+    /* Print Styles (Exact A4 Formatting - Only Cover Page is Printed) */
     @media print {
-      html, body {
-        height: 297mm !important;
-        max-height: 297mm !important;
-        overflow: hidden !important;
-        background: #fff !important;
-        padding: 0 !important;
-        margin: 0 !important;
+      @page {
+        size: A4 portrait;
+        margin: 0;
       }
-      .hero, .editor, .field-modal-backdrop, .preview-header-bar, .toast-notify { display: none !important; }
-      .layout { display: block !important; margin: 0 !important; padding: 0 !important; }
-      .preview { padding: 0 !important; background: #fff !important; overflow: visible !important; }
-      .paper-scaler { height: auto !important; width: 100% !important; display: block !important; }
-      
-      .paper {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
+      *, *::before, *::after {
+        box-shadow: none !important;
+      }
+      html, body {
         width: 210mm !important;
         height: 297mm !important;
         max-height: 297mm !important;
+        min-height: 297mm !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      /* Hide ALL page headers, navbars, subbars, editor, mobile nav, modals, footers */
+      header, footer, nav,
+      .dash-header, .navbar, .hero,
+      .flow-subbar-container, .flow-subbar,
+      .panel.editor, .editor,
+      .preview-header-bar, .flow-preview-toolbar,
+      .bottom-nav,
+      .modal-overlay, #mobile-more-sheet,
+      .portal-modal-overlay, #portal-login-modal,
+      .field-modal-backdrop, #add-field-modal,
+      .fullscreen-modal-backdrop,
+      .toast-notify,
+      .a4-status-badge,
+      .theme-toggle-btn,
+      .dropdown-menu,
+      .mobile-sheet-box {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .layout {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+      .panel.preview {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: #ffffff !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+      .paper-scaler {
+        position: static !important;
+        display: block !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        transform: none !important;
+      }
+      .paper {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        min-height: 297mm !important;
         min-width: 0 !important;
         transform: none !important;
         aspect-ratio: auto !important;
         max-width: none !important;
         box-shadow: none !important;
+        border-radius: 0 !important;
         padding: 14mm var(--print-margin, 15mm) 12mm !important;
         margin: 0 !important;
         overflow: hidden !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
 
       .paper.layout-banner {
@@ -2419,23 +2487,6 @@
       opacity: 0.6;
       cursor: not-allowed;
       transform: none;
-    }
-    .auth-demo-btn {
-      width: 100%;
-      margin-top: 10px;
-      padding: 10px;
-      font-size: 12.5px;
-      font-weight: 700;
-      color: #2451C4;
-      background: #EFF6FF;
-      border: 1.5px dashed rgba(36, 81, 196, 0.35);
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .auth-demo-btn:hover {
-      background: #DBEAFE;
-      border-color: #2451C4;
     }
 
     /* Mobile Bottom Sheet Drawer for More Options */
@@ -4440,7 +4491,6 @@
       </label>
 
       <button type="button" class="auth-submit-btn" id="btn-portal-login-submit">Login &amp; Auto-Fill Cover</button>
-      <button type="button" class="auth-demo-btn" id="btn-portal-demo-login">⚡ 1-Click Instant Demo Login</button>
     </div>
   </div>
 
@@ -4958,7 +5008,6 @@
       const portalModal = document.getElementById('portal-login-modal');
       const btnClosePortal = document.getElementById('btn-close-portal-login');
       const btnPortalSubmit = document.getElementById('btn-portal-login-submit');
-      const btnPortalDemo = document.getElementById('btn-portal-demo-login');
       const btnTogglePortalPw = document.getElementById('btn-toggle-portal-pw');
       const inputPortalId = document.getElementById('portal-auth-student-id');
       const inputPortalPw = document.getElementById('portal-auth-password');
@@ -5096,17 +5145,6 @@
       if (inputPortalPw) {
         inputPortalPw.addEventListener('keypress', (e) => {
           if (e.key === 'Enter') handlePortalLoginSubmit();
-        });
-      }
-
-      if (btnPortalDemo) {
-        btnPortalDemo.addEventListener('click', async () => {
-          if (window.StudentAuth) {
-            const res = await StudentAuth.loginDemo('2261091211');
-            closePortalLoginModal();
-            applyStudentProfileToCover(res.profile);
-            showToast('Logged in as Demo Student! Cover auto-filled.', 'info');
-          }
         });
       }
 
