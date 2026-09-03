@@ -1925,274 +1925,7 @@
       margin: 0;
     }
 
-    /* Print Styles (Exact A4 Formatting - Only Cover Page is Printed) */
-    @media print {
-      @page {
-        size: A4 portrait;
-        margin: 0;
-      }
-      *, *::before, *::after {
-        box-shadow: none !important;
-      }
-      html, body {
-        width: 210mm !important;
-        height: 297mm !important;
-        max-height: 297mm !important;
-        min-height: 297mm !important;
-        overflow: hidden !important;
-        background: #ffffff !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-      /* Hide ALL page headers, navbars, subbars, editor, mobile nav, modals, footers, action bars */
-      header, footer, nav,
-      .dash-header, .navbar, .hero,
-      .flow-subbar-container, .flow-subbar,
-      .panel.editor, .editor,
-      .preview-header-bar, .flow-preview-toolbar, .flow-preview-actions-bar,
-      .bottom-nav,
-      .modal-overlay, #mobile-more-sheet,
-      .portal-modal-overlay, #portal-login-modal,
-      .field-modal-backdrop, #add-field-modal,
-      .fullscreen-modal-backdrop,
-      .toast-notify,
-      .a4-status-badge,
-      .theme-toggle-btn,
-      .dropdown-menu,
-      .mobile-sheet-box {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        height: 0 !important;
-        width: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-      .shell, .layout {
-        display: block !important;
-        position: static !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        height: 100% !important;
-      }
-      .panel.preview {
-        display: block !important;
-        position: static !important;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
-        bottom: auto !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        background: transparent !important;
-        border: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        overflow: visible !important;
-        width: 100% !important;
-        height: 100% !important;
-        max-height: none !important;
-      }
-      .paper-scaler {
-        position: static !important;
-        display: block !important;
-        top: auto !important;
-        left: auto !important;
-        width: 210mm !important;
-        max-width: 210mm !important;
-        height: 297mm !important;
-        max-height: 297mm !important;
-        min-height: 297mm !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: hidden !important;
-        transform: none !important;
-      }
-      .paper {
-        position: static !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        width: 210mm !important;
-        max-width: 210mm !important;
-        height: 297mm !important;
-        max-height: 297mm !important;
-        min-height: 297mm !important;
-        min-width: 0 !important;
-        transform: none !important;
-        aspect-ratio: auto !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-        padding: 10mm var(--print-margin, 14mm) 12mm !important;
-        margin: 0 !important;
-        overflow: hidden !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-between !important;
-        page-break-after: avoid !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-        box-sizing: border-box !important;
-      }
-
-      .paper.layout-framed {
-        outline: 2px solid var(--layout-accent, var(--accent)) !important;
-        outline-offset: -8mm !important;
-        padding: 12mm var(--print-margin, 14mm) 14mm !important;
-      }
-
-      .paper.layout-banner {
-        padding-top: 0 !important;
-      }
-      .paper.layout-banner .top {
-        margin-left: calc(-1 * var(--print-margin, 14mm)) !important;
-        margin-right: calc(-1 * var(--print-margin, 14mm)) !important;
-        margin-top: 0 !important;
-        padding: 5mm 10mm 4mm !important;
-        background: var(--accent) !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-      .paper.layout-banner .top .logo {
-        height: 75px !important;
-        width: 75px !important;
-        margin-bottom: 2mm !important;
-      }
-      .paper.layout-banner .top .uni {
-        font-size: 20px !important;
-      }
-      .paper.layout-banner .top h2 {
-        font-size: 13px !important;
-      }
-
-      .paper .uni {
-        font-size: 27px !important;
-        line-height: 1.15 !important;
-      }
-      .paper .logo {
-        width: 125px !important;
-        height: 125px !important;
-        margin: 5mm auto 4mm !important;
-        object-fit: contain !important;
-      }
-      .paper .top h2 {
-        font-size: 18px !important;
-        line-height: 1.2 !important;
-        margin-top: 2mm !important;
-      }
-
-      .paper .experiment {
-        margin: 5mm 0 3mm !important;
-        font-size: calc(13px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
-        line-height: 1.45 !important;
-      }
-      .paper .experiment p, .paper .experiment .custom-preview-row {
-        display: grid !important;
-        grid-template-columns: 160px minmax(0, 1fr) !important;
-        column-gap: 10px !important;
-        align-items: baseline !important;
-        margin-bottom: calc(var(--gap-row-experiment, 6px) * 0.65px) !important;
-      }
-      .paper .experiment p b, .paper .experiment .custom-preview-row b {
-        display: block !important;
-        white-space: nowrap !important;
-      }
-      .paper .experiment p span, .paper .experiment .custom-preview-row span {
-        min-width: 0 !important;
-        overflow-wrap: anywhere !important;
-      }
-
-      .paper .submission {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 8mm !important;
-        align-items: stretch !important;
-        margin-top: 4mm !important;
-        margin-bottom: 3mm !important;
-      }
-      .paper .submission > div {
-        display: flex !important;
-        flex-direction: column !important;
-        min-width: 0 !important;
-      }
-      .paper .submission h3 {
-        font-size: 12.5px !important;
-        margin-bottom: 3mm !important;
-        text-align: center !important;
-      }
-      .paper .submission .box {
-        height: auto !important;
-        min-height: auto !important;
-        flex: 1 1 auto !important;
-        padding: 4mm 4mm !important;
-      }
-      .paper .submission .box p, .paper .submission .box .custom-preview-row {
-        display: grid !important;
-        grid-template-columns: 100px minmax(0, 1fr) !important;
-        align-items: baseline !important;
-        font-size: calc(12.5px * var(--box-font-scale, 1) * var(--paper-scale, 1)) !important;
-        line-height: 1.4 !important;
-        margin-bottom: calc(var(--gap-row-box, 7px) * 0.45px) !important;
-        column-gap: 3mm !important;
-      }
-      .paper #teacher-preview-container p, .paper #teacher-preview-container .custom-preview-row {
-        grid-template-columns: 120px minmax(0, 1fr) !important;
-      }
-      .paper #p-student, .paper #p-teacher {
-        font-weight: 700 !important;
-        font-size: calc(13.5px * var(--box-font-scale, 1) * var(--paper-scale, 1)) !important;
-      }
-      .paper .submission .box p > b, .paper .submission .box .custom-preview-row > b {
-        display: block !important;
-        white-space: nowrap !important;
-      }
-      .paper .submission .box p > span, .paper .submission .box .custom-preview-row > span {
-        display: flex !important;
-        gap: 3px !important;
-        align-items: baseline !important;
-        padding-left: 0 !important;
-        min-width: 0 !important;
-      }
-      .paper .submission .box p > span > span, .paper .submission .box .custom-preview-row > span > span {
-        display: inline !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-
-      /* Submission Date Footer Print Styles */
-      .paper .submission-date-footer {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        margin-top: calc(var(--gap-date, 8px) * 0.4mm) !important;
-        padding-top: 2mm !important;
-        padding-bottom: 2mm !important;
-        text-align: center !important;
-      }
-      .paper .submission-date-footer h3 {
-        display: block !important;
-        visibility: visible !important;
-        font-size: 11px !important;
-        font-weight: 800 !important;
-        letter-spacing: .12em !important;
-        margin: 0 0 2mm !important;
-        color: var(--heading-color, var(--accent)) !important;
-      }
-      .paper .submission-date-footer p {
-        display: block !important;
-        visibility: visible !important;
-        font-size: 13.5px !important;
-        font-weight: 700 !important;
-        margin: 0 !important;
-        color: var(--body-color, #111) !important;
-      }
-    }
+    /* Note: Definitive @media print styles are placed at the bottom of the style tag to guarantee precedence */
     /* Suite Header Bar & Global Navigation Styles */
     .dash-header {
       display: flex;
@@ -3425,6 +3158,318 @@
         flex: 1 !important;
         min-width: 80px !important;
         height: 32px !important;
+      }
+    }
+
+    /* ==========================================================================
+       DEFINITIVE PRINT STYLES (EXACT 1:1 REPLICA OF LIVE PREVIEW ON A4 PAPER)
+       Placing at the very bottom of the stylesheet guarantees absolute cascade precedence.
+       ========================================================================== */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+      *, *::before, *::after {
+        box-shadow: none !important;
+      }
+      html, body {
+        width: 210mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        min-height: 297mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      /* Hide all web UI elements */
+      header, footer, nav,
+      .dash-header, .navbar, .hero,
+      .flow-subbar-container, .flow-subbar,
+      .panel.editor, .editor,
+      .preview-header-bar, .flow-preview-toolbar, .flow-preview-actions-bar,
+      .bottom-nav, #mobile-back-to-top, .mobile-back-to-top-btn,
+      .modal-overlay, #mobile-more-sheet,
+      .portal-modal-overlay, #portal-login-modal,
+      .field-modal-backdrop, #add-field-modal,
+      .fullscreen-modal-backdrop,
+      .toast-notify, .a4-status-badge,
+      .theme-toggle-btn, .dropdown-menu, .mobile-sheet-box,
+      .app-footer {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+      }
+
+      /* Container elements reset to transparent 210x297mm bounds */
+      .shell, .layout, .panel.preview, .paper-scaler {
+        display: block !important;
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 210mm !important;
+        max-width: 210mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        min-height: 297mm !important;
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        overflow: hidden !important;
+        transform: none !important;
+      }
+
+      /* Document Canvas: Exact 1:1 scale matching screen preview proportions */
+      .paper {
+        position: static !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 210mm !important;
+        max-width: 210mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        min-height: 297mm !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        padding: 14mm var(--print-margin, 15mm) 14mm !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        background: #ffffff !important;
+        transform: none !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .paper.paper-cream {
+        background: #fffaf0 !important;
+      }
+      .paper.paper-mono {
+        background: #f7f7f7 !important;
+        filter: grayscale(1) !important;
+      }
+
+      /* Top Banner Layout: Starts flush at top:0 with zero white gap and full banner dimensions */
+      .paper.layout-banner {
+        padding-top: 0 !important;
+      }
+      .paper.layout-banner .top {
+        background: var(--layout-accent, var(--accent, #2451C4)) !important;
+        color: #ffffff !important;
+        margin-left: calc(-1 * var(--print-margin, 15mm)) !important;
+        margin-right: calc(-1 * var(--print-margin, 15mm)) !important;
+        margin-top: 0 !important;
+        margin-bottom: var(--gap-top, 24px) !important;
+        padding: 34px 20px 26px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .paper.layout-banner .top .logo {
+        order: 1 !important;
+        filter: brightness(0) invert(1) !important;
+        margin: 0 auto 14px !important;
+        height: 130px !important;
+        width: 130px !important;
+        object-fit: contain !important;
+      }
+      .paper.layout-banner .top .uni {
+        order: 2 !important;
+        color: #ffffff !important;
+        font-size: 26px !important;
+        font-weight: 800 !important;
+        letter-spacing: .08em !important;
+        text-transform: uppercase !important;
+        line-height: 1.2 !important;
+        text-align: center !important;
+      }
+      .paper.layout-banner .top h2 {
+        order: 3 !important;
+        color: rgba(255, 255, 255, 0.95) !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: .12em !important;
+        margin-top: 8px !important;
+        text-align: center !important;
+      }
+
+      /* Academic Frame: Symmetrical 8mm frame */
+      .paper.layout-framed {
+        outline: 2px solid var(--layout-accent, var(--accent, #2451C4)) !important;
+        outline-offset: -8mm !important;
+        padding: 12mm var(--print-margin, 15mm) 12mm !important;
+      }
+
+      /* Left Stripe Layout */
+      .paper.layout-stripe {
+        border-left: 6px solid var(--layout-accent, var(--accent, #2451C4)) !important;
+      }
+
+      /* Classic Layout Header */
+      .paper .top {
+        margin-bottom: var(--gap-top, 24px) !important;
+        text-align: center !important;
+      }
+      .paper .uni {
+        font-size: 28px !important;
+        font-weight: 800 !important;
+        line-height: 1.15 !important;
+        color: var(--title-color, var(--accent, #2451C4)) !important;
+        text-align: center !important;
+      }
+      .paper .logo {
+        display: block !important;
+        width: 135px !important;
+        height: 135px !important;
+        margin: 10px auto !important;
+        object-fit: contain !important;
+      }
+      .paper .top h2 {
+        font-size: 18px !important;
+        font-weight: 700 !important;
+        color: var(--heading-color, var(--accent, #2451C4)) !important;
+        text-align: center !important;
+        margin: 0 !important;
+      }
+
+      /* Experiment Section: Full 15px font scale matching preview */
+      .paper .experiment {
+        margin-top: var(--gap-experiment, 24px) !important;
+        margin-bottom: var(--gap-experiment, 24px) !important;
+        font-size: calc(15px * var(--body-font-scale, 1) * var(--paper-scale, 1)) !important;
+        font-weight: 400 !important;
+        line-height: 1.55 !important;
+        text-align: left !important;
+      }
+      .paper .experiment p, .paper .experiment .custom-preview-row {
+        display: grid !important;
+        grid-template-columns: 180px minmax(0, 1fr) !important;
+        column-gap: 12px !important;
+        align-items: baseline !important;
+        margin: 0 0 var(--gap-row-experiment, 6px) !important;
+      }
+      .paper .experiment b, .paper .experiment .custom-preview-row b {
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+        color: var(--body-color, #111) !important;
+      }
+      .paper .experiment span, .paper .experiment .custom-preview-row span {
+        color: var(--body-color, #111) !important;
+        overflow-wrap: anywhere !important;
+      }
+
+      /* Submission Section: Full 13-14.5px font scale matching preview */
+      .paper .submission {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+        align-items: stretch !important;
+        margin-top: var(--gap-submission, 36px) !important;
+        margin-bottom: 8px !important;
+      }
+      .paper .submission > div {
+        display: flex !important;
+        flex-direction: column !important;
+        min-width: 0 !important;
+      }
+      .paper .submission h3 {
+        font-family: Arial, sans-serif !important;
+        font-size: 13.5px !important;
+        font-weight: 800 !important;
+        letter-spacing: .12em !important;
+        text-transform: uppercase !important;
+        color: var(--heading-color, var(--accent, #2451C4)) !important;
+        text-align: center !important;
+        margin: 0 0 10px !important;
+      }
+      .paper .submission .box {
+        height: auto !important;
+        flex: 1 1 auto !important;
+        padding: 12px 14px !important;
+        border: 1px solid var(--border-color, #d7dee9) !important;
+        border-radius: 6px !important;
+        background: var(--box-color, #fcfdff) !important;
+        text-align: left !important;
+      }
+      .paper.layout-banner .submission .box,
+      .paper.layout-stripe .submission .box {
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+      }
+      .paper .submission .box p, .paper .submission .box .custom-preview-row {
+        display: grid !important;
+        grid-template-columns: 105px minmax(0, 1fr) !important;
+        column-gap: 4px !important;
+        margin-bottom: var(--gap-row-box, 7px) !important;
+        font-size: calc(13px * var(--box-font-scale, 1) * var(--paper-scale, 1)) !important;
+        line-height: 1.4 !important;
+      }
+      .paper #teacher-preview-container p, .paper #teacher-preview-container .custom-preview-row {
+        grid-template-columns: 132px minmax(0, 1fr) !important;
+      }
+      .paper .submission .box p b, .paper .submission .box .custom-preview-row b {
+        font-size: calc(13.5px * var(--box-font-scale, 1) * var(--paper-scale, 1)) !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+        color: var(--body-color, #111) !important;
+      }
+      .paper #p-student, .paper #p-teacher {
+        font-weight: 700 !important;
+        font-size: calc(14.5px * var(--box-font-scale, 1) * var(--paper-scale, 1)) !important;
+        color: var(--body-color, #111) !important;
+      }
+      .paper .submission .box p span, .paper .submission .box .custom-preview-row span {
+        padding-left: 2px !important;
+        overflow-wrap: break-word !important;
+        color: var(--body-color, #111) !important;
+      }
+
+      /* Submission Date Footer: Full size matching preview */
+      .paper .submission-date-footer {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        margin-top: var(--gap-date, 8px) !important;
+        padding: 6px 0 !important;
+        text-align: center !important;
+      }
+      .paper .submission-date-footer h3 {
+        font-family: Arial, sans-serif !important;
+        font-size: 11px !important;
+        font-weight: 800 !important;
+        letter-spacing: .14em !important;
+        text-transform: uppercase !important;
+        color: var(--heading-color, var(--accent, #2451C4)) !important;
+        margin: 0 0 6px !important;
+      }
+      .paper .submission-date-footer p {
+        font-family: Arial, sans-serif !important;
+        font-size: 13.5px !important;
+        font-weight: 700 !important;
+        color: var(--body-color, #111) !important;
+        margin: 0 !important;
       }
     }
   </style>
