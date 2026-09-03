@@ -1,0 +1,141 @@
+/**
+ * UU Student ERP Auth Module for UU Assignment Cover Generator
+ * Verifies student credentials against Uttara University ERP via UU Bus backend API.
+ */
+(function (global) {
+  'use strict';
+
+  const TOKEN_KEY = 'uu_token';
+  const PROFILE_KEY = 'uu_profile';
+  const REMEMBERED_ID_KEY = 'uu_remembered_id';
+  const API_BASE = 'https://uttarauniversity-bus-backend-1.onrender.com';
+
+  const StudentAuth = {
+    getApiBase() {
+      return API_BASE;
+    },
+
+    getToken() {
+      return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || null;
+    },
+
+    getProfile() {
+      const data = localStorage.getItem(PROFILE_KEY) || sessionStorage.getItem(PROFILE_KEY);
+      if (!data) return null;
+      try {
+        return JSON.parse(data);
+      } catch (e) {
+        return null;
+      }
+    },
+
+    isLoggedIn() {
+      return Boolean(this.getToken());
+    },
+
+    getRememberedId() {
+      return localStorage.getItem(REMEMBERED_ID_KEY) || '';
+    },
+
+    storeLoginSession(data, rememberMe) {
+      const storage = rememberMe ? localStorage : sessionStorage;
+      if (data.token) {
+        storage.setItem(TOKEN_KEY, data.token);
+      }
+      if (data.profile) {
+        storage.setItem(PROFILE_KEY, JSON.stringify(data.profile));
+      }
+      if (rememberMe && data.profile && data.profile.id) {
+        localStorage.setItem(REMEMBERED_ID_KEY, data.profile.id);
+      } else if (!rememberMe) {
+        localStorage.removeItem(REMEMBERED_ID_KEY);
+      }
+    },
+
+    async login(studentId, password, rememberMe = false) {
+      const cleanId = String(studentId || '').trim();
+      const cleanPass = String(password || '').trim();
+
+      if (!cleanId || !cleanPass) {
+        return { success: false, message: 'Please enter both Student ID and Password.' };
+      }
+
+      try {
+        if (window.location.protocol === 'file:') {
+          return {
+            success: false,
+            message: 'Direct file:// access detected. Please serve over http://localhost for live ERP verification or use Demo Login.'
+          };
+        }
+
+        const fetchWithRetry = async (retriesLeft = 1) => {
+          try {
+            const response = await fetch(API_BASE + '/api/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'omit',
+              body: JSON.stringify({ studentId: cleanId, password: cleanPass, rememberMe })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+              const profile = data.profile || { id: cleanId, name: cleanId };
+              this.storeLoginSession({ token: data.token || 'uu_session_active', profile, isDemo: data.isDemo }, rememberMe);
+              window.dispatchEvent(new CustomEvent('uu-auth-changed', { detail: { isLoggedIn: true, profile } }));
+              return { success: true, profile, isDemo: data.isDemo };
+            } else {
+              if (data.message && data.message.includes('Untrusted login origin')) {
+                return {
+                  success: false,
+                  message: 'Login origin not recognized by server. Open via http://localhost or use Demo Login.'
+                };
+              }
+              return { success: false, message: data.message || 'Invalid Student ID or Password' };
+            }
+          } catch (err) {
+            if (retriesLeft > 0) {
+              await new Promise(r => setTimeout(r, 1500));
+              return fetchWithRetry(retriesLeft - 1);
+            }
+            throw err;
+          }
+        };
+
+        return await fetchWithRetry(1);
+      } catch (err) {
+        console.error('[StudentAuth] Connection error:', err);
+        return { 
+          success: false, 
+          message: 'Connection Error: Verification server is unreachable. Please try again or use Demo Login.' 
+        };
+      }
+    },
+
+    async loginDemo(customId = '2261091211') {
+      const demoProfile = { 
+        id: customId || '2261091211', 
+        name: 'SABBIR HUSSAN KHAN', 
+        department: 'Department of Computer Science and Engineering',
+        program: 'BSc in Computer Science & Engineering (For Diploma Holder)',
+        section: 'E',
+        shift: 'Day'
+      };
+      this.storeLoginSession({ token: 'demo_session_token', profile: demoProfile, isDemo: true }, false);
+      window.dispatchEvent(new CustomEvent('uu-auth-changed', { detail: { isLoggedIn: true, profile: demoProfile } }));
+      return { success: true, profile: demoProfile, isDemo: true };
+    },
+
+    logout() {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(PROFILE_KEY);
+      sessionStorage.removeItem(TOKEN_KEY);
+      sessionStorage.removeItem(PROFILE_KEY);
+      sessionStorage.removeItem('uu_cgpa_portal_token');
+      window.dispatchEvent(new CustomEvent('uu-auth-changed', { detail: { isLoggedIn: false } }));
+    }
+  };
+
+  if (typeof window !== 'undefined') window.StudentAuth = StudentAuth;
+  if (typeof global !== 'undefined') global.StudentAuth = StudentAuth;
+  if (typeof module !== 'undefined' && module.exports) module.exports = StudentAuth;
+})(typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : this);

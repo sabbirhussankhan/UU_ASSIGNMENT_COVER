@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="student-auth.js"></script>
   <style>
     :root {
       font-family: 'Inter', Arial, sans-serif;
@@ -261,7 +262,7 @@
     .field-group.is-hidden { display: none !important; }
 
     .field { position: relative; }
-    .field input, .field select {
+    .field input:not(.field-select), .field select {
       display: block;
       width: 100%;
       height: 42px;
@@ -274,9 +275,9 @@
       outline: 0;
       transition: border-color .2s, box-shadow .2s;
     }
-    .field input::placeholder { color: #7b879b; opacity: 1; transition: opacity .18s; }
-    .field input:focus::placeholder { opacity: 0; }
-    .field input:focus, .field select:focus {
+    .field input:not(.field-select)::placeholder { color: #7b879b; opacity: 1; transition: opacity .18s; }
+    .field input:not(.field-select):focus::placeholder { opacity: 0; }
+    .field input:not(.field-select):focus, .field select:focus {
       border-color: var(--blue);
       box-shadow: 0 0 0 3px rgba(47, 78, 162, 0.16);
     }
@@ -320,91 +321,59 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 20px;
+      width: 18px;
       height: 100%;
       position: absolute;
-      left: 4px;
+      left: 8px;
       top: 0;
-      color: #94a3b8;
+      color: #94A3B8;
       cursor: grab;
-      opacity: 0.4;
+      opacity: 0.45;
       transition: opacity 0.2s, color 0.2s;
       z-index: 6;
       user-select: none;
     }
     .field:hover .drag-handle {
       opacity: 1;
-      color: #2563eb;
+      color: #2451C4;
+    }
+    /* Generous gap so placeholder and text never overlap drag-handle dots */
+    .field:has(.drag-handle) input:not(.field-select),
+    .field:has(.drag-handle) select,
+    .field .drag-handle ~ input:not(.field-select),
+    .field .drag-handle ~ select {
+      padding-left: 36px !important;
     }
     .field.selectable {
-      padding-left: 28px;
+      padding-left: 0 !important;
+      position: relative !important;
     }
-    .field.selectable .field-select {
-      left: 26px;
-    }
-    .field.dragging {
-      opacity: 0.4;
-      border: 1.5px dashed #2563eb !important;
-      background: #eff6ff !important;
-      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2) !important;
-    }
-    .field.drag-over {
-      border-top: 2.5px solid #2563eb !important;
-      transform: translateY(2px);
-    }
-
-    /* Group Action Buttons */
-    .field-actions {
-      display: flex;
-      gap: 6px;
-      margin-top: 4px;
-    }
-    .add-field, .delete-fields {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      height: 34px;
-      border-radius: 9px;
-      font: 800 11px 'Inter', Arial, sans-serif;
-      cursor: pointer;
-      transition: all .2s;
-    }
-    .add-field {
-      border: 1px solid #2F4EA2;
-      background: #2F4EA2;
-      color: #fff;
-    }
-    .add-field:hover { background: #1d3a82; }
-    .add-field.cancel-mode {
-      border: 1px solid #d4dfef;
-      background: #edf2fb;
-      color: #2F4EA2;
-    }
-    .add-field.cancel-mode:hover { background: #dce7fb; }
-
-    .delete-fields {
-      border: 1px solid #e2a5ae;
-      background: #fff7f8;
-      color: #c32642;
-    }
-    .delete-fields:hover { background: #ffecef; }
-
-    /* Delete Selection Checkboxes */
     .field-select {
       display: none !important;
-      position: absolute !important;
-      right: 10px !important;
-      top: 50% !important;
-      width: 15px !important;
-      height: 15px !important;
-      margin: 0 !important;
-      transform: translateY(-50%) !important;
-      accent-color: #2F4EA2;
     }
-    .selection-mode .field-select { display: block !important; }
-    .selection-mode .field input { padding-right: 32px; }
-    .field.selected-for-delete { outline: 2px solid #d94a5b; border-radius: 12px; }
+    .selection-mode .field .field-select,
+    .selection-mode .field.selectable .field-select,
+    .selection-mode .field-select {
+      display: block !important;
+      position: absolute !important;
+      right: 12px !important;
+      left: auto !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+      width: 18px !important;
+      height: 18px !important;
+      min-width: 18px !important;
+      min-height: 18px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      cursor: pointer !important;
+      accent-color: #DC2626 !important;
+      z-index: 50 !important;
+      -webkit-appearance: checkbox !important;
+      appearance: checkbox !important;
+    }
+    .selection-mode .field input:not(.field-select) { padding-right: 44px !important; }
+    .field.selected-for-delete { outline: 2px solid #DC2626 !important; background: #FEF2F2 !important; border-radius: 10px !important; }
 
     /* Logo Upload */
     .logo-upload {
@@ -1444,7 +1413,7 @@
       margin: 0 auto;
       box-sizing: border-box;
       overflow: hidden;
-      touch-action: none;
+      touch-action: pan-y;
       cursor: grab;
     }
     .paper-scaler.is-dragging { cursor: grabbing; }
@@ -1822,7 +1791,7 @@
 
     /* Screen Responsive ONLY */
     @media screen and (max-width: 1200px) {
-      html, body { overflow-y: auto; overflow-x: hidden; }
+      html, body { overflow-x: clip; }
       body { padding: 12px; }
       .layout { grid-template-columns: 1fr; gap: 16px; }
       .panel { padding: 16px; border-radius: 18px; }
@@ -1874,7 +1843,7 @@
       html, body {
         height: auto !important;
         overflow-y: auto !important;
-        overflow-x: hidden !important;
+        overflow-x: clip !important;
       }
       .shell {
         height: auto !important;
@@ -1915,8 +1884,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-top: 16px;
-      padding: 12px;
+      margin-top: 0 !important;
+      padding: 10px 14px;
       border: 1px solid #e1e8f3;
       border-radius: 12px;
       background: #f8fafd;
@@ -2275,6 +2244,201 @@
     }
     body.dark-editor .more-dropdown-item .item-text small { color: #94a3b8; }
 
+    /* Student Portal Login Modal Styles (Matching CGPA Calculator) */
+    .auth-modal-overlay {
+      position: fixed !important;
+      inset: 0 !important;
+      background: rgba(15, 23, 42, 0.65) !important;
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
+      display: none;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 9999999 !important;
+      padding: 16px !important;
+      animation: fadeInModal 0.2s ease;
+    }
+    @keyframes fadeInModal {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .auth-modal-box {
+      background: #FFFFFF !important;
+      border-radius: 20px !important;
+      max-width: 420px !important;
+      width: 100% !important;
+      padding: 28px !important;
+      box-shadow: 0 25px 60px rgba(15, 23, 42, 0.3) !important;
+      position: relative !important;
+      border: 1px solid #E2E8F0 !important;
+      box-sizing: border-box !important;
+    }
+    .auth-modal-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #F1F5F9;
+      border: none;
+      font-size: 20px;
+      font-weight: 700;
+      color: #64748B;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .auth-modal-close:hover {
+      background: #E2E8F0;
+      color: #0F172A;
+    }
+    .auth-modal-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .auth-logo-badge {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #2451C4, #15306B);
+      color: #FFFFFF;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      box-shadow: 0 8px 18px rgba(36, 81, 196, 0.28);
+    }
+    .auth-modal-header h3 {
+      font-size: 19px;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 0 0 6px 0;
+    }
+    .auth-modal-header p {
+      font-size: 12.5px;
+      color: #64748B;
+      margin: 0;
+      line-height: 1.4;
+    }
+    .auth-alert-box {
+      display: none;
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      color: #DC2626;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .auth-field {
+      margin-bottom: 14px;
+      text-align: left;
+    }
+    .auth-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 6px;
+    }
+    .auth-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .auth-input-wrap input {
+      width: 100% !important;
+      padding: 11px 40px 11px 14px !important;
+      font-size: 13.5px !important;
+      border: 1px solid #CBD5E1 !important;
+      border-radius: 10px !important;
+      outline: none !important;
+      font-family: inherit !important;
+      background: #FFFFFF !important;
+      color: #0F172A !important;
+      box-sizing: border-box !important;
+      transition: border-color 0.2s, box-shadow 0.2s !important;
+    }
+    .auth-input-wrap input:focus {
+      border-color: #2451C4 !important;
+      box-shadow: 0 0 0 3px rgba(36, 81, 196, 0.16) !important;
+    }
+    .auth-toggle-pw {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #94A3B8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+    }
+    .auth-toggle-pw:hover {
+      color: #2451C4;
+    }
+    .auth-remember-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748B;
+      cursor: pointer;
+      margin-bottom: 18px;
+    }
+    .auth-remember-wrap input {
+      width: 15px;
+      height: 15px;
+      accent-color: #2451C4;
+      cursor: pointer;
+    }
+    .auth-submit-btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #FFFFFF;
+      background: linear-gradient(135deg, #2451C4, #15306B);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(36, 81, 196, 0.28);
+    }
+    .auth-submit-btn:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+    .auth-submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .auth-demo-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #2451C4;
+      background: #EFF6FF;
+      border: 1.5px dashed rgba(36, 81, 196, 0.35);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .auth-demo-btn:hover {
+      background: #DBEAFE;
+      border-color: #2451C4;
+    }
+
     /* Mobile Bottom Sheet Drawer for More Options */
     #mobile-more-sheet {
       position: fixed !important;
@@ -2367,15 +2531,734 @@
       body {
         padding-bottom: 76px !important;
       }
+      .mobile-back-to-top-btn {
+        display: none;
+        position: fixed;
+        bottom: 76px;
+        right: 18px;
+        z-index: 9999999;
+        background: #2451C4;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 30px;
+        padding: 8px 16px;
+        font-size: 12px;
+        font-weight: 700;
+        box-shadow: 0 6px 20px rgba(36, 81, 196, 0.4);
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .mobile-back-to-top-btn:hover {
+        background: #1A3E9E;
+        transform: translateY(-2px);
+      }
+      body.is-scrolled-down .mobile-back-to-top-btn {
+        display: inline-flex !important;
+      }
+    }
+
+    /* ==========================================================================
+       FLOWCV 2-COLUMN ARCHITECTURE WITH ORIGINAL UTTARA THEME
+       ========================================================================== */
+    body {
+      background: radial-gradient(ellipse at 50% 0%, #EEF2F7 0%, #F8FAFC 380px, #F8FAFC 100%) !important;
+      background-attachment: fixed !important;
+      color: #0F172A !important;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      margin: 0;
+      padding: 0 0 60px 0 !important;
+      min-height: 100vh;
+    }
+
+    /* Top Suite Header Integration - Aligned to exact 1260px grid */
+    .dash-header.navbar {
+      max-width: 1260px !important;
+      width: 100% !important;
+      margin: 14px auto 10px auto !important;
+      background: #FFFFFF !important;
+      border: 1px solid #E2E8F0 !important;
+      border-radius: 16px !important;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04) !important;
+      padding: 10px 20px !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Main shell - Strict 1260px container with no duplicate padding */
+    .shell {
+      max-width: 1260px !important;
+      width: 100% !important;
+      margin: 0 auto !important;
+      padding: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Hero Banner - Flush with the 1260px grid */
+    .hero {
+      display: block !important;
+      position: relative !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      padding: 24px 32px !important;
+      border-radius: 18px !important;
+      color: #ffffff !important;
+      background: linear-gradient(135deg, #1E40AF 0%, #172554 100%) !important;
+      box-shadow: 0 10px 28px rgba(30, 64, 175, 0.18) !important;
+      overflow: hidden !important;
+      margin: 0 0 14px 0 !important;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      right: -20px;
+      top: -30px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      right: 60px;
+      bottom: -60px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      pointer-events: none;
+    }
+
+    /* 2-column layout - Flush with the 1260px grid */
+    .layout {
+      display: flex !important;
+      gap: 28px !important;
+      align-items: flex-start !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    /* FlowCV Sub-Bar - Zero redundant padding, 100% width matching Hero & Layout */
+    .flow-subbar-container {
+      position: sticky !important;
+      top: 10px !important;
+      z-index: 1000 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 0 16px 0 !important;
+      padding: 0 !important;
+      box-sizing: border-box !important;
+    }
+    .flow-subbar {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      background: rgba(255, 255, 255, 0.96) !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      border: 1px solid #E2E8F0 !important;
+      border-radius: 14px !important;
+      padding: 8px 16px !important;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08) !important;
+      gap: 12px !important;
+      flex-wrap: wrap !important;
+    }
+    .flow-subbar-tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #F1F5F9;
+      padding: 4px;
+      border-radius: 11px;
+    }
+    .flow-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: #64748B;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .flow-tab-btn:hover {
+      color: #0F172A;
+    }
+    .flow-tab-btn.active {
+      background: #FFFFFF !important;
+      color: #2451C4 !important;
+      font-weight: 800 !important;
+      border: 1px solid #BFDBFE !important;
+      box-shadow: 0 2px 8px rgba(36, 81, 196, 0.15) !important;
+    }
+    .flow-subbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .flow-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid transparent;
+    }
+    .flow-download-pdf-btn {
+      background: linear-gradient(135deg, #15306B 0%, #0E1B33 100%) !important;
+      color: #FFFFFF !important;
+      border-radius: 9px !important;
+      font-weight: 800 !important;
+      padding: 9px 22px !important;
+      box-shadow: 0 4px 14px rgba(14, 27, 51, 0.25) !important;
+    }
+    .flow-download-pdf-btn:hover {
+      background: #1B315B !important;
+      transform: translateY(-1px);
+    }
+    .flow-secondary-btn {
+      background: #FFFFFF;
+      color: #334155;
+      border-color: #CBD5E1;
+    }
+    .flow-secondary-btn:hover {
+      background: #F8FAFC;
+      color: #0F172A;
+      border-color: #94A3B8;
+      transform: translateY(-1px);
+    }
+    .flow-preview-actions-bar {
+      display: none;
+    }
+
+    /* Left Panel: FlowCV Floating Cards Stack */
+    .panel.editor {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      width: 470px !important;
+      max-width: 470px !important;
+      flex-shrink: 0 !important;
+    }
+    .flow-student-summary-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #FFFFFF !important;
+      border: 1px solid #E2E8F0 !important;
+      border-radius: 16px !important;
+      padding: 13px 18px !important;
+      margin-bottom: 6px !important;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04) !important;
+      gap: 12px;
+    }
+    .flow-summary-left {
+      flex: 1;
+      min-width: 0;
+    }
+    .flow-summary-name {
+      margin: 0 0 4px 0;
+      font-size: 16px;
+      font-weight: 800;
+      color: #0F172A;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .flow-summary-tags {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .flow-meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #475569;
+      background: #F1F5F9;
+      padding: 3px 9px;
+      border-radius: 8px;
+    }
+    .flow-summary-right {
+      flex-shrink: 0;
+    }
+    .flow-avatar-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #EFF6FF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid #BFDBFE;
+    }
+
+    /* Uniform ultra-sleek 6px gap across all cards in Content, Customize & Presets */
+    .groups, .editor-view.design-view:not(.is-hidden), .editor-view.presets-view:not(.is-hidden) {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 6px !important;
+    }
+    .editor-view.is-hidden {
+      display: none !important;
+    }
+
+    /* Individual FlowCV Floating Accordion Cards - Zero extra margin (controlled by 6px container gap) */
+    details.field-group, details.design-card {
+      background: #FFFFFF !important;
+      border: 1px solid #E2E8F0 !important;
+      border-radius: 12px !important;
+      padding: 0 !important;
+      margin-bottom: 0 !important;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03) !important;
+      overflow: hidden;
+      transition: all 0.2s ease !important;
+    }
+    details.field-group:hover, details.design-card:hover {
+      border-color: #CBD5E1 !important;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06) !important;
+    }
+    details.field-group summary, details.design-card summary {
+      padding: 13px 16px !important;
+      background: #FFFFFF !important;
+      color: #0F172A !important;
+      font-size: 14.5px !important;
+      font-weight: 700 !important;
+      cursor: pointer;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+    details.field-group summary:hover, details.design-card summary:hover {
+      background: #F8FAFC !important;
+    }
+    details.field-group[open] summary, details.design-card[open] summary {
+      border-bottom: 1px solid #F1F5F9 !important;
+      margin-bottom: 0 !important;
+      color: #2451C4 !important;
+    }
+    details.field-group > div:not(summary), details.design-card > div:not(summary) {
+      padding: 18px 20px !important;
+      background: #FFFFFF;
+    }
+
+    /* Modern Original Theme Input Styling */
+    .field input:not(.field-select), .field select {
+      border: 1px solid #CBD5E1 !important;
+      border-radius: 10px !important;
+      background: #FFFFFF !important;
+      font-size: 13.5px !important;
+      color: #0F172A !important;
+      transition: border-color 0.2s, box-shadow 0.2s !important;
+    }
+    .field input:not(.field-select):focus, .field select:focus {
+      border-color: #2451C4 !important;
+      box-shadow: 0 0 0 3px rgba(36, 81, 196, 0.14) !important;
+      outline: none !important;
+    }
+    .field .float-label {
+      font-size: 11.5px !important;
+      font-weight: 600 !important;
+      color: #64748B !important;
+    }
+
+    /* Ultra-Compact Single Row Action Buttons */
+    .field-actions {
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      margin-top: 8px !important;
+      margin-bottom: 0 !important;
+      padding: 0 !important;
+    }
+    .field-actions button {
+      height: 30px !important;
+      font-size: 11.5px !important;
+      font-weight: 700 !important;
+      border-radius: 7px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      cursor: pointer !important;
+      flex: 1 !important;
+      padding: 0 8px !important;
+      margin: 0 !important;
+      transition: all 0.15s ease !important;
+    }
+    .add-field {
+      background: #EFF6FF !important;
+      color: #2451C4 !important;
+      border: 1px solid #BFDBFE !important;
+    }
+    .add-field:hover {
+      background: #DBEAFE !important;
+    }
+    .delete-fields {
+      background: #FEF2F2 !important;
+      color: #DC2626 !important;
+      border: 1px solid #FECACA !important;
+    }
+    .delete-fields:hover {
+      background: #FEE2E2 !important;
+    }
+    .flow-done-btn {
+      background: #2451C4 !important;
+      color: #FFFFFF !important;
+      border: 1px solid #2451C4 !important;
+      box-shadow: 0 1px 3px rgba(36, 81, 196, 0.2) !important;
+    }
+    .flow-done-btn:hover {
+      background: #1D4ED8 !important;
+      transform: translateY(-1px);
+    }
+    .flow-done-row {
+      display: none !important;
+    }
+
+    /* FlowCV + Add Content Pill Button in Original Theme */
+    .flow-add-content-btn {
+      background: linear-gradient(135deg, #2451C4 0%, #15306B 100%) !important;
+      color: #FFFFFF !important;
+      border: none !important;
+      border-radius: 99px !important;
+      padding: 13px 28px !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+      box-shadow: 0 6px 18px rgba(36, 81, 196, 0.25) !important;
+      margin: 16px auto !important;
+      width: auto !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease !important;
+    }
+    .flow-add-content-btn:hover {
+      transform: translateY(-1px) scale(1.02) !important;
+      box-shadow: 0 8px 24px rgba(36, 81, 196, 0.35) !important;
+    }
+
+    /* Right Panel: Clean FlowCV Seamless Paper Canvas - Magnifying glass cursor like Image 1 */
+    .panel.preview, .paper-scaler, .paper, .paper * {
+      cursor: zoom-in !important;
+    }
+    .panel.preview {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      position: sticky !important;
+      top: 76px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      justify-content: flex-start !important;
+      flex: 1 !important;
+      min-width: 0 !important;
+    }
+    .preview-header-bar {
+      display: none !important;
+    }
+    .paper-scaler {
+      display: block !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+      position: relative !important;
+    }
+    .paper {
+      background: #FFFFFF !important;
+      box-shadow: 0 10px 36px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.05) !important;
+      border-radius: 4px !important;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .panel.preview:hover .paper {
+      box-shadow: 0 16px 48px rgba(36, 81, 196, 0.18), 0 4px 12px rgba(15, 23, 42, 0.08) !important;
+    }
+    .preview-hover-hint {
+      display: none !important;
+    }
+
+    /* FlowCV Clean Native Fullscreen Mode - Uses Live Document without cloning */
+    body.is-preview-fullscreen {
+      overflow: hidden !important;
+    }
+    body.is-preview-fullscreen .panel.preview {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: 100vw !important;
+      z-index: 99999999 !important;
+      background: rgba(15, 23, 42, 0.76) !important;
+      backdrop-filter: blur(8px) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      cursor: zoom-out !important;
+      animation: fadeInPreviewFs 0.2s ease;
+    }
+    @keyframes fadeInPreviewFs {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    body.is-preview-fullscreen .paper-scaler {
+      margin: auto !important;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5) !important;
+      border-radius: 6px !important;
+    }
+    body.is-preview-fullscreen .paper {
+      cursor: default !important;
+    }
+
+    /* Circular 'X' Close Button in Top-Right Corner (Exact match to user's Screenshot 2) */
+    .preview-close-fullscreen-btn {
+      display: none;
+      position: fixed;
+      top: 24px;
+      right: 28px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      color: #0F172A;
+      border: none;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 100000000;
+      transition: all 0.2s ease;
+    }
+    body.is-preview-fullscreen .preview-close-fullscreen-btn {
+      display: flex !important;
+    }
+    .preview-close-fullscreen-btn:hover {
+      background: #F1F5F9;
+      transform: scale(1.08);
+      color: #2451C4;
+    }
+    /* ==========================================================================
+       COMPREHENSIVE RESPONSIVE STYLING (LAPTOP, TABLET & MOBILE)
+       ========================================================================== */
+    @media screen and (max-width: 1150px) {
+      .dash-header.navbar,
+      .shell {
+        max-width: 100% !important;
+        width: calc(100% - 32px) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+      .panel.editor {
+        width: 440px !important;
+        max-width: 440px !important;
+      }
+      .layout {
+        gap: 20px !important;
+      }
+    }
+
+    @media screen and (max-width: 900px) {
+      /* Hide redundant desktop nav pills in top header on mobile/tablet because bottom-nav exists */
+      .dash-header .header-actions,
       .dash-header .desktop-nav {
         display: none !important;
+      }
+
+      .dash-header.navbar {
+        width: calc(100% - 24px) !important;
+        margin: 10px auto 8px auto !important;
+        padding: 8px 14px !important;
+        border-radius: 12px !important;
+      }
+      .shell {
+        width: calc(100% - 24px) !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+      }
+      .hero {
+        padding: 20px 18px !important;
+        border-radius: 14px !important;
+        margin-bottom: 12px !important;
+      }
+      .hero h1 {
+        font-size: 21px !important;
+      }
+      .hero p {
+        font-size: 13px !important;
+      }
+      .hero::before, .hero::after {
+        display: none !important;
+      }
+
+      /* Stack Sub-Bar Controls & Keep Sticky on Mobile */
+      .flow-subbar-container {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 9999 !important;
+        margin-bottom: 12px !important;
+        background: rgba(248, 250, 252, 0.95) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        padding: 4px 0 !important;
+      }
+      .flow-subbar {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0 !important;
+        padding: 4px 6px !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08) !important;
+      }
+      .flow-subbar-tabs {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        border-radius: 9px !important;
+      }
+      .flow-tab-btn {
+        flex: 1 !important;
+        justify-content: center !important;
+        padding: 7px 6px !important;
+        font-size: 12.5px !important;
+      }
+      /* Hide action buttons in top sticky subbar on mobile - placed directly above PDF! */
+      .flow-subbar .flow-subbar-actions {
+        display: none !important;
+      }
+
+      /* Mobile Download Action Buttons placed right above PDF paper (Matching user's Screenshot 2) */
+      .flow-preview-actions-bar {
+        display: flex !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        gap: 8px !important;
+        margin: 0 0 10px 0 !important;
+        align-items: center !important;
+      }
+      .flow-preview-actions-bar .flow-download-pdf-btn {
+        flex: 2 !important;
+        justify-content: center !important;
+        padding: 9px 14px !important;
+        font-size: 13px !important;
+      }
+      .flow-preview-actions-bar .flow-secondary-btn {
+        flex: 1 !important;
+        justify-content: center !important;
+        padding: 9px !important;
+      }
+
+      /* Stack 2-column layout to 1-column with tight compact gap */
+      .layout {
+        flex-direction: column !important;
+        gap: 8px !important;
+      }
+      .panel.editor {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .panel.preview {
+        width: 100% !important;
+        max-width: 100% !important;
+        position: static !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 auto !important;
+        padding: 4px 0 0 0 !important;
+        touch-action: pan-y !important;
+      }
+      .paper-scaler,
+      .paper,
+      .paper * {
+        touch-action: pan-y !important;
+        -webkit-user-select: auto !important;
+        user-select: auto !important;
+      }
+      .paper-scaler {
+        margin: 0 auto !important;
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      .dash-header.navbar {
+        width: calc(100% - 16px) !important;
+        padding: 8px 12px !important;
+      }
+      .shell {
+        width: calc(100% - 16px) !important;
+      }
+      .hero {
+        padding: 16px 14px !important;
+        border-radius: 12px !important;
+      }
+      .hero-tag {
+        font-size: 9.5px !important;
+        padding: 3px 10px !important;
+        margin-bottom: 8px !important;
+      }
+      .hero h1 {
+        font-size: 18px !important;
+      }
+      .hero p {
+        font-size: 12px !important;
+        line-height: 1.4 !important;
+      }
+      .flow-student-summary-card {
+        padding: 14px 16px !important;
+      }
+      .panel.editor details.field-group summary {
+        padding: 12px 14px !important;
+        font-size: 13.5px !important;
+      }
+      .panel.editor details.field-group .group-fields {
+        padding: 14px !important;
+      }
+      .field input:not(.field-select), .field select {
+        height: 38px !important;
+        font-size: 13px !important;
+      }
+      .field-actions {
+        flex-wrap: wrap !important;
+        height: auto !important;
+      }
+      .field-actions button {
+        flex: 1 !important;
+        min-width: 80px !important;
+        height: 32px !important;
       }
     }
   </style>
 </head>
 <body>
   <!-- Top Navigation Header (Interconnected Suite Navbar) -->
-  <header class="dash-header navbar" style="max-width: 1400px; margin: 0 auto 20px auto;">
+  <header class="dash-header navbar">
     <a href="index.html" class="brand">
       <div class="brand-mark">
         <svg width="32" height="32" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
@@ -2423,27 +3306,27 @@
           </button>
 
           <div class="more-dropdown-card" id="more-nav-menu" style="display: none;">
-            <a href="https://sabbirhussankhan.github.io/CGPA-CALCULATOR/about.html" target="_blank" class="more-dropdown-item">
+            <a href="about.html" class="more-dropdown-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
               <div class="item-text">
                 <strong>About</strong>
-                <small>About Student Suite</small>
+                <small>About Cover Page Generator</small>
               </div>
             </a>
 
-            <a href="https://sabbirhussankhan.github.io/CGPA-CALCULATOR/privacy.html" target="_blank" class="more-dropdown-item">
+            <a href="privacy.html" class="more-dropdown-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
               <div class="item-text">
                 <strong>Privacy Policy</strong>
-                <small>Data protection & privacy terms</small>
+                <small>Data protection & client privacy</small>
               </div>
             </a>
 
-            <a href="https://sabbirhussankhan.github.io/CGPA-CALCULATOR/terms.html" target="_blank" class="more-dropdown-item">
+            <a href="terms.html" class="more-dropdown-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
               <div class="item-text">
                 <strong>Terms & Conditions</strong>
-                <small>Usage terms & guidelines</small>
+                <small>Usage terms & academic guidelines</small>
               </div>
             </a>
 
@@ -2469,10 +3352,46 @@
       <p>Easily create standardized Uttara University assignment and lab report cover pages with customizable presets, layout styles, and real-time A4 preview.</p>
     </header>
 
+    <!-- FlowCV Floating Sub-Navbar -->
+    <div class="flow-subbar-container">
+      <div class="flow-subbar">
+        <!-- Left Tabs -->
+        <div class="flow-subbar-tabs">
+          <button type="button" class="flow-tab-btn active" data-flow-tab="content">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            <span>Content</span>
+          </button>
+          <button type="button" class="flow-tab-btn" data-flow-tab="customize">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            <span>Customize</span>
+          </button>
+          <button type="button" class="flow-tab-btn" data-flow-tab="presets" id="flow-presets-btn">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span>Presets</span>
+          </button>
+        </div>
+
+        <!-- Right Actions -->
+        <div class="flow-subbar-actions">
+          <button type="button" class="flow-action-btn flow-download-pdf-btn" onclick="window.print()">
+            <span>Download PDF</span>
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          </button>
+          <button type="button" class="flow-action-btn flow-secondary-btn" id="flow-download-png-btn">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>PNG</span>
+          </button>
+          <button type="button" class="flow-action-btn flow-secondary-btn" id="flow-fullscreen-btn" title="Toggle Fullscreen">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="layout">
       <!-- Editor Panel -->
       <section class="panel editor">
-        <div class="editor-sticky-head">
+        <div class="editor-sticky-head" style="display:none;">
           <div class="editor-header-bar">
             <h2>Edit cover details</h2>
             <button type="button" class="theme-toggle-btn" id="editor-theme-btn">
@@ -2490,6 +3409,28 @@
 
         <!-- Tab 1: Details View -->
         <div class="editor-view details-view">
+          <!-- Student Identity Summary Card (Matching Image 1) -->
+          <!-- Student Identity Summary Card (Only Name, ID, & Logout Button) -->
+          <div class="flow-student-summary-card" id="flow-student-card" title="Click to edit personal & student details" style="cursor: pointer; position: relative;">
+            <div class="flow-summary-left">
+              <h3 class="flow-summary-name" id="flow-student-name">Student Details</h3>
+              <div style="font-size: 12px; color: #64748B; display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                <span id="flow-student-id" style="display: inline-flex; align-items: center; gap: 4px;">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                  <span>ID: —</span>
+                </span>
+                <span style="color: #CBD5E1;">•</span>
+                <button type="button" id="flow-student-logout-btn" title="Logout & Clear Student Profile" style="background: none; border: none; color: #EF4444; font-size: 11.5px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 0; display: inline-flex; align-items: center; gap: 4px;">
+                  Logout
+                </button>
+              </div>
+            </div>
+            <div class="flow-summary-right" style="position: relative;">
+              <div class="flow-avatar-circle" style="width: 44px; height: 44px; border-radius: 50%; background: #EFF6FF; border: 1.5px solid #BFDBFE; display: flex; align-items: center; justify-content: center; color: #2451C4;">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </div>
+            </div>
+          </div>
           <datalist id="uu-dept-list">
             <option value="Department of Bangla">
             <option value="Department of Business Administration">
@@ -2507,9 +3448,87 @@
             <option value="Department of Textile Engineering">
           </datalist>
 
+          <datalist id="uu-course-titles">
+            <option value="Algorithms">
+            <option value="Algorithms Lab">
+            <option value="Database Management Systems">
+            <option value="Database Management Systems Lab">
+            <option value="Operating Systems">
+            <option value="Operating Systems Lab">
+            <option value="Structured Programming Language">
+            <option value="Structured Programming Language Lab">
+            <option value="Object Oriented Programming">
+            <option value="Object Oriented Programming Lab">
+            <option value="Data Structures">
+            <option value="Data Structures Lab">
+            <option value="Computer Networks">
+            <option value="Computer Networks Lab">
+            <option value="Software Engineering">
+            <option value="Web Engineering">
+            <option value="Artificial Intelligence">
+            <option value="Differential and Integral Calculus">
+            <option value="Linear Algebra and Complex Variables">
+            <option value="Basic Electrical Engineering">
+            <option value="Physics I (Mechanics, Waves & Optics)">
+            <option value="English Communication Skills">
+            <option value="Financial and Managerial Accounting">
+          </datalist>
+
+          <datalist id="uu-course-codes">
+            <option value="CSE0612201">
+            <option value="CSE0612202">
+            <option value="CSE0612203">
+            <option value="CSE0612204">
+            <option value="CSE0613301">
+            <option value="CSE0613302">
+            <option value="CSE0611101">
+            <option value="CSE0611102">
+            <option value="CSE0611201">
+            <option value="CSE0611202">
+            <option value="CSE0612101">
+            <option value="CSE0612102">
+            <option value="CSE0613201">
+            <option value="CSE0613202">
+            <option value="CSE0613303">
+            <option value="CSE0613305">
+            <option value="CSE0614101">
+            <option value="MAT0541101">
+            <option value="MAT0541102">
+            <option value="EEE0713101">
+            <option value="PHY0533101">
+            <option value="ENG0231101">
+            <option value="ACT0411101">
+          </datalist>
+
+          <datalist id="uu-teacher-list">
+            <option value="Md. Aminul Islam">
+            <option value="Farhana Akter">
+            <option value="Dr. Md. Mijanur Rahman">
+            <option value="Kazi Farhan Ahmed">
+            <option value="Md. Shafiul Alam">
+            <option value="S. M. Mahbubur Rahman">
+            <option value="Tasnim Rahman">
+            <option value="A. H. M. Saiful Islam">
+            <option value="Dr. Shafiul Azam">
+            <option value="Dr. Mohammad Ali">
+            <option value="Engr. Md. Tariqul Islam">
+            <option value="Dr. Nazmul Huda">
+            <option value="Fatema Tuz Zohra">
+            <option value="Md. Kamrul Hasan">
+          </datalist>
+
+          <datalist id="uu-designation-list">
+            <option value="Professor">
+            <option value="Associate Professor">
+            <option value="Assistant Professor">
+            <option value="Senior Lecturer">
+            <option value="Lecturer">
+            <option value="Adjunct Faculty">
+          </datalist>
+
           <div class="groups">
 
-            <details class="field-group" data-section="experiment" open>
+            <details class="field-group" data-section="report" open>
               <summary>
                 <div class="design-card-title">
                   <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg> Report Details
@@ -2532,11 +3551,12 @@
                 <div class="field-actions">
                   <button type="button" class="add-field">+ Add field</button>
                   <button type="button" class="delete-fields">Delete</button>
+                  <button type="button" class="flow-done-btn">✓ Done</button>
                 </div>
               </div>
             </details>
 
-            <details class="field-group" data-section="experiment" open>
+            <details class="field-group" data-section="course">
               <summary>
                 <div class="design-card-title">
                   <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Course Details
@@ -2553,21 +3573,22 @@
               </summary>
               <div style="display:grid; gap:11px;">
                 <div class="field">
-                  <input id="course" name="course_title" autocomplete="on" placeholder="Course Title">
+                  <input id="course" name="course_title" autocomplete="on" list="uu-course-titles" placeholder="Course Title">
                   <span class="float-label">Course Title</span>
                 </div>
                 <div class="field">
-                  <input id="courseNo" name="course_code" autocomplete="on" placeholder="Course Code">
+                  <input id="courseNo" name="course_code" autocomplete="on" list="uu-course-codes" placeholder="Course Code">
                   <span class="float-label">Course Code</span>
                 </div>
                 <div class="field-actions">
                   <button type="button" class="add-field">+ Add field</button>
                   <button type="button" class="delete-fields">Delete</button>
+                  <button type="button" class="flow-done-btn">✓ Done</button>
                 </div>
               </div>
             </details>
 
-            <details class="field-group" data-section="experiment" open>
+            <details class="field-group" data-section="experiment">
               <summary>
                 <div class="design-card-title">
                   <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"></path><path d="M10 9v-6"></path><path d="M14 9v-6"></path><path d="M10 9l-4 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-4-9"></path></svg> Experiment Details
@@ -2594,11 +3615,12 @@
                 <div class="field-actions">
                   <button type="button" class="add-field">+ Add field</button>
                   <button type="button" class="delete-fields">Delete</button>
+                  <button type="button" class="flow-done-btn">✓ Done</button>
                 </div>
               </div>
             </details>
 
-            <details class="field-group" data-section="student" open>
+            <details class="field-group" data-section="student" id="group-student-details">
               <summary>
                 <div class="design-card-title">
                   <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Submitted By
@@ -2615,7 +3637,7 @@
               </summary>
               <div style="display:grid; gap:11px;">
                 <div class="field">
-                  <input id="student" name="student_name" autocomplete="name" placeholder="Student's Name">
+                  <input id="student" name="student_name" autocomplete="name" placeholder="Student's Name" value="Sabbir Hussan Khan">
                   <span class="float-label">Student's Name</span>
                 </div>
                 <div class="field">
@@ -2631,17 +3653,18 @@
                   <span class="float-label">Semester</span>
                 </div>
                 <div class="field">
-                  <input id="studentDepartment" name="student_department" autocomplete="on" list="uu-dept-list" placeholder="Department">
+                  <input id="studentDepartment" name="student_department" autocomplete="on" list="uu-dept-list" placeholder="Department" value="Department of Computer Science and Engineering">
                   <span class="float-label">Department</span>
                 </div>
                 <div class="field-actions">
                   <button type="button" class="add-field">+ Add field</button>
                   <button type="button" class="delete-fields">Delete</button>
+                  <button type="button" class="flow-done-btn">✓ Done</button>
                 </div>
               </div>
             </details>
 
-            <details class="field-group" data-section="teacher" open>
+            <details class="field-group" data-section="teacher">
               <summary>
                 <div class="design-card-title">
                   <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg> Submitted To
@@ -2658,11 +3681,11 @@
               </summary>
               <div style="display:grid; gap:11px;">
                 <div class="field">
-                  <input id="teacher" name="teacher_name" autocomplete="on" placeholder="Teacher's Name">
+                  <input id="teacher" name="teacher_name" autocomplete="on" list="uu-teacher-list" placeholder="Teacher's Name">
                   <span class="float-label">Teacher's Name</span>
                 </div>
                 <div class="field">
-                  <input id="designation" name="teacher_designation" autocomplete="on" placeholder="Designation">
+                  <input id="designation" name="teacher_designation" autocomplete="on" list="uu-designation-list" placeholder="Designation">
                   <span class="float-label">Designation</span>
                 </div>
                 <div class="field">
@@ -2676,6 +3699,7 @@
                 <div class="field-actions">
                   <button type="button" class="add-field">+ Add field</button>
                   <button type="button" class="delete-fields">Delete</button>
+                  <button type="button" class="flow-done-btn">✓ Done</button>
                 </div>
               </div>
             </details>
@@ -2851,7 +3875,7 @@
           </details>
 
           <!-- Card 5: Typography, Spacing & Border Controls -->
-          <details class="design-card" open>
+          <details class="design-card">
             <summary>
               <div class="design-card-title">
                 <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg> Typography, Spacing & Borders
@@ -3116,23 +4140,41 @@
       </section>
 
       <!-- Preview Panel -->
-      <section class="panel preview">
+      <section class="panel preview" id="preview-panel" title="Click to zoom in full screen">
+        <!-- Circular 'X' close button shown ONLY when in fullscreen mode -->
+        <button type="button" class="preview-close-fullscreen-btn" id="preview-close-fullscreen-btn" title="Close (Esc)">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
 
         <div class="preview-header-bar">
           <div class="preview-title">
-            <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> Live Cover Preview
+            <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <span style="font-weight: 700; color: #0F172A; font-size: 13.5px;">Live Document Canvas</span>
           </div>
           <div class="preview-actions">
-            <button type="button" class="preview-tool-btn" id="save-preset-btn" title="Save current cover as a preset">
+            <button type="button" class="preview-tool-btn" id="save-preset-btn" style="display:none;" title="Save current cover as a preset">
               <span aria-hidden="true">▣</span> Presets
             </button>
-            <button type="button" class="preview-tool-btn" id="download-png-btn" title="Download cover as PNG">
+            <button type="button" class="preview-tool-btn" id="download-png-btn" style="display:none;" title="Download cover as PNG">
               <span aria-hidden="true">↓</span> Download PNG
             </button>
-            <button type="button" class="preview-print-btn" onclick="window.print()">
-              <svg class="ui-icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg> Print / Save PDF
-            </button>
+            <span style="background: #F1F5F9; color: #475569; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; border: 1px solid #E2E8F0;">A4 • 210 × 297 mm</span>
           </div>
+        </div>
+
+        <!-- Mobile Action Buttons Placed Directly Above PDF Preview (Exact match to User's Screenshot 2) -->
+        <div class="flow-preview-actions-bar" id="flow-preview-actions-bar">
+          <button type="button" class="flow-action-btn flow-download-pdf-btn" onclick="window.print()">
+            <span>Download PDF</span>
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          </button>
+          <button type="button" class="flow-action-btn flow-secondary-btn" id="flow-download-png-btn-mobile" onclick="document.getElementById('flow-download-png-btn')?.click()">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>PNG</span>
+          </button>
+          <button type="button" class="flow-action-btn flow-secondary-btn" id="flow-fullscreen-btn-mobile" onclick="document.getElementById('flow-fullscreen-btn')?.click()" title="Toggle Fullscreen">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+          </button>
         </div>
 
         <div class="paper-scaler" id="paper-scaler">
@@ -3276,7 +4318,51 @@
   </div>
 
   <!-- Notification Toast -->
-  <div class="toast-notify" id="toast-notify">Details copied to clipboard!</div>
+  <!-- Uttara University Student Portal Login Modal (Matching CGPA Calculator) -->
+  <div class="auth-modal-overlay" id="portal-login-modal">
+    <div class="auth-modal-box">
+      <button class="auth-modal-close" id="btn-close-portal-login" type="button" aria-label="Close Modal">&times;</button>
+      
+      <div class="auth-modal-header">
+        <div class="auth-logo-badge">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <h3>UU Student Portal Login</h3>
+        <p>Log in to auto-populate student, course &amp; teacher details</p>
+      </div>
+
+      <div class="auth-alert-box" id="portal-auth-alert-box">
+        <span id="portal-auth-alert-msg">Invalid Credentials!</span>
+      </div>
+
+      <div class="auth-field">
+        <label for="portal-auth-student-id">Student ID</label>
+        <div class="auth-input-wrap">
+          <input type="text" id="portal-auth-student-id" placeholder="e.g. 2261091211" autocomplete="username" />
+        </div>
+      </div>
+
+      <div class="auth-field">
+        <label for="portal-auth-password">Portal Password</label>
+        <div class="auth-input-wrap">
+          <input type="password" id="portal-auth-password" placeholder="Enter your ERP password" autocomplete="current-password" />
+          <button type="button" class="auth-toggle-pw" id="btn-toggle-portal-pw" aria-label="Toggle password visibility">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          </button>
+        </div>
+      </div>
+
+      <label class="auth-remember-wrap">
+        <input type="checkbox" id="portal-auth-remember-me" checked />
+        <span>Remember my Student ID</span>
+      </label>
+
+      <button type="button" class="auth-submit-btn" id="btn-portal-login-submit">Login &amp; Auto-Fill Cover</button>
+      <button type="button" class="auth-demo-btn" id="btn-portal-demo-login">⚡ 1-Click Instant Demo Login</button>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
@@ -3379,7 +4465,48 @@
 
 
 
-      // 1. Tab switching
+      // 1. FlowCV Subbar Navigation & Tab Switching
+      document.querySelectorAll('.flow-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tab = btn.dataset.flowTab;
+          if (tab === 'presets') {
+            const presetsBtn = document.getElementById('save-preset-btn');
+            if (presetsBtn) presetsBtn.click();
+            return;
+          }
+
+          document.querySelectorAll('.flow-tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const detailsView = document.querySelector('.details-view');
+          const designView = document.querySelector('.design-view');
+          const moreView = document.querySelector('.more-view');
+
+          if (tab === 'content') {
+            if (detailsView) detailsView.classList.remove('is-hidden');
+            if (designView) designView.classList.add('is-hidden');
+            if (moreView) moreView.classList.add('is-hidden');
+          } else if (tab === 'customize') {
+            if (detailsView) detailsView.classList.add('is-hidden');
+            if (designView) designView.classList.remove('is-hidden');
+            if (moreView) moreView.classList.add('is-hidden');
+          }
+
+          setTimeout(scalePaperPreview, 40);
+        });
+      });
+
+      const flowDownloadPng = document.getElementById('flow-download-png-btn');
+      if (flowDownloadPng) {
+        flowDownloadPng.addEventListener('click', () => {
+          const orig = document.getElementById('download-png-btn');
+          if (orig) orig.click();
+        });
+      }
+
+
+
+      // Legacy tab switching support
       document.querySelectorAll('.editor-tab').forEach(tab => {
         tab.addEventListener('click', () => {
           document.querySelectorAll('.editor-tab').forEach(t => t.classList.remove('active'));
@@ -3505,7 +4632,7 @@
             e.stopPropagation();
             fieldDiv.classList.toggle('selected-for-delete', selectCb.checked);
           });
-          fieldDiv.prepend(selectCb);
+          fieldDiv.appendChild(selectCb);
         }
 
         syncField(input);
@@ -3611,15 +4738,445 @@
         }
       }
 
+      // ==========================================
+      // UTTARA UNIVERSITY STUDENT PORTAL & ROUTINE
+      // ==========================================
+      const UU_ROUTINE_DATABASE = [
+        { courseCode: "CSE0612201", courseTitle: "Algorithms", teacherName: "Md. Aminul Islam", designation: "Assistant Professor", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0612202", courseTitle: "Algorithms Lab", teacherName: "Md. Aminul Islam", designation: "Assistant Professor", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0612203", courseTitle: "Database Management Systems", teacherName: "Farhana Akter", designation: "Senior Lecturer", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0612204", courseTitle: "Database Management Systems Lab", teacherName: "Farhana Akter", designation: "Senior Lecturer", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0613301", courseTitle: "Operating Systems", teacherName: "Dr. Md. Mijanur Rahman", designation: "Professor", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0613302", courseTitle: "Operating Systems Lab", teacherName: "Dr. Md. Mijanur Rahman", designation: "Professor", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0611101", courseTitle: "Structured Programming Language", teacherName: "Kazi Farhan Ahmed", designation: "Lecturer", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0611102", courseTitle: "Structured Programming Language Lab", teacherName: "Kazi Farhan Ahmed", designation: "Lecturer", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0611201", courseTitle: "Object Oriented Programming", teacherName: "Md. Shafiul Alam", designation: "Senior Lecturer", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0611202", courseTitle: "Object Oriented Programming Lab", teacherName: "Md. Shafiul Alam", designation: "Senior Lecturer", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0612101", courseTitle: "Data Structures", teacherName: "S. M. Mahbubur Rahman", designation: "Associate Professor", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0612102", courseTitle: "Data Structures Lab", teacherName: "S. M. Mahbubur Rahman", designation: "Associate Professor", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0613201", courseTitle: "Computer Networks", teacherName: "Md. Shafiul Alam", designation: "Senior Lecturer", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0613202", courseTitle: "Computer Networks Lab", teacherName: "Md. Shafiul Alam", designation: "Senior Lecturer", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0613303", courseTitle: "Software Engineering", teacherName: "Tasnim Rahman", designation: "Lecturer", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0613305", courseTitle: "Web Engineering", teacherName: "A. H. M. Saiful Islam", designation: "Assistant Professor", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "CSE0614101", courseTitle: "Artificial Intelligence", teacherName: "Dr. Shafiul Azam", designation: "Associate Professor", teacherDept: "Department of Computer Science and Engineering" },
+        { courseCode: "MAT0541101", courseTitle: "Differential and Integral Calculus", teacherName: "Dr. Mohammad Ali", designation: "Professor", teacherDept: "Department of Mathematics" },
+        { courseCode: "MAT0541102", courseTitle: "Linear Algebra and Complex Variables", teacherName: "Dr. Mohammad Ali", designation: "Professor", teacherDept: "Department of Mathematics" },
+        { courseCode: "EEE0713101", courseTitle: "Basic Electrical Engineering", teacherName: "Engr. Md. Tariqul Islam", designation: "Senior Lecturer", teacherDept: "Department of Electrical and Electronic Engineering" },
+        { courseCode: "PHY0533101", courseTitle: "Physics I (Mechanics, Waves & Optics)", teacherName: "Dr. Nazmul Huda", designation: "Associate Professor", teacherDept: "Department of Physics" },
+        { courseCode: "ENG0231101", courseTitle: "English Communication Skills", teacherName: "Fatema Tuz Zohra", designation: "Assistant Professor", teacherDept: "Department of English" },
+        { courseCode: "ACT0411101", courseTitle: "Financial and Managerial Accounting", teacherName: "Md. Kamrul Hasan", designation: "Assistant Professor", teacherDept: "Department of Business Administration" }
+      ];
+
+      const UU_TEACHERS_DATABASE = [
+        { name: "Md. Aminul Islam", designation: "Assistant Professor", department: "Department of Computer Science and Engineering" },
+        { name: "Farhana Akter", designation: "Senior Lecturer", department: "Department of Computer Science and Engineering" },
+        { name: "Dr. Md. Mijanur Rahman", designation: "Professor", department: "Department of Computer Science and Engineering" },
+        { name: "Kazi Farhan Ahmed", designation: "Lecturer", department: "Department of Computer Science and Engineering" },
+        { name: "Md. Shafiul Alam", designation: "Senior Lecturer", department: "Department of Computer Science and Engineering" },
+        { name: "S. M. Mahbubur Rahman", designation: "Associate Professor", department: "Department of Computer Science and Engineering" },
+        { name: "Tasnim Rahman", designation: "Lecturer", department: "Department of Computer Science and Engineering" },
+        { name: "A. H. M. Saiful Islam", designation: "Assistant Professor", department: "Department of Computer Science and Engineering" },
+        { name: "Dr. Shafiul Azam", designation: "Associate Professor", department: "Department of Computer Science and Engineering" },
+        { name: "Dr. Mohammad Ali", designation: "Professor", department: "Department of Mathematics" },
+        { name: "Engr. Md. Tariqul Islam", designation: "Senior Lecturer", department: "Department of Electrical and Electronic Engineering" },
+        { name: "Dr. Nazmul Huda", designation: "Associate Professor", department: "Department of Physics" },
+        { name: "Fatema Tuz Zohra", designation: "Assistant Professor", department: "Department of English" },
+        { name: "Md. Kamrul Hasan", designation: "Assistant Professor", department: "Department of Business Administration" }
+      ];
+
+      // Dynamic calculation for Uttara University's 3 semesters/year:
+      // Spring (Jan-Apr: 0-3), Summer (May-Aug: 4-7), Fall (Sep-Dec: 8-11)
+      function calculateCurrentUUSemester() {
+        const now = new Date();
+        const month = now.getMonth();
+        const year = now.getFullYear();
+        let term = "Spring";
+        if (month >= 0 && month <= 3) term = "Spring";
+        else if (month >= 4 && month <= 7) term = "Summer";
+        else term = "Fall";
+        return `${term} ${year}`;
+      }
+
+      // Bi-directional Course <-> Code auto-fill & Teacher suggestion
+      const courseTitleInput = document.getElementById('course');
+      const courseNoInput = document.getElementById('courseNo');
+      const teacherInput = document.getElementById('teacher');
+      const designationInput = document.getElementById('designation');
+      const teacherDeptInput = document.getElementById('teacherDepartment');
+
+      function handleCourseTitleChange() {
+        const titleVal = (courseTitleInput?.value || '').trim().toLowerCase();
+        if (!titleVal) return;
+        const match = UU_ROUTINE_DATABASE.find(c => c.courseTitle.toLowerCase() === titleVal || c.courseTitle.toLowerCase().includes(titleVal));
+        if (match) {
+          if (courseNoInput && !courseNoInput.value.trim()) {
+            courseNoInput.value = match.courseCode;
+            syncField(courseNoInput);
+          }
+          if (teacherInput && (!teacherInput.value.trim() || teacherInput.dataset.autoFilled === 'true')) {
+            teacherInput.value = match.teacherName;
+            teacherInput.dataset.autoFilled = 'true';
+            syncField(teacherInput);
+            if (designationInput) { designationInput.value = match.designation; syncField(designationInput); }
+            if (teacherDeptInput) { teacherDeptInput.value = match.teacherDept; syncField(teacherDeptInput); }
+          }
+          persistData();
+        }
+      }
+
+      function handleCourseCodeChange() {
+        const codeVal = (courseNoInput?.value || '').trim().toUpperCase();
+        if (!codeVal) return;
+        const match = UU_ROUTINE_DATABASE.find(c => c.courseCode.toUpperCase() === codeVal || codeVal.includes(c.courseCode.toUpperCase()));
+        if (match) {
+          if (courseTitleInput && !courseTitleInput.value.trim()) {
+            courseTitleInput.value = match.courseTitle;
+            syncField(courseTitleInput);
+          }
+          if (teacherInput && (!teacherInput.value.trim() || teacherInput.dataset.autoFilled === 'true')) {
+            teacherInput.value = match.teacherName;
+            teacherInput.dataset.autoFilled = 'true';
+            syncField(teacherInput);
+            if (designationInput) { designationInput.value = match.designation; syncField(designationInput); }
+            if (teacherDeptInput) { teacherDeptInput.value = match.teacherDept; syncField(teacherDeptInput); }
+          }
+          persistData();
+        }
+      }
+
+      function handleTeacherChange() {
+        const teacherVal = (teacherInput?.value || '').trim().toLowerCase();
+        if (!teacherVal) return;
+        teacherInput.dataset.autoFilled = 'false';
+        const match = UU_TEACHERS_DATABASE.find(t => t.name.toLowerCase() === teacherVal || t.name.toLowerCase().includes(teacherVal))
+          || UU_ROUTINE_DATABASE.find(c => c.teacherName.toLowerCase() === teacherVal || c.teacherName.toLowerCase().includes(teacherVal));
+        if (match) {
+          if (designationInput && match.designation) {
+            designationInput.value = match.designation;
+            syncField(designationInput);
+          }
+          if (teacherDeptInput && (match.department || match.teacherDept)) {
+            teacherDeptInput.value = match.department || match.teacherDept;
+            syncField(teacherDeptInput);
+          }
+          persistData();
+        }
+      }
+
+      if (courseTitleInput) {
+        courseTitleInput.addEventListener('input', handleCourseTitleChange);
+        courseTitleInput.addEventListener('change', handleCourseTitleChange);
+      }
+      if (courseNoInput) {
+        courseNoInput.addEventListener('input', handleCourseCodeChange);
+        courseNoInput.addEventListener('change', handleCourseCodeChange);
+      }
+      if (teacherInput) {
+        teacherInput.addEventListener('input', handleTeacherChange);
+        teacherInput.addEventListener('change', handleTeacherChange);
+      }
+
+      // Portal Login Modal Controls
+      const portalModal = document.getElementById('portal-login-modal');
+      const btnClosePortal = document.getElementById('btn-close-portal-login');
+      const btnPortalSubmit = document.getElementById('btn-portal-login-submit');
+      const btnPortalDemo = document.getElementById('btn-portal-demo-login');
+      const btnTogglePortalPw = document.getElementById('btn-toggle-portal-pw');
+      const inputPortalId = document.getElementById('portal-auth-student-id');
+      const inputPortalPw = document.getElementById('portal-auth-password');
+      const chkPortalRemember = document.getElementById('portal-auth-remember-me');
+      const portalAlertBox = document.getElementById('portal-auth-alert-box');
+      const portalAlertMsg = document.getElementById('portal-auth-alert-msg');
+
+      function openPortalLoginModal() {
+        const modal = document.getElementById('portal-login-modal');
+        if (!modal) return;
+        const alertBox = document.getElementById('portal-auth-alert-box');
+        if (alertBox) alertBox.style.display = 'none';
+        const idInp = document.getElementById('portal-auth-student-id');
+        const pwInp = document.getElementById('portal-auth-password');
+        if (idInp) {
+          const remembered = (window.StudentAuth && StudentAuth.getRememberedId()) || '';
+          if (remembered) idInp.value = remembered;
+        }
+        modal.style.setProperty('display', 'flex', 'important');
+        if (idInp && !idInp.value) idInp.focus();
+        else if (pwInp) pwInp.focus();
+      }
+
+      function closePortalLoginModal() {
+        const modal = document.getElementById('portal-login-modal');
+        if (!modal) return;
+        modal.style.setProperty('display', 'none', 'important');
+      }
+
+      window.openPortalLoginModal = openPortalLoginModal;
+      window.closePortalLoginModal = closePortalLoginModal;
+
+      if (btnClosePortal) btnClosePortal.addEventListener('click', closePortalLoginModal);
+      const activePortalModal = document.getElementById('portal-login-modal');
+      if (activePortalModal) {
+        activePortalModal.addEventListener('click', (e) => {
+          if (e.target === activePortalModal) closePortalLoginModal();
+        });
+      }
+
+      if (btnTogglePortalPw && inputPortalPw) {
+        btnTogglePortalPw.addEventListener('click', () => {
+          if (inputPortalPw.type === 'password') {
+            inputPortalPw.type = 'text';
+            btnTogglePortalPw.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
+          } else {
+            inputPortalPw.type = 'password';
+            btnTogglePortalPw.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+          }
+        });
+      }
+
+      function applyStudentProfileToCover(profile) {
+        const studentInput = document.getElementById('student');
+        const studentIdInput = document.getElementById('studentId');
+        const studentDeptInput = document.getElementById('studentDepartment');
+        const semesterInput = document.getElementById('semester');
+        const sectionInput = document.getElementById('section');
+
+        const activeId = profile.id || profile.studentId || '';
+        const activeName = profile.name || profile.fullName || '';
+        const activeDept = profile.department || 'Department of Computer Science and Engineering';
+        const activeSection = profile.section || 'E';
+        const activeSemester = calculateCurrentUUSemester();
+
+        if (studentInput && activeName) studentInput.value = activeName;
+        if (studentIdInput && activeId) studentIdInput.value = activeId;
+        if (studentDeptInput && activeDept) studentDeptInput.value = activeDept;
+        if (semesterInput) semesterInput.value = activeSemester;
+        if (sectionInput && (!sectionInput.value || sectionInput.value.trim() === '—')) sectionInput.value = activeSection;
+
+        // If Course is empty, auto-populate first registered course & teacher
+        if (courseTitleInput && !courseTitleInput.value.trim()) {
+          const firstCourse = UU_ROUTINE_DATABASE[0];
+          if (firstCourse) {
+            courseTitleInput.value = firstCourse.courseTitle;
+            if (courseNoInput) courseNoInput.value = firstCourse.courseCode;
+            if (teacherInput) {
+              teacherInput.value = firstCourse.teacherName;
+              teacherInput.dataset.autoFilled = 'true';
+            }
+            if (designationInput) designationInput.value = firstCourse.designation;
+            if (teacherDeptInput) teacherDeptInput.value = firstCourse.teacherDept;
+          }
+        }
+
+        syncAllFields();
+        persistData();
+        updateFlowStudentSummary();
+      }
+
+      async function handlePortalLoginSubmit() {
+        const id = inputPortalId?.value.trim() || '';
+        const pass = inputPortalPw?.value.trim() || '';
+        const rememberMe = chkPortalRemember?.checked === true;
+
+        if (!id || !pass) {
+          if (portalAlertMsg) portalAlertMsg.textContent = 'Please enter both Student ID and Password.';
+          if (portalAlertBox) portalAlertBox.style.display = 'block';
+          return;
+        }
+
+        if (btnPortalSubmit) {
+          btnPortalSubmit.disabled = true;
+          btnPortalSubmit.textContent = 'Verifying with UU Portal...';
+        }
+        if (portalAlertBox) portalAlertBox.style.display = 'none';
+
+        try {
+          if (window.StudentAuth) {
+            const res = await StudentAuth.login(id, pass, rememberMe);
+            if (res.success) {
+              closePortalLoginModal();
+              applyStudentProfileToCover(res.profile || { id });
+              showToast(`Logged in successfully as Student ID: ${id}! Cover auto-filled.`, 'success');
+            } else {
+              if (portalAlertMsg) portalAlertMsg.textContent = res.message || 'Invalid Student ID or Password.';
+              if (portalAlertBox) portalAlertBox.style.display = 'block';
+            }
+          } else {
+            throw new Error('StudentAuth module not initialized.');
+          }
+        } catch (err) {
+          if (portalAlertMsg) portalAlertMsg.textContent = err.message || 'Connection error with verification server.';
+          if (portalAlertBox) portalAlertBox.style.display = 'block';
+        } finally {
+          if (btnPortalSubmit) {
+            btnPortalSubmit.disabled = false;
+            btnPortalSubmit.textContent = 'Login & Auto-Fill Cover';
+          }
+        }
+      }
+
+      if (btnPortalSubmit) btnPortalSubmit.addEventListener('click', handlePortalLoginSubmit);
+      if (inputPortalPw) {
+        inputPortalPw.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') handlePortalLoginSubmit();
+        });
+      }
+
+      if (btnPortalDemo) {
+        btnPortalDemo.addEventListener('click', async () => {
+          if (window.StudentAuth) {
+            const res = await StudentAuth.loginDemo('2261091211');
+            closePortalLoginModal();
+            applyStudentProfileToCover(res.profile);
+            showToast('Logged in as Demo Student! Cover auto-filled.', 'info');
+          }
+        });
+      }
+
+      function updateFlowStudentSummary() {
+        const studentNameInput = document.getElementById('student');
+        const studentIdInput = document.getElementById('studentId');
+        const nameEl = document.getElementById('flow-student-name');
+        const idEl = document.getElementById('flow-student-id');
+        const studentCard = document.getElementById('flow-student-card');
+        const avatarCircle = studentCard?.querySelector('.flow-avatar-circle');
+
+        const isLoggedIn = Boolean(window.StudentAuth && StudentAuth.isLoggedIn()) || Boolean(studentIdInput?.value.trim());
+
+        if (isLoggedIn) {
+          const sName = (studentNameInput?.value || '').trim() || (window.StudentAuth && StudentAuth.getProfile()?.name) || 'Student Details';
+          const sId = (studentIdInput?.value || '').trim() || (window.StudentAuth && StudentAuth.getProfile()?.id) || '—';
+
+          if (nameEl) nameEl.textContent = sName;
+          if (idEl) {
+            idEl.innerHTML = `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> <span>ID: ${sId}</span>`;
+            // Ensure logout button is present
+            let logoutBtn = document.getElementById('flow-student-logout-btn');
+            if (!logoutBtn) {
+              const sep = document.createElement('span');
+              sep.id = 'flow-student-logout-sep';
+              sep.style.color = '#CBD5E1';
+              sep.textContent = '•';
+              logoutBtn = document.createElement('button');
+              logoutBtn.type = 'button';
+              logoutBtn.id = 'flow-student-logout-btn';
+              logoutBtn.title = 'Logout & Clear Student Profile';
+              logoutBtn.style.cssText = 'background:none; border:none; color:#EF4444; font-size:11.5px; font-weight:700; cursor:pointer; text-decoration:underline; padding:0; display:inline-flex; align-items:center; gap:4px;';
+              logoutBtn.textContent = 'Logout';
+              idEl.parentElement.appendChild(sep);
+              idEl.parentElement.appendChild(logoutBtn);
+              bindStudentLogoutBtn(logoutBtn);
+            }
+          }
+          if (avatarCircle) {
+            avatarCircle.style.background = '#EFF6FF';
+            avatarCircle.style.borderColor = '#BFDBFE';
+            avatarCircle.style.color = '#2451C4';
+            avatarCircle.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
+          }
+          if (studentCard) {
+            studentCard.title = 'Click to view/edit student details';
+          }
+        } else {
+          // Logged Out State
+          if (nameEl) nameEl.textContent = 'Auto Fill-up Profile';
+          if (idEl) {
+            idEl.innerHTML = `<span style="color:#2451C4; font-weight:700;">Login to auto-fill cover details</span> <span style="color:#CBD5E1;">•</span> <button type="button" class="flow-card-login-btn" style="background:none; border:none; color:#2451C4; font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline; padding:0;">Login</button>`;
+            const loginBtn = idEl.querySelector('.flow-card-login-btn');
+            if (loginBtn) {
+              loginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                openPortalLoginModal();
+              });
+            }
+          }
+          // Remove logout button if exists
+          const logoutBtn = document.getElementById('flow-student-logout-btn');
+          const logoutSep = document.getElementById('flow-student-logout-sep');
+          if (logoutBtn) logoutBtn.remove();
+          if (logoutSep) logoutSep.remove();
+
+          if (avatarCircle) {
+            avatarCircle.style.background = '#EEF2FF';
+            avatarCircle.style.borderColor = '#C7D2FE';
+            avatarCircle.style.color = '#4338CA';
+            // Clean login icon
+            avatarCircle.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>`;
+          }
+          if (studentCard) {
+            studentCard.title = 'Click to login with Uttara University Student Portal';
+          }
+        }
+      }
+
+      function bindStudentLogoutBtn(btn) {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const studentInput = document.getElementById('student');
+          const studentIdInput = document.getElementById('studentId');
+          const studentDeptInput = document.getElementById('studentDepartment');
+          const semesterInput = document.getElementById('semester');
+          const sectionInput = document.getElementById('section');
+
+          if (studentInput) studentInput.value = '';
+          if (studentIdInput) studentIdInput.value = '';
+          if (studentDeptInput) studentDeptInput.value = '';
+          if (semesterInput) semesterInput.value = '';
+          if (sectionInput) sectionInput.value = '';
+
+          sessionStorage.removeItem('uu_cgpa_portal_token');
+          if (window.StudentAuth && typeof window.StudentAuth.logout === 'function') {
+            window.StudentAuth.logout();
+          }
+
+          syncAllFields();
+          persistData();
+          updateFlowStudentSummary();
+          showToast('Student profile logged out');
+        });
+      }
+
+      const initialLogoutBtn = document.getElementById('flow-student-logout-btn');
+      if (initialLogoutBtn) bindStudentLogoutBtn(initialLogoutBtn);
+
+      // Student Summary Card Click Handler
+      const flowStudentCard = document.getElementById('flow-student-card');
+      if (flowStudentCard) {
+        flowStudentCard.addEventListener('click', (e) => {
+          if (e.target.closest('#flow-student-logout-btn')) return;
+
+          const isLoggedIn = Boolean(window.StudentAuth && StudentAuth.isLoggedIn()) || Boolean(document.getElementById('studentId')?.value.trim());
+          if (!isLoggedIn) {
+            openPortalLoginModal();
+          } else {
+            const studentGroup = document.getElementById('group-student-details');
+            if (studentGroup) {
+              studentGroup.open = true;
+              studentGroup.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+          }
+        });
+      }
+
+      window.addEventListener('uu-auth-changed', (e) => {
+        if (e.detail?.isLoggedIn && e.detail.profile) {
+          applyStudentProfileToCover(e.detail.profile);
+        } else if (!e.detail?.isLoggedIn) {
+          updateFlowStudentSummary();
+        }
+      });
+
       function syncAllFields() {
         document.querySelectorAll('.editor input:not(.field-select):not([type="file"]), .editor select').forEach(syncField);
+        updateFlowStudentSummary();
       }
 
       const editorPanel = document.querySelector('.editor');
       if (editorPanel) {
-        editorPanel.addEventListener('input', (e) => { syncField(e.target); persistData(); });
-        editorPanel.addEventListener('change', (e) => { syncField(e.target); persistData(); });
-        editorPanel.addEventListener('keyup', (e) => { syncField(e.target); persistData(); });
+        editorPanel.addEventListener('input', (e) => { syncField(e.target); updateFlowStudentSummary(); persistData(); });
+        editorPanel.addEventListener('change', (e) => { syncField(e.target); updateFlowStudentSummary(); persistData(); });
+        editorPanel.addEventListener('keyup', (e) => { syncField(e.target); updateFlowStudentSummary(); persistData(); });
       }
 
       document.querySelectorAll('.field-group .field').forEach(bindField);
@@ -4636,6 +6193,8 @@
           cleanLabelsToggle.checked = false;
           paper.classList.remove('clean-labels');
         }
+
+        updateFlowStudentSummary();
       }
 
       document.getElementById('reset-all-btn').addEventListener('click', () => {
@@ -4734,6 +6293,7 @@
         logoImg.src = 'assets/logo-2.png';
         customLogoInput.value = '';
         logoUploadWrapper.classList.remove('has-logo');
+        updateFlowStudentSummary();
         showToast('All settings reset to default.');
       });
 
@@ -4799,24 +6359,25 @@
         const previewStyle = window.getComputedStyle(preview);
         const padLeft = parseFloat(previewStyle.paddingLeft) || 0;
         const padRight = parseFloat(previewStyle.paddingRight) || 0;
-        const availWidth = Math.max(180, previewRect.width - padLeft - padRight - 8);
+        const availWidth = Math.max(280, previewRect.width - padLeft - padRight);
 
         const paperWidth = 794;
-        const paperHeight = 1123;         // Calculate width scaling factor
+        const paperHeight = 1123;
         let scale = availWidth / paperWidth;
 
-        // On desktop, balance scale against viewport height so the complete A4 page fits comfortably in view
-        if (window.innerWidth > 1024 && !document.body.classList.contains('is-fullscreen-active')) {
-          const maxAvailHeight = Math.max(500, window.innerHeight - 160);
-          const heightScale = maxAvailHeight / paperHeight;
-          scale = Math.min(scale, heightScale);
+        // FlowCV style: make the PDF preview generous, prominent, and readable on desktop
+        if (window.innerWidth > 900 && !document.body.classList.contains('is-preview-fullscreen') && !document.body.classList.contains('is-fullscreen-active')) {
+          scale = Math.min(availWidth / paperWidth, 0.96);
+        } else if (window.innerWidth <= 900 && !document.body.classList.contains('is-preview-fullscreen') && !document.body.classList.contains('is-fullscreen-active')) {
+          // On mobile & tablet: scale smoothly to fit available width perfectly without horizontal scroll
+          scale = Math.min(availWidth / paperWidth, 0.95);
         }
 
-        // Apply height restriction only when in full screen lightbox mode
-        if (document.body.classList.contains('is-fullscreen-active')) {
-          const maxAvailHeight = Math.max(300, window.innerHeight - 120);
-          const heightScale = maxAvailHeight / paperHeight;
-          scale = Math.min(scale, heightScale);
+        // Fullscreen mode: scale to fit 94% of screen height and 94% of screen width!
+        if (document.body.classList.contains('is-preview-fullscreen') || document.body.classList.contains('is-fullscreen-active')) {
+          const maxAvailHeight = window.innerHeight * 0.94;
+          const maxAvailWidth = window.innerWidth * 0.94;
+          scale = Math.min(maxAvailHeight / paperHeight, maxAvailWidth / paperWidth);
         }
 
         // Keep zoom bounded while still allowing a readable enlarged preview.
@@ -4828,20 +6389,19 @@
         const scaledHeight = Math.ceil(paperHeight * scale);
 
         scaler.style.position = 'relative';
-        scaler.style.display = 'flex';
-        scaler.style.justifyContent = 'center';
+        scaler.style.display = 'block';
         scaler.style.width = `${scaledWidth}px`;
         scaler.style.height = `${scaledHeight}px`;
         scaler.style.maxWidth = '100%';
-        scaler.style.margin = '0 auto';
-        scaler.style.overflow = 'visible';
+        scaler.style.margin = (window.innerWidth <= 900 || document.body.classList.contains('is-preview-fullscreen')) ? '0 auto' : '0';
+        scaler.style.overflow = 'hidden';
 
-        paper.style.position = 'relative';
+        paper.style.position = 'absolute';
+        paper.style.top = '0';
+        paper.style.left = '0';
         paper.style.width = '794px';
         paper.style.minWidth = '794px';
-        paper.style.flexShrink = '0';
-        paper.style.margin = '0 auto';
-        paper.style.transformOrigin = 'top center';
+        paper.style.transformOrigin = 'top left';
         paper.style.transform = `scale(${scale})`;
       }
 
@@ -4940,57 +6500,111 @@
         });
       });
 
-      // Responsive Accordion Defaults: Expand all on Desktop, Compact on Mobile
+      // FlowCV 1-part-at-a-time Exclusive Accordion System
       function initResponsiveAccordions() {
-        const isMobile = window.innerWidth <= 768;
-        document.querySelectorAll('details.field-group, details.design-card').forEach(details => {
-          details.open = !isMobile;
+        const fieldGroups = document.querySelectorAll('details.field-group');
+        
+        // FlowCV style: keep only the first field-group open initially, rest collapsed
+        fieldGroups.forEach((fg, idx) => {
+          fg.open = (idx === 0);
+
+          // Whenever one part is opened, close all other parts
+          fg.addEventListener('toggle', () => {
+            if (fg.open) {
+              fieldGroups.forEach(other => {
+                if (other !== fg && other.open) {
+                  other.open = false;
+                }
+              });
+              setTimeout(scalePaperPreview, 40);
+            }
+          });
+
+          // Done button closes the current part
+          const doneBtn = fg.querySelector('.flow-done-btn');
+          if (doneBtn) {
+            doneBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              fg.open = false;
+              setTimeout(scalePaperPreview, 40);
+            });
+          }
+        });
+
+        // Clicking the top Profile Summary Card opens the Student Details card
+        const studentCard = document.getElementById('flow-student-card');
+        if (studentCard) {
+          studentCard.addEventListener('click', () => {
+            const studentGroup = document.getElementById('group-student-details');
+            if (studentGroup) {
+              fieldGroups.forEach(other => {
+                if (other !== studentGroup) other.open = false;
+              });
+              studentGroup.open = true;
+              studentGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              setTimeout(scalePaperPreview, 40);
+            }
+          });
+        }
+      }
+
+      // FlowCV Native Fullscreen Mode (Uses the authentic live document without broken cloning)
+      function openPreviewFullscreen() {
+        document.body.classList.add('is-preview-fullscreen');
+        scalePaperPreview();
+      }
+
+      function closePreviewFullscreen() {
+        document.body.classList.remove('is-preview-fullscreen');
+        scalePaperPreview();
+      }
+
+      window.openPreviewFullscreen = openPreviewFullscreen;
+      window.closePreviewFullscreen = closePreviewFullscreen;
+
+      // Clicking preview panel directly opens or closes Fullscreen Mode
+      const previewPanel = document.getElementById('preview-panel');
+      if (previewPanel) {
+        previewPanel.addEventListener('click', (e) => {
+          if (document.body.classList.contains('is-preview-fullscreen')) {
+            // When in fullscreen: clicking outside the paper or on close button closes it
+            if (!e.target.closest('#paper-scaler') || e.target.closest('#preview-close-fullscreen-btn')) {
+              closePreviewFullscreen();
+            }
+          } else {
+            // When in normal view: clicking on the preview paper opens fullscreen ONLY on Desktop (> 900px)
+            // On mobile & tablets, taps must NEVER lock into fullscreen so the user can freely scroll up and down without getting trapped!
+            if (window.innerWidth > 900 && e.target.closest('#paper-scaler')) {
+              openPreviewFullscreen();
+            }
+          }
         });
       }
 
-      // Direct Fullscreen Toggle Functionality for HTML
-      function toggleFullscreenMode() {
-        const isFS = document.body.classList.toggle('is-fullscreen-active');
-        const fsBtnText = document.querySelector('#open-fullscreen-btn .btn-text');
-        
-        if (isFS) {
-          if (fsBtnText) fsBtnText.textContent = 'Exit Full Screen';
-          try {
-            if (document.documentElement.requestFullscreen) {
-              document.documentElement.requestFullscreen().catch(() => {});
-            } else if (document.documentElement.webkitRequestFullscreen) {
-              document.documentElement.webkitRequestFullscreen().catch(() => {});
-            }
-          } catch (e) {}
-        } else {
-          if (fsBtnText) fsBtnText.textContent = 'Full Screen';
-          try {
-            if (document.fullscreenElement && document.exitFullscreen) {
-              document.exitFullscreen().catch(() => {});
-            } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
-              document.webkitExitFullscreen().catch(() => {});
-            }
-          } catch (e) {}
-        }
-
-        setTimeout(scalePaperPreview, 30);
-        setTimeout(scalePaperPreview, 150);
+      const previewCloseFsBtn = document.getElementById('preview-close-fullscreen-btn');
+      if (previewCloseFsBtn) {
+        previewCloseFsBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closePreviewFullscreen();
+        });
       }
 
-      window.openFullscreenModal = toggleFullscreenMode;
-      window.toggleFullscreenMode = toggleFullscreenMode;
-
-      const openFullscreenBtn = document.getElementById('open-fullscreen-btn');
-      if (openFullscreenBtn) {
-        openFullscreenBtn.addEventListener('click', (e) => {
+      const flowFullscreenBtnEl = document.getElementById('flow-fullscreen-btn');
+      if (flowFullscreenBtnEl) {
+        flowFullscreenBtnEl.addEventListener('click', (e) => {
           e.stopPropagation();
-          toggleFullscreenMode();
+          if (document.body.classList.contains('is-preview-fullscreen')) {
+            closePreviewFullscreen();
+          } else {
+            openPreviewFullscreen();
+          }
         });
       }
 
       window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && document.body.classList.contains('is-fullscreen-active')) {
-          toggleFullscreenMode();
+        if (e.key === 'Escape' && document.body.classList.contains('is-preview-fullscreen')) {
+          closePreviewFullscreen();
         }
       });
 
@@ -5016,27 +6630,27 @@
       </div>
 
       <!-- Links inside Mobile Sheet -->
-      <a href="https://sabbirhussankhan.github.io/CGPA-CALCULATOR/about.html" target="_blank" class="more-dropdown-item" style="padding: 10px 12px;">
+      <a href="about.html" class="more-dropdown-item" style="padding: 10px 12px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
         <div class="item-text">
           <strong>About</strong>
-          <small>About Student Suite</small>
+          <small>About Cover Page Generator</small>
         </div>
       </a>
 
-      <a href="https://sabbirhussankhan.github.io/CGPA-CALCULATOR/privacy.html" target="_blank" class="more-dropdown-item" style="padding: 10px 12px;">
+      <a href="privacy.html" class="more-dropdown-item" style="padding: 10px 12px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
         <div class="item-text">
           <strong>Privacy Policy</strong>
-          <small>Data protection & privacy terms</small>
+          <small>Data protection & client privacy</small>
         </div>
       </a>
 
-      <a href="https://sabbirhussankhan.github.io/CGPA-CALCULATOR/terms.html" target="_blank" class="more-dropdown-item" style="padding: 10px 12px;">
+      <a href="terms.html" class="more-dropdown-item" style="padding: 10px 12px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
         <div class="item-text">
           <strong>Terms & Conditions</strong>
-          <small>Usage terms & guidelines</small>
+          <small>Usage terms & academic guidelines</small>
         </div>
       </a>
 
@@ -5049,6 +6663,12 @@
       </a>
     </div>
   </div>
+
+  <!-- Floating Back-to-Top Button for Mobile When Scrolled -->
+  <button type="button" id="mobile-back-to-top" class="mobile-back-to-top-btn" title="Back to Editor" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    <span>Back to Top</span>
+  </button>
 
   <!-- Clean Bottom Navigation Bar for Mobile -->
   <nav class="bottom-nav">
@@ -5110,6 +6730,16 @@
         }, 220);
       }
     }
+
+    // Toggle Back-to-Top Floating Button on Mobile
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        document.body.classList.add('is-scrolled-down');
+      } else {
+        document.body.classList.remove('is-scrolled-down');
+      }
+    }, { passive: true });
   </script>
+
 </body>
 </html>
