@@ -2002,21 +2002,21 @@
         left: 0 !important;
         right: 0 !important;
         width: 210mm !important;
-        height: 297mm !important;
-        max-height: 297mm !important;
-        min-height: 297mm !important;
+        height: 278mm !important;
+        max-height: 278mm !important;
+        min-height: 0 !important;
         min-width: 0 !important;
         transform: none !important;
         aspect-ratio: auto !important;
         max-width: none !important;
         box-shadow: none !important;
         border-radius: 0 !important;
-        padding: 10mm var(--print-margin, 14mm) 9mm !important;
+        padding: 6mm var(--print-margin, 14mm) 10mm !important;
         margin: 0 !important;
         overflow: hidden !important;
         display: flex !important;
         flex-direction: column !important;
-        justify-content: space-between !important;
+        justify-content: flex-start !important;
         page-break-after: avoid !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
@@ -2032,50 +2032,50 @@
         margin-left: calc(-1 * var(--print-margin, 14mm)) !important;
         margin-right: calc(-1 * var(--print-margin, 14mm)) !important;
         margin-top: 0 !important;
-        padding: 7mm 10mm 5mm !important;
+        padding: 5mm 10mm 4mm !important;
         background: var(--accent) !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
       .paper.layout-banner .top .logo {
-        height: 95px !important;
-        width: 95px !important;
-        margin-bottom: 3mm !important;
+        height: 75px !important;
+        width: 75px !important;
+        margin-bottom: 2mm !important;
       }
       .paper.layout-banner .top .uni {
-        font-size: 22px !important;
+        font-size: 20px !important;
       }
       .paper.layout-banner .top h2 {
         font-size: 13px !important;
       }
 
       .paper .uni {
-        font-size: 30px !important;
+        font-size: 27px !important;
         line-height: 1.15 !important;
       }
       .paper .logo {
-        width: 145px !important;
-        height: 145px !important;
-        margin: 7mm auto 6mm !important;
+        width: 125px !important;
+        height: 125px !important;
+        margin: 5mm auto 4mm !important;
         object-fit: contain !important;
       }
       .paper .top h2 {
-        font-size: 20px !important;
+        font-size: 18px !important;
         line-height: 1.2 !important;
         margin-top: 2mm !important;
       }
 
       .paper .experiment {
-        margin: 6mm 0 4mm !important;
-        font-size: calc(14px * var(--paper-scale, 1)) !important;
-        line-height: 1.5 !important;
+        margin: 5mm 0 3mm !important;
+        font-size: calc(13px * var(--paper-scale, 1)) !important;
+        line-height: 1.45 !important;
       }
       .paper .experiment p, .paper .experiment .custom-preview-row {
         display: grid !important;
         grid-template-columns: 160px minmax(0, 1fr) !important;
         column-gap: 10px !important;
         align-items: baseline !important;
-        margin-bottom: 6px !important;
+        margin-bottom: 4px !important;
       }
       .paper .experiment p b, .paper .experiment .custom-preview-row b {
         display: block !important;
@@ -2092,7 +2092,7 @@
         gap: 8mm !important;
         align-items: stretch !important;
         margin-top: 4mm !important;
-        margin-bottom: 2mm !important;
+        margin-bottom: 3mm !important;
       }
       .paper .submission > div {
         display: flex !important;
@@ -2100,23 +2100,23 @@
         min-width: 0 !important;
       }
       .paper .submission h3 {
-        font-size: 13px !important;
-        margin-bottom: 4mm !important;
+        font-size: 12.5px !important;
+        margin-bottom: 3mm !important;
         text-align: center !important;
       }
       .paper .submission .box {
         height: auto !important;
         min-height: auto !important;
         flex: 1 1 auto !important;
-        padding: 5mm 5mm !important;
+        padding: 4mm 4mm !important;
       }
       .paper .submission .box p, .paper .submission .box .custom-preview-row {
         display: grid !important;
         grid-template-columns: 100px minmax(0, 1fr) !important;
         align-items: baseline !important;
-        font-size: calc(13px * var(--paper-scale, 1)) !important;
-        line-height: 1.45 !important;
-        margin-bottom: 3.5mm !important;
+        font-size: calc(12.5px * var(--paper-scale, 1)) !important;
+        line-height: 1.4 !important;
+        margin-bottom: 2.5mm !important;
         column-gap: 3mm !important;
       }
       .paper #teacher-preview-container p, .paper #teacher-preview-container .custom-preview-row {
@@ -2124,7 +2124,7 @@
       }
       .paper #p-student, .paper #p-teacher {
         font-weight: 700 !important;
-        font-size: calc(14px * var(--paper-scale, 1)) !important;
+        font-size: calc(13.5px * var(--paper-scale, 1)) !important;
       }
       .paper .submission .box p > b, .paper .submission .box .custom-preview-row > b {
         display: block !important;
@@ -2145,7 +2145,7 @@
 
       /* Submission Date Footer Print Styles */
       .paper .submission-date-footer {
-        margin-top: 3mm !important;
+        margin-top: 4mm !important;
         padding-top: 3mm !important;
         padding-bottom: 2mm !important;
         text-align: center !important;
