@@ -1821,6 +1821,54 @@
       .paper .submission .box { min-height: auto !important; padding: 12px 10px !important; }
       .paper .submission .box p, .paper .submission .box .custom-preview-row { grid-template-columns: 120px minmax(0, 1fr) !important; }
       .paper #teacher-preview-container p, .paper #teacher-preview-container .custom-preview-row { grid-template-columns: 130px minmax(0, 1fr) !important; }
+      
+      /* Mobile Responsive Top Banner Layout */
+      .paper.layout-banner {
+        padding-top: 0 !important;
+        overflow: hidden !important;
+      }
+      .paper.layout-banner .top {
+        margin-left: -14px !important;
+        margin-right: -14px !important;
+        margin-top: 0 !important;
+        margin-bottom: 16px !important;
+        padding: 20px 14px 16px !important;
+        width: calc(100% + 28px) !important;
+        box-sizing: border-box !important;
+      }
+      .paper.layout-banner .top .logo {
+        height: 75px !important;
+        width: 75px !important;
+        margin: 0 auto 8px !important;
+      }
+      .paper.layout-banner .top .uni {
+        font-size: 17px !important;
+        letter-spacing: .04em !important;
+        line-height: 1.25 !important;
+      }
+      .paper.layout-banner .top h2 {
+        font-size: 11.5px !important;
+        letter-spacing: .08em !important;
+        margin-top: 5px !important;
+      }
+
+      /* Mobile Responsive Classic & Framed Layouts */
+      .paper .logo {
+        width: 90px !important;
+        height: 90px !important;
+        margin: 6px auto !important;
+      }
+      .paper .uni {
+        font-size: 20px !important;
+      }
+      .paper .top h2 {
+        font-size: 14px !important;
+      }
+      .paper.layout-framed {
+        outline-offset: -5px !important;
+        padding: 14px 10px !important;
+      }
+
       .preset-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
       .preset-card { padding: 8px; }
       .preset-card strong { font-size: 11.5px; }
@@ -2371,26 +2419,27 @@
       body {
         padding-bottom: 76px !important;
       }
-      /* Mobile Compact Round Back-to-Top */
+      /* Mobile Compact Round Back-to-Top - Elevated above bottom navigation bar */
       .mobile-back-to-top-btn {
-        bottom: calc(70px + env(safe-area-inset-bottom, 0px) + 18px);
-        right: 18px;
-        width: 44px;
-        height: 44px;
-        min-width: 44px;
-        padding: 0;
-        border-radius: 50%;
-        justify-content: center;
-        box-shadow: 0 4px 16px rgba(36, 81, 196, 0.4);
+        bottom: calc(78px + env(safe-area-inset-bottom, 0px)) !important;
+        right: 18px !important;
+        width: 50px !important;
+        height: 50px !important;
+        min-width: 50px !important;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        justify-content: center !important;
+        align-items: center !important;
+        box-shadow: 0 6px 22px rgba(36, 81, 196, 0.45) !important;
         z-index: 9999999 !important;
       }
       .mobile-back-to-top-btn span {
         display: none !important;
       }
       .mobile-back-to-top-btn svg {
-        width: 20px;
-        height: 20px;
-        stroke-width: 2.8;
+        width: 26px !important;
+        height: 26px !important;
+        stroke-width: 3.2 !important;
       }
     }
 
@@ -7077,7 +7126,7 @@
 
   <!-- Floating Back-to-Top Button for Mobile When Scrolled -->
   <button type="button" id="mobile-back-to-top" class="mobile-back-to-top-btn" title="Back to Editor" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
-    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
     <span>Back to Top</span>
   </button>
 
