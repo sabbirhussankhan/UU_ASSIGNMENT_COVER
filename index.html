@@ -1443,6 +1443,9 @@
       --gap-top: 24px;
       --gap-experiment: 24px;
       --gap-submission: 36px;
+      --gap-date: 8px;
+      --gap-row-experiment: 6px;
+      --gap-row-box: 7px;
       --header-font-scale: 1;
       --body-font-scale: 1;
       --box-font-scale: 1;
@@ -1689,7 +1692,7 @@
       grid-template-columns: 180px minmax(0, 1fr) !important;
       column-gap: 12px !important;
       align-items: baseline !important;
-      margin: 0 0 6px !important;
+      margin: 0 0 var(--gap-row-experiment, 6px) !important;
     }
     .paper .experiment b, .paper .experiment .custom-preview-row b {
       font-weight: 700 !important;
@@ -1734,7 +1737,7 @@
       display: grid !important;
       grid-template-columns: 105px minmax(0, 1fr) !important;
       column-gap: 4px !important;
-      margin-bottom: 7px !important;
+      margin-bottom: var(--gap-row-box, 7px) !important;
       font-size: calc(13px * var(--box-font-scale, 1) * var(--paper-scale, 1)) !important;
       line-height: 1.4 !important;
     }
@@ -1769,7 +1772,7 @@
 
     /* Dedicated Bottom Submission Date Footer */
     .submission-date-footer {
-      margin-top: 8px !important;
+      margin-top: var(--gap-date, 8px) !important;
       padding-top: 6px;
       padding-bottom: 6px;
       text-align: center;
@@ -2094,7 +2097,7 @@
         grid-template-columns: 160px minmax(0, 1fr) !important;
         column-gap: 10px !important;
         align-items: baseline !important;
-        margin-bottom: 4px !important;
+        margin-bottom: calc(var(--gap-row-experiment, 6px) * 0.65px) !important;
       }
       .paper .experiment p b, .paper .experiment .custom-preview-row b {
         display: block !important;
@@ -2135,7 +2138,7 @@
         align-items: baseline !important;
         font-size: calc(12.5px * var(--box-font-scale, 1) * var(--paper-scale, 1)) !important;
         line-height: 1.4 !important;
-        margin-bottom: 2.5mm !important;
+        margin-bottom: calc(var(--gap-row-box, 7px) * 0.45px) !important;
         column-gap: 3mm !important;
       }
       .paper #teacher-preview-container p, .paper #teacher-preview-container .custom-preview-row {
@@ -2167,7 +2170,7 @@
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
-        margin-top: 4mm !important;
+        margin-top: calc(var(--gap-date, 8px) * 0.4mm) !important;
         padding-top: 2mm !important;
         padding-bottom: 2mm !important;
         text-align: center !important;
@@ -4156,7 +4159,7 @@
             <div id="panel-space" class="subtab-panel" style="display:none;">
               <div class="ctrl-row">
                 <div class="ctrl-header">
-                  <span>Top Header Gap (Section 1)</span>
+                  <span>Top Header Gap</span>
                   <span class="val-badge" id="gap-top-val">24 px</span>
                 </div>
                 <div class="ctrl-body">
@@ -4168,7 +4171,7 @@
 
               <div class="ctrl-row">
                 <div class="ctrl-header">
-                  <span>Experiment Details Gap (Section 2)</span>
+                  <span>Experiment Section Gap</span>
                   <span class="val-badge" id="gap-experiment-val">24 px</span>
                 </div>
                 <div class="ctrl-body">
@@ -4180,13 +4183,49 @@
 
               <div class="ctrl-row">
                 <div class="ctrl-header">
-                  <span>Submission Boxes & Date Gap (Section 3)</span>
+                  <span>Experiment Line Spacing (Row Gap)</span>
+                  <span class="val-badge" id="gap-row-experiment-val">6 px</span>
+                </div>
+                <div class="ctrl-body">
+                  <button type="button" class="step-btn" onclick="stepSlider('gap-row-experiment', -1)">-</button>
+                  <input id="gap-row-experiment" type="range" min="0" max="25" value="6" class="range-slider-input">
+                  <button type="button" class="step-btn" onclick="stepSlider('gap-row-experiment', 1)">+</button>
+                </div>
+              </div>
+
+              <div class="ctrl-row">
+                <div class="ctrl-header">
+                  <span>Submission Boxes Gap</span>
                   <span class="val-badge" id="gap-submission-val">36 px</span>
                 </div>
                 <div class="ctrl-body">
                   <button type="button" class="step-btn" onclick="stepSlider('gap-submission', -2)">-</button>
                   <input id="gap-submission" type="range" min="0" max="100" value="36" class="range-slider-input">
                   <button type="button" class="step-btn" onclick="stepSlider('gap-submission', 2)">+</button>
+                </div>
+              </div>
+
+              <div class="ctrl-row">
+                <div class="ctrl-header">
+                  <span>Box Line Spacing (Row Gap)</span>
+                  <span class="val-badge" id="gap-row-box-val">7 px</span>
+                </div>
+                <div class="ctrl-body">
+                  <button type="button" class="step-btn" onclick="stepSlider('gap-row-box', -1)">-</button>
+                  <input id="gap-row-box" type="range" min="0" max="25" value="7" class="range-slider-input">
+                  <button type="button" class="step-btn" onclick="stepSlider('gap-row-box', 1)">+</button>
+                </div>
+              </div>
+
+              <div class="ctrl-row">
+                <div class="ctrl-header">
+                  <span>Date of Submission Gap</span>
+                  <span class="val-badge" id="gap-date-val">8 px</span>
+                </div>
+                <div class="ctrl-body">
+                  <button type="button" class="step-btn" onclick="stepSlider('gap-date', -1)">-</button>
+                  <input id="gap-date" type="range" min="0" max="50" value="8" class="range-slider-input">
+                  <button type="button" class="step-btn" onclick="stepSlider('gap-date', 1)">+</button>
                 </div>
               </div>
             </div>
@@ -6169,6 +6208,33 @@
         });
       }
 
+      const gapRowExpInput = document.getElementById('gap-row-experiment');
+      const gapRowExpVal = document.getElementById('gap-row-experiment-val');
+      if (gapRowExpInput && gapRowExpVal) {
+        gapRowExpInput.addEventListener('input', () => {
+          gapRowExpVal.textContent = gapRowExpInput.value + ' px';
+          paper.style.setProperty('--gap-row-experiment', gapRowExpInput.value + 'px');
+        });
+      }
+
+      const gapRowBoxInput = document.getElementById('gap-row-box');
+      const gapRowBoxVal = document.getElementById('gap-row-box-val');
+      if (gapRowBoxInput && gapRowBoxVal) {
+        gapRowBoxInput.addEventListener('input', () => {
+          gapRowBoxVal.textContent = gapRowBoxInput.value + ' px';
+          paper.style.setProperty('--gap-row-box', gapRowBoxInput.value + 'px');
+        });
+      }
+
+      const gapDateInput = document.getElementById('gap-date');
+      const gapDateVal = document.getElementById('gap-date-val');
+      if (gapDateInput && gapDateVal) {
+        gapDateInput.addEventListener('input', () => {
+          gapDateVal.textContent = gapDateInput.value + ' px';
+          paper.style.setProperty('--gap-date', gapDateInput.value + 'px');
+        });
+      }
+
       // Reset Card 5 (Typography & Section Spacing)
       document.querySelectorAll('[data-reset-card="typography-scale"]').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -6206,10 +6272,25 @@
             gapExpVal.textContent = '24 px';
             paper.style.setProperty('--gap-experiment', '24px');
           }
+          if (gapRowExpInput && gapRowExpVal) {
+            gapRowExpInput.value = '6';
+            gapRowExpVal.textContent = '6 px';
+            paper.style.setProperty('--gap-row-experiment', '6px');
+          }
           if (gapSubInput && gapSubVal) {
             gapSubInput.value = '36';
             gapSubVal.textContent = '36 px';
             paper.style.setProperty('--gap-submission', '36px');
+          }
+          if (gapRowBoxInput && gapRowBoxVal) {
+            gapRowBoxInput.value = '7';
+            gapRowBoxVal.textContent = '7 px';
+            paper.style.setProperty('--gap-row-box', '7px');
+          }
+          if (gapDateInput && gapDateVal) {
+            gapDateInput.value = '8';
+            gapDateVal.textContent = '8 px';
+            paper.style.setProperty('--gap-date', '8px');
           }
           showToast('Typography & Section Spacing reset to default.');
         });
@@ -6557,6 +6638,21 @@
           gapSubInput.value = '36';
           gapSubVal.textContent = '36 px';
           paper.style.setProperty('--gap-submission', '36px');
+        }
+        if (gapRowExpInput && gapRowExpVal) {
+          gapRowExpInput.value = '6';
+          gapRowExpVal.textContent = '6 px';
+          paper.style.setProperty('--gap-row-experiment', '6px');
+        }
+        if (gapRowBoxInput && gapRowBoxVal) {
+          gapRowBoxInput.value = '7';
+          gapRowBoxVal.textContent = '7 px';
+          paper.style.setProperty('--gap-row-box', '7px');
+        }
+        if (gapDateInput && gapDateVal) {
+          gapDateInput.value = '8';
+          gapDateVal.textContent = '8 px';
+          paper.style.setProperty('--gap-date', '8px');
         }
 
         logoSelect.value = 'assets/logo-2.png';
