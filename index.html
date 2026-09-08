@@ -2621,11 +2621,11 @@
       color: #0F172A;
     }
     .flow-tab-btn.active {
-      background: #FFFFFF !important;
-      color: #2451C4 !important;
+      background: linear-gradient(135deg, #2451C4, #3569dc) !important;
+      color: #FFFFFF !important;
       font-weight: 700 !important;
-      border-color: #BFDBFE !important;
-      box-shadow: 0 2px 8px rgba(36, 81, 196, 0.15) !important;
+      border-color: #2451C4 !important;
+      box-shadow: 0 4px 12px rgba(36, 81, 196, 0.28) !important;
     }
     .flow-subbar-actions {
       display: flex;
@@ -2856,6 +2856,7 @@
       background: #FEE2E2 !important;
     }
     .flow-done-btn {
+      display: none !important;
       background: #2451C4 !important;
       color: #FFFFFF !important;
       border: 1px solid #2451C4 !important;
@@ -2950,7 +2951,8 @@
       flex-direction: column !important;
       align-items: center !important;
       justify-content: center !important;
-      padding: 0 !important;
+      padding: 16px !important;
+      overflow: auto !important;
       margin: 0 !important;
       cursor: zoom-out !important;
       animation: fadeInPreviewFs 0.2s ease;
@@ -2967,6 +2969,70 @@
     body.is-preview-fullscreen .paper {
       cursor: default !important;
       border-radius: 0 !important;
+      box-sizing: border-box !important;
+      width: 794px !important;
+      min-width: 794px !important;
+      max-width: none !important;
+      height: 1123px !important;
+      max-height: none !important;
+      padding: 53px 57px 53px !important;
+    }
+    /* Fullscreen is a print-style inspection view: keep the paper intact and
+       leave only the floating close control visible. */
+    body.is-preview-fullscreen .flow-subbar-container,
+    body.is-preview-fullscreen .flow-preview-actions-bar,
+    body.is-preview-fullscreen .flow-subbar-actions,
+    body.is-preview-fullscreen .flow-subbar-tabs {
+      display: none !important;
+    }
+    body.is-preview-fullscreen .paper .submission {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 12px !important;
+    }
+    body.is-preview-fullscreen .paper .submission > div {
+      min-width: 0 !important;
+    }
+    body.is-preview-fullscreen .paper.layout-banner .top,
+    body.is-preview-fullscreen .paper.layout-stripe .top {
+      width: auto !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    body.is-preview-fullscreen .paper.layout-stripe {
+      padding-left: 57px !important;
+    }
+    body.is-preview-fullscreen .preview-header-bar {
+      display: none !important;
+    }
+    body.is-preview-fullscreen .paper-scaler {
+      overflow: visible !important;
+      flex: 0 0 auto !important;
+      max-width: none !important;
+    }
+    body.is-preview-fullscreen .paper .top {
+      position: static !important;
+      inset: auto !important;
+      transform: none !important;
+      width: 100% !important;
+      max-width: none !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex-shrink: 0 !important;
+    }
+    body.is-preview-fullscreen .paper .top > * {
+      position: static !important;
+      float: none !important;
+      transform: none !important;
+      align-self: center !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+    }
+    body.is-preview-fullscreen .field-actions .flow-done-btn {
+      display: none !important;
     }
 
     /* Circular 'X' Close Button in Top-Right Corner (Exact match to user's Screenshot 2) */
@@ -3175,6 +3241,26 @@
       .dash-header.navbar {
         width: calc(100% - 16px) !important;
         padding: 8px 12px !important;
+        margin: 10px auto 8px !important;
+        border-radius: 14px !important;
+        min-height: 52px !important;
+      }
+      .dash-header.navbar .brand {
+        gap: 9px !important;
+        min-width: 0 !important;
+      }
+      .dash-header.navbar .brand-mark svg {
+        width: 32px !important;
+        height: 32px !important;
+      }
+      .dash-header.navbar .brand-text .title {
+        font-size: 14px !important;
+        line-height: 1.1 !important;
+      }
+      .dash-header.navbar .brand-text .live-badge {
+        font-size: 9px !important;
+        line-height: 1.1 !important;
+        white-space: nowrap !important;
       }
       .shell {
         width: calc(100% - 16px) !important;
@@ -3263,6 +3349,16 @@
       .paper .submission .box,
       .paper .experiment {
         border-radius: 0 !important;
+        clip-path: none !important;
+        -webkit-clip-path: none !important;
+      }
+      .paper,
+      .paper.layout-banner,
+      .paper.layout-banner .top {
+        overflow: visible !important;
+        border-radius: 0 !important;
+        clip-path: none !important;
+        -webkit-clip-path: none !important;
       }
       html, body {
         width: 210mm !important;
@@ -3337,6 +3433,7 @@
         box-sizing: border-box !important;
         margin: 0 !important;
         padding: 14mm var(--print-margin, 15mm) 14mm !important;
+        border: 1px solid #cbd5e1 !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         display: flex !important;
@@ -3361,6 +3458,8 @@
       /* Top Banner Layout: Starts flush at top:0 with zero white gap and full banner dimensions */
       .paper.layout-banner {
         padding-top: 0 !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 0 !important;
       }
       .paper.layout-banner .top {
         background: var(--layout-accent, var(--accent, #2451C4)) !important;
@@ -3410,11 +3509,15 @@
         outline: 2px solid var(--layout-accent, var(--accent, #2451C4)) !important;
         outline-offset: -8mm !important;
         padding: 12mm var(--print-margin, 15mm) 12mm !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 0 !important;
       }
 
       /* Left Stripe Layout */
       .paper.layout-stripe {
+        border: 1px solid #cbd5e1 !important;
         border-left: 6px solid var(--layout-accent, var(--accent, #2451C4)) !important;
+        border-radius: 0 !important;
       }
 
       /* Classic Layout Header */
@@ -4545,11 +4648,11 @@
             <span>Download PDF</span>
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
           </button>
-          <button type="button" class="flow-action-btn flow-secondary-btn" id="flow-download-png-btn-mobile" onclick="document.getElementById('flow-download-png-btn')?.click()">
+          <button type="button" class="flow-action-btn flow-secondary-btn" id="flow-download-png-btn-mobile">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             <span>PNG</span>
           </button>
-          <button type="button" class="flow-action-btn flow-secondary-btn" id="flow-fullscreen-btn-mobile" onclick="document.getElementById('flow-fullscreen-btn')?.click()" title="Toggle Fullscreen">
+          <button type="button" class="flow-action-btn flow-secondary-btn" id="flow-fullscreen-btn-mobile" title="Toggle Fullscreen">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
           </button>
         </div>
@@ -4659,7 +4762,7 @@
   <!-- Modern App Footer (Matching CGPA Calculator & Suite) -->
   <footer class="app-footer">
     <div class="footer-content">
-      <p>&copy; 2026 Uttara University Student Portal (Unofficial Project). All rights reserved.</p>
+      <p>&copy; <span id="footer-year">2026</span> Uttara University Student Portal (Unofficial Project). All rights reserved.</p>
       <p class="footer-dev">Designed & Developed by <strong>Sabbir Hussan Khan</strong></p>
       <div class="footer-badge">UU Academic Suite • Assignment Cover Generator</div>
     </div>
@@ -4939,6 +5042,10 @@
           const orig = document.getElementById('download-png-btn');
           if (orig) orig.click();
         });
+      }
+      const flowDownloadPngMobile = document.getElementById('flow-download-png-btn-mobile');
+      if (flowDownloadPngMobile) {
+        flowDownloadPngMobile.addEventListener('click', downloadCoverPng);
       }
 
 
@@ -5648,6 +5755,8 @@
             modalLabelInput.value = '';
             modalValueInput.value = '';
             modalBackdrop.hidden = false;
+            modalBackdrop.style.display = 'flex';
+            e.stopPropagation();
             modalLabelInput.focus();
           });
         }
@@ -5706,6 +5815,7 @@
       // Modal functions
       function closeModal() {
         modalBackdrop.hidden = true;
+        modalBackdrop.style.display = 'none';
         activeGroupForCustomField = null;
       }
 
@@ -6836,7 +6946,7 @@
         const paper = document.getElementById('paper-element');
         if (!preview || !paper || !scaler) return;
 
-        if (window.innerWidth <= 768 && !document.body.classList.contains('is-fullscreen-active')) {
+        if (window.innerWidth <= 768 && !document.body.classList.contains('is-fullscreen-active') && !document.body.classList.contains('is-preview-fullscreen')) {
           paper.style.transformOrigin = 'top center';
           paper.style.position = 'relative';
           paper.style.top = '0';
@@ -6844,10 +6954,20 @@
           paper.style.margin = '0 auto';
           paper.style.width = '100%';
           paper.style.minWidth = '0';
+          paper.style.height = '';
+          paper.style.maxWidth = '100%';
+          paper.style.maxHeight = '';
           scaler.style.width = '100%';
+          scaler.style.maxWidth = '100%';
+          scaler.style.zoom = '1';
+          scaler.style.overflow = 'visible';
           scaler.style.height = mobilePinchScale === 1 ? 'auto' : `${Math.ceil(paper.offsetHeight * mobilePinchScale)}px`;
           paper.style.transform = mobilePinchScale === 1 ? 'none' : `scale(${mobilePinchScale})`;
           return;
+        }
+
+        if (!document.body.classList.contains('is-preview-fullscreen') && !document.body.classList.contains('is-fullscreen-active')) {
+          scaler.style.zoom = '1';
         }
 
         // Accurately compute available inner width inside preview panel
@@ -6871,8 +6991,13 @@
 
         // Fullscreen mode: scale to fit 94% of screen height and 94% of screen width!
         if (document.body.classList.contains('is-preview-fullscreen') || document.body.classList.contains('is-fullscreen-active')) {
-          const maxAvailHeight = window.innerHeight * 0.94;
-          const maxAvailWidth = window.innerWidth * 0.94;
+          // In fullscreen the paper should use the available screen height.
+          // A4 may be wider than a narrow phone, so preserve its ratio and let
+          // the overlay scroll horizontally instead of shrinking it too far.
+          const maxAvailHeight = window.innerHeight * 0.84;
+          const viewportWidth = Math.min(window.innerWidth, document.documentElement.clientWidth || window.innerWidth);
+          const maxAvailWidth = viewportWidth * 0.90;
+          // Fit the complete A4 sheet inside the viewport on phones.
           scale = Math.min(maxAvailHeight / paperHeight, maxAvailWidth / paperWidth);
         }
 
@@ -6891,19 +7016,25 @@
 
           scaler.style.position = 'relative';
           scaler.style.display = 'block';
-          scaler.style.width = `${scaledWidth}px`;
-          scaler.style.height = `${scaledHeight}px`;
-          scaler.style.maxWidth = '100%';
-          scaler.style.margin = (window.innerWidth <= 900 || document.body.classList.contains('is-preview-fullscreen')) ? '0 auto' : '0';
-          scaler.style.overflow = 'hidden';
+          const fullscreenPreview = document.body.classList.contains('is-preview-fullscreen') || document.body.classList.contains('is-fullscreen-active');
+          scaler.style.width = fullscreenPreview ? `${paperWidth}px` : `${scaledWidth}px`;
+          scaler.style.height = fullscreenPreview ? `${paperHeight}px` : `${scaledHeight}px`;
+          scaler.style.maxWidth = fullscreenPreview ? 'none' : '100%';
+          scaler.style.margin = '0 auto';
+          scaler.style.overflow = fullscreenPreview ? 'visible' : 'hidden';
+          scaler.style.zoom = fullscreenPreview ? scale : '1';
 
-          paper.style.position = 'absolute';
+          paper.style.position = fullscreenPreview ? 'relative' : 'absolute';
           paper.style.top = '0';
           paper.style.left = '0';
           paper.style.width = '794px';
           paper.style.minWidth = '794px';
+          paper.style.height = '1123px';
+          paper.style.maxWidth = 'none';
+          paper.style.maxHeight = 'none';
+          paper.style.margin = '0';
           paper.style.transformOrigin = 'top left';
-          paper.style.transform = `scale(${scale})`;
+          paper.style.transform = fullscreenPreview ? 'none' : `scale(${scale})`;
         }
       }
 
@@ -7054,11 +7185,17 @@
       // FlowCV Native Fullscreen Mode (Uses the authentic live document without broken cloning)
       function openPreviewFullscreen() {
         document.body.classList.add('is-preview-fullscreen');
-        scalePaperPreview();
+        lastAppliedScale = 0;
+        lastAppliedScalerW = 0;
+        lastAppliedScalerH = 0;
+        requestAnimationFrame(() => requestAnimationFrame(scalePaperPreview));
       }
 
       function closePreviewFullscreen() {
         document.body.classList.remove('is-preview-fullscreen');
+        lastAppliedScale = 0;
+        lastAppliedScalerW = 0;
+        lastAppliedScalerH = 0;
         scalePaperPreview();
       }
 
@@ -7103,6 +7240,17 @@
           }
         });
       }
+      const flowFullscreenBtnMobile = document.getElementById('flow-fullscreen-btn-mobile');
+      if (flowFullscreenBtnMobile) {
+        flowFullscreenBtnMobile.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (document.body.classList.contains('is-preview-fullscreen')) {
+            closePreviewFullscreen();
+          } else {
+            openPreviewFullscreen();
+          }
+        });
+      }
 
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && document.body.classList.contains('is-preview-fullscreen')) {
@@ -7112,6 +7260,20 @@
 
       // Restore saved data on load
       restoreData();
+      function enforceSquareCoverCorners() {
+        const paperCanvas = document.getElementById('paper-element');
+        if (!paperCanvas) return;
+        paperCanvas.style.setProperty('border-radius', '0', 'important');
+        paperCanvas.style.setProperty('overflow', 'visible', 'important');
+        paperCanvas.querySelectorAll('*').forEach((element) => {
+          element.style.setProperty('border-radius', '0', 'important');
+          element.style.setProperty('clip-path', 'none', 'important');
+          element.style.setProperty('-webkit-clip-path', 'none', 'important');
+        });
+      }
+      enforceSquareCoverCorners();
+      window.addEventListener('beforeprint', enforceSquareCoverCorners);
+      document.querySelectorAll('.flow-done-btn').forEach((button) => button.remove());
       initResponsiveAccordions();
       // Final fit after saved values and accordion state have changed the
       // editor layout. This keeps the initial Details view identical to Design.
@@ -7273,5 +7435,10 @@
     });
   </script>
 
+  <script>
+    document.querySelectorAll('#footer-year').forEach((el) => {
+      el.textContent = new Date().getFullYear();
+    });
+  </script>
 </body>
 </html>
