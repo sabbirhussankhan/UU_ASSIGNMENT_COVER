@@ -3438,8 +3438,9 @@
         min-height: 297mm !important;
         box-sizing: border-box !important;
         margin: 0 !important;
-        padding: 14mm var(--print-margin, 15mm) 14mm !important;
-        border: 1px solid #cbd5e1 !important;
+        /* Padding precisely matches screen 4.8% top (14.25mm) and 4.2% bottom (12.5mm) */
+        padding: 14.25mm var(--print-margin, 15mm) 12.5mm !important;
+        border: none !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         display: flex !important;
@@ -3464,7 +3465,7 @@
       /* Top Banner Layout: Starts flush at top:0 with zero white gap and full banner dimensions */
       .paper.layout-banner {
         padding-top: 0 !important;
-        border: 1px solid #cbd5e1 !important;
+        border: none !important;
         border-radius: 0 !important;
       }
       .paper.layout-banner .top {
@@ -3474,7 +3475,7 @@
         margin-right: calc(-1 * var(--print-margin, 15mm)) !important;
         margin-top: 0 !important;
         margin-bottom: var(--gap-top, 24px) !important;
-        padding: 34px 20px 26px !important;
+        padding: 36px 20px 28px !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
@@ -3484,9 +3485,9 @@
       .paper.layout-banner .top .logo {
         order: 1 !important;
         filter: brightness(0) invert(1) !important;
-        margin: 0 auto 14px !important;
-        height: 130px !important;
-        width: 130px !important;
+        margin: 0 auto 16px !important;
+        height: 140px !important;
+        width: 140px !important;
         object-fit: contain !important;
       }
       .paper.layout-banner .top .uni {
@@ -3515,15 +3516,20 @@
         outline: 2px solid var(--layout-accent, var(--accent, #2451C4)) !important;
         outline-offset: -8mm !important;
         padding: 12mm var(--print-margin, 15mm) 12mm !important;
-        border: 1px solid #cbd5e1 !important;
+        border: none !important;
         border-radius: 0 !important;
       }
 
-      /* Left Stripe Layout */
+      /* Left Stripe Layout: Exactly 14px wide matching preview, flush with edges without 1px notch */
       .paper.layout-stripe {
-        border: 1px solid #cbd5e1 !important;
-        border-left: 6px solid var(--layout-accent, var(--accent, #2451C4)) !important;
+        border: none !important;
+        border-left: 14px solid var(--layout-accent, var(--accent, #2451C4)) !important;
         border-radius: 0 !important;
+      }
+      .paper.layout-banner .submission > div:first-child,
+      .paper.layout-stripe .submission > div:first-child {
+        border-right: 1px solid var(--border-color, #cbd5e1) !important;
+        padding-right: 18px !important;
       }
 
       /* Classic Layout Header */
@@ -5042,17 +5048,17 @@
         });
       });
 
-      const flowDownloadPng = document.getElementById('flow-download-png-btn');
-      if (flowDownloadPng) {
-        flowDownloadPng.addEventListener('click', () => {
-          const orig = document.getElementById('download-png-btn');
-          if (orig) orig.click();
-        });
-      }
-      const flowDownloadPngMobile = document.getElementById('flow-download-png-btn-mobile');
-      if (flowDownloadPngMobile) {
-        flowDownloadPngMobile.addEventListener('click', downloadCoverPng);
-      }
+      // Wire all PNG export buttons directly to downloadCoverPng
+      ['flow-download-png-btn', 'flow-download-png-btn-mobile', 'download-png-btn'].forEach((id) => {
+        const btn = document.getElementById(id);
+        if (btn) {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            downloadCoverPng();
+          });
+        }
+      });
 
 
 
@@ -6677,6 +6683,21 @@
         if (modal) { modal.hidden = true; modal.style.display = 'none'; }
       }
 
+            function getSafeLogoDataUrl(imgEl) {
+        if (!imgEl || !imgEl.complete || !imgEl.naturalWidth) return imgEl ? imgEl.src : '';
+        if (imgEl.src && imgEl.src.startsWith('data:')) return imgEl.src;
+        try {
+          const c = document.createElement('canvas');
+          c.width = imgEl.naturalWidth;
+          c.height = imgEl.naturalHeight;
+          const ctx = c.getContext('2d');
+          ctx.drawImage(imgEl, 0, 0);
+          return c.toDataURL('image/png');
+        } catch (e) {
+          return imgEl.src;
+        }
+      }
+
       async function downloadCoverPng() {
         if (typeof window.html2canvas !== 'function') {
           showToast('PNG export library is still loading. Try again in a moment.');
@@ -6687,24 +6708,16 @@
 
         showToast('Generating high-resolution A4 PNG...');
 
-        // Isolated staging container: guarantees exact A4 layout regardless of device viewport
-        const staging = document.createElement('div');
-        staging.id = 'png-staging-container';
-        staging.style.cssText = 'position: fixed; left: 0; top: 0; width: 794px; height: 1123px; z-index: -99999; overflow: hidden; pointer-events: none; opacity: 0.01; background: #ffffff; margin: 0; padding: 0;';
-
-        const clone = source.cloneNode(true);
-        clone.removeAttribute('id');
-        clone.style.cssText = 'width: 794px !important; min-width: 794px !important; max-width: 794px !important; height: 1123px !important; min-height: 1123px !important; max-height: 1123px !important; transform: none !important; margin: 0 !important; box-shadow: none !important; border-radius: 0 !important; position: relative !important; top: 0 !important; left: 0 !important; box-sizing: border-box !important;';
-
-        staging.appendChild(clone);
-        document.body.appendChild(staging);
+        // Convert current logo to safe data URL to completely prevent CORS/taint issues
+        const logoEl = source.querySelector('img.logo');
+        const safeLogoSrc = getSafeLogoDataUrl(logoEl);
 
         try {
-          const isCream = clone.classList.contains('paper-cream');
-          const canvas = await window.html2canvas(clone, {
+          const isCream = source.classList.contains('paper-cream');
+          const canvas = await window.html2canvas(source, {
             scale: 2, // 300 DPI equivalent print resolution (1588x2246px)
             useCORS: true,
-            allowTaint: true,
+            allowTaint: false, // Keep canvas untainted so toBlob / toDataURL work
             backgroundColor: isCream ? '#fffaf0' : '#ffffff',
             width: 794,
             height: 1123,
@@ -6712,18 +6725,58 @@
             scrollY: 0,
             windowWidth: 1280, // Force desktop viewport calculation in html2canvas
             windowHeight: 1800,
-            logging: false
+            logging: false,
+            onclone: (clonedDoc) => {
+              const clonedPaper = clonedDoc.getElementById('paper-element');
+              if (clonedPaper) {
+                clonedPaper.style.setProperty('transform', 'none', 'important');
+                clonedPaper.style.setProperty('position', 'static', 'important');
+                clonedPaper.style.setProperty('margin', '0 auto', 'important');
+                clonedPaper.style.setProperty('width', '794px', 'important');
+                clonedPaper.style.setProperty('min-width', '794px', 'important');
+                clonedPaper.style.setProperty('max-width', '794px', 'important');
+                clonedPaper.style.setProperty('height', '1123px', 'important');
+                clonedPaper.style.setProperty('min-height', '1123px', 'important');
+                clonedPaper.style.setProperty('max-height', '1123px', 'important');
+                clonedPaper.style.setProperty('box-shadow', 'none', 'important');
+                clonedPaper.style.setProperty('border-radius', '0', 'important');
+
+                const clonedLogo = clonedPaper.querySelector('img.logo');
+                if (clonedLogo && safeLogoSrc) {
+                  clonedLogo.src = safeLogoSrc;
+                }
+              }
+            }
           });
-          const link = document.createElement('a');
-          link.download = 'uu-assignment-cover.png';
-          link.href = canvas.toDataURL('image/png');
-          link.click();
-          showToast('A4 PNG downloaded successfully.');
+
+          // Safe download via toBlob or dataURL
+          const triggerDownload = (url) => {
+            const link = document.createElement('a');
+            link.download = 'uu-assignment-cover.png';
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            setTimeout(() => {
+              link.remove();
+              if (url.startsWith('blob:')) URL.revokeObjectURL(url);
+            }, 1500);
+            showToast('A4 PNG downloaded successfully.');
+          };
+
+          if (canvas.toBlob) {
+            canvas.toBlob((blob) => {
+              if (blob) {
+                triggerDownload(URL.createObjectURL(blob));
+              } else {
+                triggerDownload(canvas.toDataURL('image/png'));
+              }
+            }, 'image/png');
+          } else {
+            triggerDownload(canvas.toDataURL('image/png'));
+          }
         } catch (error) {
           console.error('PNG Export Error:', error);
           showToast('PNG export failed. Please try again.');
-        } finally {
-          staging.remove();
         }
       }
 
