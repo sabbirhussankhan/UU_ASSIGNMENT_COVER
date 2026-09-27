@@ -1827,57 +1827,19 @@
       .panel { padding: 10px; border-radius: 14px; }
       .panel.preview { padding: 12px 8px; margin-bottom: 30px; overflow: visible; width: 100%; box-sizing: border-box; }
       .paper-scaler { width: 100%; max-width: 100%; overflow: visible; display: block; margin: 0 auto; touch-action: pan-y; cursor: default; }
-      .paper { width: 100% !important; min-width: 0 !important; max-width: 100% !important; transform: none !important; box-shadow: 0 4px 14px rgba(20,40,90,0.1) !important; padding: 18px 14px !important; }
-      .paper .submission { grid-template-columns: 1fr !important; gap: 12px !important; }
-      .paper .submission .box { min-height: auto !important; padding: 12px 10px !important; }
-      .paper .submission .box p, .paper .submission .box .custom-preview-row { grid-template-columns: 120px minmax(0, 1fr) !important; }
-      .paper #teacher-preview-container p, .paper #teacher-preview-container .custom-preview-row { grid-template-columns: 130px minmax(0, 1fr) !important; }
-      
-      /* Mobile Responsive Top Banner Layout */
-      .paper.layout-banner {
-        padding-top: 0 !important;
-        overflow: hidden !important;
-      }
-      .paper.layout-banner .top {
-        margin-left: -14px !important;
-        margin-right: -14px !important;
-        margin-top: 0 !important;
-        margin-bottom: 16px !important;
-        padding: 20px 14px 16px !important;
-        width: calc(100% + 28px) !important;
+      /* Mobile Paper Canvas: Scaled proportionally as true A4 (794x1123) by paper-scaler */
+      .paper {
+        width: 794px !important;
+        min-width: 794px !important;
+        max-width: 794px !important;
+        height: 1123px !important;
+        min-height: 1123px !important;
+        max-height: 1123px !important;
         box-sizing: border-box !important;
       }
-      .paper.layout-banner .top .logo {
-        height: 75px !important;
-        width: 75px !important;
-        margin: 0 auto 8px !important;
-      }
-      .paper.layout-banner .top .uni {
-        font-size: 17px !important;
-        letter-spacing: .04em !important;
-        line-height: 1.25 !important;
-      }
-      .paper.layout-banner .top h2 {
-        font-size: 11.5px !important;
-        letter-spacing: .08em !important;
-        margin-top: 5px !important;
-      }
-
-      /* Mobile Responsive Classic & Framed Layouts */
-      .paper .logo {
-        width: 90px !important;
-        height: 90px !important;
-        margin: 6px auto !important;
-      }
-      .paper .uni {
-        font-size: 20px !important;
-      }
-      .paper .top h2 {
-        font-size: 14px !important;
-      }
-      .paper.layout-framed {
-        outline-offset: -5px !important;
-        padding: 14px 10px !important;
+      .paper .submission {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
       }
 
       .preset-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -2979,8 +2941,9 @@
     }
     body.is-preview-fullscreen .paper-scaler {
       margin: auto !important;
-      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5) !important;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.55) !important;
       border-radius: 0 !important;
+      overflow: hidden !important;
     }
     body.is-preview-fullscreen .paper {
       cursor: default !important;
@@ -2988,65 +2951,19 @@
       box-sizing: border-box !important;
       width: 794px !important;
       min-width: 794px !important;
-      max-width: none !important;
+      max-width: 794px !important;
       height: 1123px !important;
-      max-height: none !important;
-      padding: 53px 57px 53px !important;
+      min-height: 1123px !important;
+      max-height: 1123px !important;
     }
-    /* Fullscreen is a print-style inspection view: keep the paper intact and
-       leave only the floating close control visible. */
+    /* Fullscreen view: keep authentic A4 layout intact and hide interface chrome */
     body.is-preview-fullscreen .flow-subbar-container,
     body.is-preview-fullscreen .flow-preview-actions-bar,
     body.is-preview-fullscreen .flow-subbar-actions,
-    body.is-preview-fullscreen .flow-subbar-tabs {
-      display: none !important;
-    }
-    body.is-preview-fullscreen .paper .submission {
-      display: grid !important;
-      grid-template-columns: 1fr 1fr !important;
-      gap: 12px !important;
-    }
-    body.is-preview-fullscreen .paper .submission > div {
-      min-width: 0 !important;
-    }
-    body.is-preview-fullscreen .paper.layout-banner .top,
-    body.is-preview-fullscreen .paper.layout-stripe .top {
-      width: auto !important;
-      margin-left: 0 !important;
-      margin-right: 0 !important;
-      padding-left: 0 !important;
-      padding-right: 0 !important;
-    }
-    body.is-preview-fullscreen .paper.layout-stripe {
-      padding-left: 57px !important;
-    }
-    body.is-preview-fullscreen .preview-header-bar {
-      display: none !important;
-    }
-    body.is-preview-fullscreen .paper-scaler {
-      overflow: visible !important;
-      flex: 0 0 auto !important;
-      max-width: none !important;
-    }
-    body.is-preview-fullscreen .paper .top {
-      position: static !important;
-      inset: auto !important;
-      transform: none !important;
-      width: 100% !important;
-      max-width: none !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      flex-shrink: 0 !important;
-    }
-    body.is-preview-fullscreen .paper .top > * {
-      position: static !important;
-      float: none !important;
-      transform: none !important;
-      align-self: center !important;
-      margin-left: auto !important;
-      margin-right: auto !important;
-    }
+    body.is-preview-fullscreen .flow-subbar-tabs,
+    body.is-preview-fullscreen .preview-header-bar,
+    body.is-preview-fullscreen .bottom-nav,
+    body.is-preview-fullscreen #mobile-back-to-top,
     body.is-preview-fullscreen .field-actions .flow-done-btn {
       display: none !important;
     }
@@ -6767,28 +6684,46 @@
         }
         const source = document.getElementById('paper-element');
         if (!source) return;
+
+        showToast('Generating high-resolution A4 PNG...');
+
+        // Isolated staging container: guarantees exact A4 layout regardless of device viewport
+        const staging = document.createElement('div');
+        staging.id = 'png-staging-container';
+        staging.style.cssText = 'position: fixed; left: 0; top: 0; width: 794px; height: 1123px; z-index: -99999; overflow: hidden; pointer-events: none; opacity: 0.01; background: #ffffff; margin: 0; padding: 0;';
+
         const clone = source.cloneNode(true);
         clone.removeAttribute('id');
-        Object.assign(clone.style, {
-          position: 'fixed', left: '-10000px', top: '0', margin: '0',
-          width: '794px', height: '1123px', transform: 'none',
-          minWidth: '794px', zIndex: '-1'
-        });
-        document.body.appendChild(clone);
+        clone.style.cssText = 'width: 794px !important; min-width: 794px !important; max-width: 794px !important; height: 1123px !important; min-height: 1123px !important; max-height: 1123px !important; transform: none !important; margin: 0 !important; box-shadow: none !important; border-radius: 0 !important; position: relative !important; top: 0 !important; left: 0 !important; box-sizing: border-box !important;';
+
+        staging.appendChild(clone);
+        document.body.appendChild(staging);
+
         try {
+          const isCream = clone.classList.contains('paper-cream');
           const canvas = await window.html2canvas(clone, {
-            scale: 2, useCORS: true, backgroundColor: '#ffffff',
-            width: 794, height: 1123, logging: false
+            scale: 2, // 300 DPI equivalent print resolution (1588x2246px)
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: isCream ? '#fffaf0' : '#ffffff',
+            width: 794,
+            height: 1123,
+            scrollX: 0,
+            scrollY: 0,
+            windowWidth: 1280, // Force desktop viewport calculation in html2canvas
+            windowHeight: 1800,
+            logging: false
           });
           const link = document.createElement('a');
           link.download = 'uu-assignment-cover.png';
           link.href = canvas.toDataURL('image/png');
           link.click();
-          showToast('PNG downloaded.');
+          showToast('A4 PNG downloaded successfully.');
         } catch (error) {
+          console.error('PNG Export Error:', error);
           showToast('PNG export failed. Please try again.');
         } finally {
-          clone.remove();
+          staging.remove();
         }
       }
 
@@ -7028,103 +6963,81 @@
       let lastAppliedScalerW = 0;
       let lastAppliedScalerH = 0;
 
-      // Perfect A4 Paper Preview Scaling on Mobile / Narrow / Desktop Viewports
+      // Perfect A4 Paper Preview Scaling on Mobile / Narrow / Desktop / Fullscreen
       function scalePaperPreview() {
         const preview = document.querySelector('.panel.preview');
         const scaler = document.getElementById('paper-scaler');
         const paper = document.getElementById('paper-element');
         if (!preview || !paper || !scaler) return;
 
-        if (window.innerWidth <= 768 && !document.body.classList.contains('is-fullscreen-active') && !document.body.classList.contains('is-preview-fullscreen')) {
-          paper.style.transformOrigin = 'top center';
-          paper.style.position = 'relative';
-          paper.style.top = '0';
-          paper.style.left = '0';
-          paper.style.margin = '0 auto';
-          paper.style.width = '100%';
-          paper.style.minWidth = '0';
-          paper.style.height = '';
-          paper.style.maxWidth = '100%';
-          paper.style.maxHeight = '';
-          scaler.style.width = '100%';
-          scaler.style.maxWidth = '100%';
-          scaler.style.zoom = '1';
-          scaler.style.overflow = 'visible';
-          scaler.style.height = mobilePinchScale === 1 ? 'auto' : `${Math.ceil(paper.offsetHeight * mobilePinchScale)}px`;
-          paper.style.transform = mobilePinchScale === 1 ? 'none' : `scale(${mobilePinchScale})`;
-          return;
-        }
+        const isFullscreen = document.body.classList.contains('is-preview-fullscreen') || document.body.classList.contains('is-fullscreen-active');
 
-        if (!document.body.classList.contains('is-preview-fullscreen') && !document.body.classList.contains('is-fullscreen-active')) {
-          scaler.style.zoom = '1';
-        }
-
-        // Accurately compute available inner width inside preview panel
-        const previewRect = preview.getBoundingClientRect();
-        const previewStyle = window.getComputedStyle(preview);
-        const padLeft = parseFloat(previewStyle.paddingLeft) || 0;
-        const padRight = parseFloat(previewStyle.paddingRight) || 0;
-        const availWidth = Math.max(280, previewRect.width - padLeft - padRight);
-
+        // Fixed A4 dimensions in CSS pixels (at 96 DPI: 210mm x 297mm = 794px x 1123px)
         const paperWidth = 794;
         const paperHeight = 1123;
-        let scale = availWidth / paperWidth;
 
-        // Natural responsive preview scaling filling the available preview column
-        if (window.innerWidth > 900 && !document.body.classList.contains('is-preview-fullscreen') && !document.body.classList.contains('is-fullscreen-active')) {
-          scale = Math.min(availWidth / paperWidth, 0.96);
-        } else if (window.innerWidth <= 900 && !document.body.classList.contains('is-preview-fullscreen') && !document.body.classList.contains('is-fullscreen-active')) {
-          // On mobile & tablet: scale smoothly to fit available width perfectly without horizontal scroll
-          scale = Math.min(availWidth / paperWidth, 0.95);
-        }
+        let scale = 1;
 
-        // Fullscreen mode: scale to fit 94% of screen height and 94% of screen width!
-        if (document.body.classList.contains('is-preview-fullscreen') || document.body.classList.contains('is-fullscreen-active')) {
-          // In fullscreen the paper should use the available screen height.
-          // A4 may be wider than a narrow phone, so preserve its ratio and let
-          // the overlay scroll horizontally instead of shrinking it too far.
-          const maxAvailHeight = window.innerHeight * 0.84;
-          const viewportWidth = Math.min(window.innerWidth, document.documentElement.clientWidth || window.innerWidth);
-          const maxAvailWidth = viewportWidth * 0.90;
-          // Fit the complete A4 sheet inside the viewport on phones.
+        if (isFullscreen) {
+          // Fullscreen mode: scale proportionally to fit 88% of screen height and 92% of screen width cleanly
+          const maxAvailHeight = window.innerHeight * 0.88;
+          const maxAvailWidth = window.innerWidth * 0.92;
           scale = Math.min(maxAvailHeight / paperHeight, maxAvailWidth / paperWidth);
+        } else {
+          // Normal mode (desktop, tablet, or mobile): measure available width in preview panel
+          const previewRect = preview.getBoundingClientRect();
+          const previewStyle = window.getComputedStyle(preview);
+          const padLeft = parseFloat(previewStyle.paddingLeft) || 0;
+          const padRight = parseFloat(previewStyle.paddingRight) || 0;
+          const availWidth = Math.max(260, previewRect.width - padLeft - padRight);
+
+          if (window.innerWidth > 900) {
+            scale = Math.min(availWidth / paperWidth, 0.96);
+          } else {
+            // Mobile & Tablet: scale smoothly to fit available width perfectly
+            scale = Math.min(availWidth / paperWidth, 0.98);
+          }
         }
 
-        // Keep zoom bounded while still allowing a readable enlarged preview.
-        const fitScale = scale;
-        scale = Math.min(fitScale * previewZoomMultiplier, 1.5);
-        updatePreviewZoomLabel(scale);
+        // Apply zoom multiplier if active (desktop only, bounded)
+        if (!isFullscreen) {
+          scale = Math.min(scale * previewZoomMultiplier, 1.5);
+          updatePreviewZoomLabel(scale);
+        }
 
         const scaledWidth = Math.ceil(paperWidth * scale);
         const scaledHeight = Math.ceil(paperHeight * scale);
 
-        if (Math.abs(scale - lastAppliedScale) > 0.0005 || scaledWidth !== lastAppliedScalerW || scaledHeight !== lastAppliedScalerH) {
-          lastAppliedScale = scale;
-          lastAppliedScalerW = scaledWidth;
-          lastAppliedScalerH = scaledHeight;
+        lastAppliedScale = scale;
+        lastAppliedScalerW = scaledWidth;
+        lastAppliedScalerH = scaledHeight;
 
-          scaler.style.position = 'relative';
-          scaler.style.display = 'block';
-          const fullscreenPreview = document.body.classList.contains('is-preview-fullscreen') || document.body.classList.contains('is-fullscreen-active');
-          scaler.style.width = fullscreenPreview ? `${paperWidth}px` : `${scaledWidth}px`;
-          scaler.style.height = fullscreenPreview ? `${paperHeight}px` : `${scaledHeight}px`;
-          scaler.style.maxWidth = fullscreenPreview ? 'none' : '100%';
-          scaler.style.margin = '0 auto';
-          scaler.style.overflow = fullscreenPreview ? 'visible' : 'hidden';
-          scaler.style.zoom = fullscreenPreview ? scale : '1';
+        // Scaler container sizes exactly to scaled bounding box
+        scaler.style.position = 'relative';
+        scaler.style.display = 'block';
+        scaler.style.width = `${scaledWidth}px`;
+        scaler.style.height = `${scaledHeight}px`;
+        scaler.style.maxWidth = '100%';
+        scaler.style.margin = '0 auto';
+        scaler.style.overflow = 'hidden';
+        scaler.style.zoom = '1';
+        scaler.style.borderRadius = '0';
+        scaler.style.touchAction = 'pan-y';
 
-          paper.style.position = fullscreenPreview ? 'relative' : 'absolute';
-          paper.style.top = '0';
-          paper.style.left = '0';
-          paper.style.width = '794px';
-          paper.style.minWidth = '794px';
-          paper.style.height = '1123px';
-          paper.style.maxWidth = 'none';
-          paper.style.maxHeight = 'none';
-          paper.style.margin = '0';
-          paper.style.transformOrigin = 'top left';
-          paper.style.transform = fullscreenPreview ? 'none' : `scale(${scale})`;
-        }
+        // Paper is always authentic 794x1123 A4, scaled with transform
+        paper.style.position = 'absolute';
+        paper.style.top = '0';
+        paper.style.left = '0';
+        paper.style.width = '794px';
+        paper.style.minWidth = '794px';
+        paper.style.maxWidth = '794px';
+        paper.style.height = '1123px';
+        paper.style.minHeight = '1123px';
+        paper.style.maxHeight = '1123px';
+        paper.style.margin = '0';
+        paper.style.boxSizing = 'border-box';
+        paper.style.transformOrigin = 'top left';
+        paper.style.transform = `scale(${scale})`;
       }
 
       const paperScalerEl = document.getElementById('paper-scaler');
