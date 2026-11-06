@@ -10,7 +10,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script src="student-auth.js"></script>
   <style>
     :root {
       --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -2122,184 +2121,6 @@
     }
     body.dark-editor .more-dropdown-item .item-text small { color: #94a3b8; }
 
-    /* Student Portal Login Modal Styles (Matching CGPA Calculator) */
-    .auth-modal-overlay {
-      position: fixed !important;
-      inset: 0 !important;
-      background: rgba(15, 23, 42, 0.65) !important;
-      backdrop-filter: blur(8px) !important;
-      -webkit-backdrop-filter: blur(8px) !important;
-      display: none;
-      align-items: center !important;
-      justify-content: center !important;
-      z-index: 9999999 !important;
-      padding: 16px !important;
-      animation: fadeInModal 0.2s ease;
-    }
-    @keyframes fadeInModal {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    .auth-modal-box {
-      background: #FFFFFF !important;
-      border-radius: 20px !important;
-      max-width: 420px !important;
-      width: 100% !important;
-      padding: 28px !important;
-      box-shadow: 0 25px 60px rgba(15, 23, 42, 0.3) !important;
-      position: relative !important;
-      border: 1px solid #E2E8F0 !important;
-      box-sizing: border-box !important;
-    }
-    .auth-modal-close {
-      position: absolute;
-      top: 18px;
-      right: 18px;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: #F1F5F9;
-      border: none;
-      font-size: 20px;
-      font-weight: 700;
-      color: #64748B;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-    .auth-modal-close:hover {
-      background: #E2E8F0;
-      color: #0F172A;
-    }
-    .auth-modal-header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .auth-logo-badge {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, #2451C4, #15306B);
-      color: #FFFFFF;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 12px;
-      box-shadow: 0 8px 18px rgba(36, 81, 196, 0.28);
-    }
-    .auth-modal-header h3 {
-      font-size: 19px;
-      font-weight: 800;
-      color: #0F172A;
-      margin: 0 0 6px 0;
-    }
-    .auth-modal-header p {
-      font-size: 12.5px;
-      color: #64748B;
-      margin: 0;
-      line-height: 1.4;
-    }
-    .auth-alert-box {
-      display: none;
-      background: #FEF2F2;
-      border: 1px solid #FECACA;
-      color: #DC2626;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 12.5px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      text-align: center;
-    }
-    .auth-field {
-      margin-bottom: 14px;
-      text-align: left;
-    }
-    .auth-field label {
-      display: block;
-      font-size: 12px;
-      font-weight: 700;
-      color: #0F172A;
-      margin-bottom: 6px;
-    }
-    .auth-input-wrap {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-    .auth-input-wrap input {
-      width: 100% !important;
-      padding: 11px 40px 11px 14px !important;
-      font-size: 13.5px !important;
-      border: 1px solid #CBD5E1 !important;
-      border-radius: 10px !important;
-      outline: none !important;
-      font-family: inherit !important;
-      background: #FFFFFF !important;
-      color: #0F172A !important;
-      box-sizing: border-box !important;
-      transition: border-color 0.2s, box-shadow 0.2s !important;
-    }
-    .auth-input-wrap input:focus {
-      border-color: #2451C4 !important;
-      box-shadow: 0 0 0 3px rgba(36, 81, 196, 0.16) !important;
-    }
-    .auth-toggle-pw {
-      position: absolute;
-      right: 10px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #94A3B8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4px;
-    }
-    .auth-toggle-pw:hover {
-      color: #2451C4;
-    }
-    .auth-remember-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #64748B;
-      cursor: pointer;
-      margin-bottom: 18px;
-    }
-    .auth-remember-wrap input {
-      width: 15px;
-      height: 15px;
-      accent-color: #2451C4;
-      cursor: pointer;
-    }
-    .auth-submit-btn {
-      width: 100%;
-      padding: 12px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #FFFFFF;
-      background: linear-gradient(135deg, #2451C4, #15306B);
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 14px rgba(36, 81, 196, 0.28);
-    }
-    .auth-submit-btn:hover {
-      opacity: 0.95;
-      transform: translateY(-1px);
-    }
-    .auth-submit-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
     /* Mobile Bottom Sheet Drawer for More Options */
     #mobile-more-sheet {
       position: fixed !important;
@@ -3386,7 +3207,6 @@
       .preview-header-bar, .flow-preview-toolbar, .flow-preview-actions-bar,
       .bottom-nav, #mobile-back-to-top, .mobile-back-to-top-btn,
       .modal-overlay, #mobile-more-sheet,
-      .portal-modal-overlay, #portal-login-modal,
       .field-modal-backdrop, #add-field-modal,
       .fullscreen-modal-backdrop,
       .toast-notify, .a4-status-badge,
@@ -3833,48 +3653,18 @@
 
         <!-- Tab 1: Details View -->
         <div class="editor-view details-view">
-          <!-- Student Identity Summary Card (Matching Image 1) -->
-          <!-- Student Identity Summary Card (Only Name, ID, & Logout Button) -->
-          <div class="flow-student-summary-card" id="flow-student-card" title="Click to edit personal & student details" style="cursor: pointer; position: relative;">
+          <!-- Student details are entered directly; no account is needed. -->
+          <div class="flow-student-summary-card" id="flow-student-card" role="button" tabindex="0" title="Edit student details" style="cursor: pointer; position: relative;">
             <div class="flow-summary-left">
-              <h3 class="flow-summary-name" id="flow-student-name">Auto Fill-up Profile</h3>
-              <div style="font-size: 12px; color: #64748B; display: flex; align-items: center; gap: 8px; margin-top: 6px;">
-                <span id="flow-student-id" style="display: inline-flex; align-items: center; gap: 4px;">
-                  <span>Login to auto-fill cover details</span>
-                </span>
-                <span style="color: #CBD5E1;">•</span>
-                <button type="button" id="flow-student-logout-btn" title="Login with Student Portal" style="background: none; border: none; color: #2451C4; font-size: 11.5px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 0; display: inline-flex; align-items: center; gap: 4px;">
-                  Login
-                </button>
-              </div>
+              <h3 class="flow-summary-name" id="flow-student-name">Student Details</h3>
+              <div id="flow-student-id" style="font-size: 12px; color: #64748B; margin-top: 6px;">Add your name and student ID</div>
             </div>
-            <div class="flow-summary-right" style="position: relative;">
+            <div class="flow-summary-right">
               <div class="flow-avatar-circle" style="width: 44px; height: 44px; border-radius: 50%; background: #EFF6FF; border: 1.5px solid #BFDBFE; display: flex; align-items: center; justify-content: center; color: #2451C4;">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 5 5-12 12H4v-5L16 3Z"></path><path d="m14 5 5 5"></path></svg>
               </div>
             </div>
           </div>
-          <script>
-            (function() {
-              try {
-                var raw = localStorage.getItem('uu_profile') || sessionStorage.getItem('uu_profile');
-                var token = localStorage.getItem('uu_token') || sessionStorage.getItem('uu_token');
-                if (raw && token) {
-                  var p = JSON.parse(raw);
-                  if (p && p.name) {
-                    var nameEl = document.getElementById('flow-student-name');
-                    var idEl = document.getElementById('flow-student-id');
-                    var logBtn = document.getElementById('flow-student-logout-btn');
-                    var circle = document.querySelector('#flow-student-card .flow-avatar-circle');
-                    if (nameEl) nameEl.textContent = p.name;
-                    if (idEl) idEl.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span>ID: ' + (p.id || '—') + '</span>';
-                    if (logBtn) { logBtn.textContent = 'Logout'; logBtn.style.color = '#EF4444'; logBtn.title = 'Logout & Clear Student Profile'; }
-                    if (circle) circle.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
-                  }
-                }
-              } catch(e) {}
-            })();
-          </script>
           <datalist id="uu-dept-list">
             <option value="Department of Bangla">
             <option value="Department of Business Administration">
@@ -4873,51 +4663,6 @@
   </div>
 
   <!-- Notification Toast -->
-  <!-- Uttara University Student Portal Login Modal (Matching CGPA Calculator) -->
-  <div class="auth-modal-overlay" id="portal-login-modal">
-    <div class="auth-modal-box">
-      <button class="auth-modal-close" id="btn-close-portal-login" type="button" aria-label="Close Modal">&times;</button>
-      
-      <div class="auth-modal-header">
-        <div class="auth-logo-badge">
-          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-          </svg>
-        </div>
-        <h3>UU Student Portal Login</h3>
-        <p>Log in to auto-populate student, course &amp; teacher details</p>
-      </div>
-
-      <div class="auth-alert-box" id="portal-auth-alert-box">
-        <span id="portal-auth-alert-msg">Invalid Credentials!</span>
-      </div>
-
-      <div class="auth-field">
-        <label for="portal-auth-student-id">Student ID</label>
-        <div class="auth-input-wrap">
-          <input type="text" id="portal-auth-student-id" placeholder="e.g. 2261091211" autocomplete="username" />
-        </div>
-      </div>
-
-      <div class="auth-field">
-        <label for="portal-auth-password">Portal Password</label>
-        <div class="auth-input-wrap">
-          <input type="password" id="portal-auth-password" placeholder="Enter your ERP password" autocomplete="current-password" />
-          <button type="button" class="auth-toggle-pw" id="btn-toggle-portal-pw" aria-label="Toggle password visibility">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-          </button>
-        </div>
-      </div>
-
-      <label class="auth-remember-wrap">
-        <input type="checkbox" id="portal-auth-remember-me" checked />
-        <span>Remember my Student ID</span>
-      </label>
-
-      <button type="button" class="auth-submit-btn" id="btn-portal-login-submit">Login &amp; Auto-Fill Cover</button>
-    </div>
-  </div>
-
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
     // Global Sub-Tab & Slider Step Functions
@@ -5432,285 +5177,33 @@
         teacherInput.addEventListener('change', handleTeacherChange);
       }
 
-      // Portal Login Modal Controls
-      const portalModal = document.getElementById('portal-login-modal');
-      const btnClosePortal = document.getElementById('btn-close-portal-login');
-      const btnPortalSubmit = document.getElementById('btn-portal-login-submit');
-      const btnTogglePortalPw = document.getElementById('btn-toggle-portal-pw');
-      const inputPortalId = document.getElementById('portal-auth-student-id');
-      const inputPortalPw = document.getElementById('portal-auth-password');
-      const chkPortalRemember = document.getElementById('portal-auth-remember-me');
-      const portalAlertBox = document.getElementById('portal-auth-alert-box');
-      const portalAlertMsg = document.getElementById('portal-auth-alert-msg');
-
-      function openPortalLoginModal() {
-        const modal = document.getElementById('portal-login-modal');
-        if (!modal) return;
-        const alertBox = document.getElementById('portal-auth-alert-box');
-        if (alertBox) alertBox.style.display = 'none';
-        const idInp = document.getElementById('portal-auth-student-id');
-        const pwInp = document.getElementById('portal-auth-password');
-        if (idInp) {
-          const remembered = (window.StudentAuth && StudentAuth.getRememberedId()) || '';
-          if (remembered) idInp.value = remembered;
-        }
-        modal.style.setProperty('display', 'flex', 'important');
-        if (idInp && !idInp.value) idInp.focus();
-        else if (pwInp) pwInp.focus();
-      }
-
-      function closePortalLoginModal() {
-        const modal = document.getElementById('portal-login-modal');
-        if (!modal) return;
-        modal.style.setProperty('display', 'none', 'important');
-      }
-
-      window.openPortalLoginModal = openPortalLoginModal;
-      window.closePortalLoginModal = closePortalLoginModal;
-
-      if (btnClosePortal) btnClosePortal.addEventListener('click', closePortalLoginModal);
-      const activePortalModal = document.getElementById('portal-login-modal');
-      if (activePortalModal) {
-        activePortalModal.addEventListener('click', (e) => {
-          if (e.target === activePortalModal) closePortalLoginModal();
-        });
-      }
-
-      if (btnTogglePortalPw && inputPortalPw) {
-        btnTogglePortalPw.addEventListener('click', () => {
-          if (inputPortalPw.type === 'password') {
-            inputPortalPw.type = 'text';
-            btnTogglePortalPw.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
-          } else {
-            inputPortalPw.type = 'password';
-            btnTogglePortalPw.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
-          }
-        });
-      }
-
-      function applyStudentProfileToCover(profile) {
-        const studentInput = document.getElementById('student');
-        const studentIdInput = document.getElementById('studentId');
-        const studentDeptInput = document.getElementById('studentDepartment');
-        const semesterInput = document.getElementById('semester');
-        const sectionInput = document.getElementById('section');
-
-        const activeId = profile.id || profile.studentId || '';
-        const activeName = profile.name || profile.fullName || '';
-        const activeDept = profile.department || 'Department of Computer Science and Engineering';
-        const activeSection = profile.section || 'E';
-        const activeSemester = calculateCurrentUUSemester();
-
-        if (studentInput && activeName) studentInput.value = activeName;
-        if (studentIdInput && activeId) studentIdInput.value = activeId;
-        if (studentDeptInput && activeDept) studentDeptInput.value = activeDept;
-        if (semesterInput) semesterInput.value = activeSemester;
-        if (sectionInput && (!sectionInput.value || sectionInput.value.trim() === '—')) sectionInput.value = activeSection;
-
-        // If Course is empty, auto-populate first registered course & teacher
-        if (courseTitleInput && !courseTitleInput.value.trim()) {
-          const firstCourse = UU_ROUTINE_DATABASE[0];
-          if (firstCourse) {
-            courseTitleInput.value = firstCourse.courseTitle;
-            if (courseNoInput) courseNoInput.value = firstCourse.courseCode;
-            if (teacherInput) {
-              teacherInput.value = firstCourse.teacherName;
-              teacherInput.dataset.autoFilled = 'true';
-            }
-            if (designationInput) designationInput.value = firstCourse.designation;
-            if (teacherDeptInput) teacherDeptInput.value = firstCourse.teacherDept;
-          }
-        }
-
-        syncAllFields();
-        persistData();
-        updateFlowStudentSummary();
-      }
-
-      async function handlePortalLoginSubmit() {
-        const id = inputPortalId?.value.trim() || '';
-        const pass = inputPortalPw?.value.trim() || '';
-        const rememberMe = chkPortalRemember?.checked === true;
-
-        if (!id || !pass) {
-          if (portalAlertMsg) portalAlertMsg.textContent = 'Please enter both Student ID and Password.';
-          if (portalAlertBox) portalAlertBox.style.display = 'block';
-          return;
-        }
-
-        if (btnPortalSubmit) {
-          btnPortalSubmit.disabled = true;
-          btnPortalSubmit.textContent = 'Verifying with UU Portal...';
-        }
-        if (portalAlertBox) portalAlertBox.style.display = 'none';
-
-        try {
-          if (window.StudentAuth) {
-            const res = await StudentAuth.login(id, pass, rememberMe);
-            if (res.success) {
-              closePortalLoginModal();
-              applyStudentProfileToCover(res.profile || { id });
-              showToast(`Logged in successfully as Student ID: ${id}! Cover auto-filled.`, 'success');
-            } else {
-              if (portalAlertMsg) portalAlertMsg.textContent = res.message || 'Invalid Student ID or Password.';
-              if (portalAlertBox) portalAlertBox.style.display = 'block';
-            }
-          } else {
-            throw new Error('StudentAuth module not initialized.');
-          }
-        } catch (err) {
-          if (portalAlertMsg) portalAlertMsg.textContent = err.message || 'Connection error with verification server.';
-          if (portalAlertBox) portalAlertBox.style.display = 'block';
-        } finally {
-          if (btnPortalSubmit) {
-            btnPortalSubmit.disabled = false;
-            btnPortalSubmit.textContent = 'Login & Auto-Fill Cover';
-          }
-        }
-      }
-
-      if (btnPortalSubmit) btnPortalSubmit.addEventListener('click', handlePortalLoginSubmit);
-      if (inputPortalPw) {
-        inputPortalPw.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') handlePortalLoginSubmit();
-        });
-      }
-
       function updateFlowStudentSummary() {
-        const studentNameInput = document.getElementById('student');
-        const studentIdInput = document.getElementById('studentId');
+        const name = document.getElementById('student')?.value.trim() || '';
+        const id = document.getElementById('studentId')?.value.trim() || '';
         const nameEl = document.getElementById('flow-student-name');
         const idEl = document.getElementById('flow-student-id');
-        const studentCard = document.getElementById('flow-student-card');
-        const avatarCircle = studentCard?.querySelector('.flow-avatar-circle');
-
-        const isLoggedIn = Boolean(window.StudentAuth && StudentAuth.isLoggedIn());
-
-        if (isLoggedIn) {
-          const profile = window.StudentAuth && StudentAuth.getProfile();
-          const sName = (profile && profile.name) || (studentNameInput?.value || '').trim() || 'Student Details';
-          const sId = (profile && profile.id) || (studentIdInput?.value || '').trim() || '—';
-
-          if (nameEl) nameEl.textContent = sName;
-          if (idEl) {
-            idEl.innerHTML = `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> <span>ID: ${sId}</span>`;
-            // Ensure logout button is present
-            let logoutBtn = document.getElementById('flow-student-logout-btn');
-            if (!logoutBtn) {
-              const sep = document.createElement('span');
-              sep.id = 'flow-student-logout-sep';
-              sep.style.color = '#CBD5E1';
-              sep.textContent = '•';
-              logoutBtn = document.createElement('button');
-              logoutBtn.type = 'button';
-              logoutBtn.id = 'flow-student-logout-btn';
-              logoutBtn.title = 'Logout & Clear Student Profile';
-              logoutBtn.style.cssText = 'background:none; border:none; color:#EF4444; font-size:11.5px; font-weight:700; cursor:pointer; text-decoration:underline; padding:0; display:inline-flex; align-items:center; gap:4px;';
-              logoutBtn.textContent = 'Logout';
-              idEl.parentElement.appendChild(sep);
-              idEl.parentElement.appendChild(logoutBtn);
-              bindStudentLogoutBtn(logoutBtn);
-            }
-          }
-          if (avatarCircle) {
-            avatarCircle.style.background = '#EFF6FF';
-            avatarCircle.style.borderColor = '#BFDBFE';
-            avatarCircle.style.color = '#2451C4';
-            avatarCircle.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
-          }
-          if (studentCard) {
-            studentCard.title = 'Click to view/edit student details';
-          }
-        } else {
-          // Logged Out State
-          if (nameEl) nameEl.textContent = 'Auto Fill-up Profile';
-          if (idEl) {
-            idEl.innerHTML = `<span style="color:#2451C4; font-weight:700;">Login to auto-fill cover details</span> <span style="color:#CBD5E1;">•</span> <button type="button" class="flow-card-login-btn" style="background:none; border:none; color:#2451C4; font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline; padding:0;">Login</button>`;
-            const loginBtn = idEl.querySelector('.flow-card-login-btn');
-            if (loginBtn) {
-              loginBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                openPortalLoginModal();
-              });
-            }
-          }
-          // Remove logout button if exists
-          const logoutBtn = document.getElementById('flow-student-logout-btn');
-          const logoutSep = document.getElementById('flow-student-logout-sep');
-          if (logoutBtn) logoutBtn.remove();
-          if (logoutSep) logoutSep.remove();
-
-          if (avatarCircle) {
-            avatarCircle.style.background = '#EEF2FF';
-            avatarCircle.style.borderColor = '#C7D2FE';
-            avatarCircle.style.color = '#4338CA';
-            // Clean login icon
-            avatarCircle.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>`;
-          }
-          if (studentCard) {
-            studentCard.title = 'Click to login with Uttara University Student Portal';
-          }
-        }
+        if (nameEl) nameEl.textContent = name || 'Student Details';
+        if (idEl) idEl.textContent = id ? 'ID: ' + id : 'Add your name and student ID';
       }
 
-      function bindStudentLogoutBtn(btn) {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const studentInput = document.getElementById('student');
-          const studentIdInput = document.getElementById('studentId');
-          const studentDeptInput = document.getElementById('studentDepartment');
-          const semesterInput = document.getElementById('semester');
-          const sectionInput = document.getElementById('section');
-
-          if (studentInput) studentInput.value = '';
-          if (studentIdInput) studentIdInput.value = '';
-          if (studentDeptInput) studentDeptInput.value = '';
-          if (semesterInput) semesterInput.value = '';
-          if (sectionInput) sectionInput.value = '';
-
-          sessionStorage.removeItem('uu_cgpa_portal_token');
-          if (window.StudentAuth && typeof window.StudentAuth.logout === 'function') {
-            window.StudentAuth.logout();
-          }
-
-          syncAllFields();
-          persistData();
-          updateFlowStudentSummary();
-          showToast('Student profile logged out');
-        });
-      }
-
-      const initialLogoutBtn = document.getElementById('flow-student-logout-btn');
-      if (initialLogoutBtn) bindStudentLogoutBtn(initialLogoutBtn);
-
-      // Student Summary Card Click Handler
       const flowStudentCard = document.getElementById('flow-student-card');
+      function openStudentDetails() {
+        const studentGroup = document.getElementById('group-student-details');
+        if (studentGroup) {
+          studentGroup.open = true;
+          studentGroup.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        document.getElementById('student')?.focus({ preventScroll: true });
+      }
       if (flowStudentCard) {
-        flowStudentCard.addEventListener('click', (e) => {
-          if (e.target.closest('#flow-student-logout-btn')) return;
-
-          const isLoggedIn = Boolean(window.StudentAuth && StudentAuth.isLoggedIn()) || Boolean(document.getElementById('studentId')?.value.trim());
-          if (!isLoggedIn) {
-            openPortalLoginModal();
-          } else {
-            const studentGroup = document.getElementById('group-student-details');
-            if (studentGroup) {
-              studentGroup.open = true;
-              studentGroup.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
+        flowStudentCard.addEventListener('click', openStudentDetails);
+        flowStudentCard.addEventListener('keydown', event => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openStudentDetails();
           }
         });
       }
-
-      window.addEventListener('uu-auth-changed', (e) => {
-        if (e.detail?.isLoggedIn && e.detail.profile) {
-          applyStudentProfileToCover(e.detail.profile);
-        } else if (!e.detail?.isLoggedIn) {
-          updateFlowStudentSummary();
-        }
-      });
 
       function syncAllFields() {
         document.querySelectorAll('.editor input:not(.field-select):not([type="file"]), .editor select').forEach(syncField);
@@ -7403,7 +6896,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
       <span>Cover Page</span>
     </a>
-    <a href="#" class="bnav-item" id="bnav-login-btn" onclick="toggleMobileSheet(); return false;">
+    <a href="#" class="bnav-item" id="bnav-more-btn" onclick="toggleMobileSheet(); return false;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="14" width="6" height="6" rx="1"></rect></svg>
       <span>More</span>
     </a>
